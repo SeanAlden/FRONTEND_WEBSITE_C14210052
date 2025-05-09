@@ -1,0 +1,305 @@
+<template>
+  <div class="mx-auto p-6 container">
+    <h1 class="mb-6 font-bold text-2xl text-center">Laporan Barang Masuk-Keluar</h1>
+
+    <!-- FILTER SECTION -->
+    <div class="flex flex-wrap justify-center items-center gap-4 mb-6">
+      <div>
+        <label class="font-semibold">Filter Tanggal:</label>
+        <input
+          type="date"
+          v-model="selectedDate"
+          class="px-4 py-2 border rounded-md"
+          @change="applyFilters"
+        />
+      </div>
+
+      <div>
+        <label class="font-semibold">Filter Bulan & Tahun:</label>
+        <input
+          type="month"
+          v-model="selectedMonthYear"
+          class="px-4 py-2 border rounded-md"
+          @change="applyFilters"
+        />
+      </div>
+
+      <button @click="resetFilters" class="bg-gray-500 px-4 py-2 rounded-md text-white">
+        Reset Filter
+      </button>
+    </div>
+
+    <!-- SEARCH SECTION -->
+    <div class="flex justify-between items-center mb-4">
+      <div>
+        <label class="mr-2">Show</label>
+        <select v-model="itemsPerPage" class="p-1 border rounded">
+          <option value="10">10</option>
+          <option value="20">20</option>
+          <option value="50">50</option>
+        </select>
+        <span class="ml-2">entries</span>
+      </div>
+      <div>
+        <input
+          type="text"
+          v-model="searchQuery"
+          placeholder="Search"
+          class="p-2 border rounded"
+        />
+      </div>
+    </div>
+
+    <div class="bg-white shadow-md rounded-lg overflow-x-auto whitespace-nowrap">
+      <div v-for="(group, productName) in groupedStocks" :key="productName" class="mb-4">
+        <h2 class="font-bold text-lg">{{ productName }}</h2>
+        <table class="border border-gray-300 min-w-full">
+          <thead class="bg-gray-200 text-gray-700">
+            <tr>
+              <th class="px-4 py-2 border">Kode</th>
+              <th class="px-4 py-2 border">Foto</th>
+              <th class="px-4 py-2 border">Harga</th>
+              <th class="px-4 py-2 border">Tanggal Expired</th>
+              <th class="px-4 py-2 border">Sebelum</th>
+              <th class="px-4 py-2 border">Jumlah</th>
+              <th class="px-4 py-2 border">Sesudah</th>
+              <th class="px-4 py-2 border">Waktu Masuk / Keluar</th>
+              <th class="px-4 py-2 border">Kondisi</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(item, index) in group" :key="index" class="hover:bg-gray-100">
+              <td class="px-4 py-2 border" v-if="index === 0">{{ item.code }}</td>
+              <td class="px-4 py-2 border" v-if="index !== 0"></td>
+              <td class="px-4 py-2 border">
+                <img
+                  :src="item.photo"
+                  alt="Foto Produk"
+                  class="rounded w-12 h-12 object-cover"
+                />
+              </td>
+              <td class="px-4 py-2 border text-center">{{ formatPrice(item.price) }}</td>
+              <td class="px-4 py-2 border text-center">{{ item.exp_date }}</td>
+              <td class="px-4 py-2 border font-bold text-center">
+                {{ item.previous_stock }}
+              </td>
+              <!-- <td class="px-4 py-2 border font-bold text-center">{{ item.quantity }}</td> -->
+              <td class="px-4 py-2 border font-bold text-center">
+                <span
+                  :class="item.condition === 'Masuk' ? 'text-green-600' : 'text-red-600'"
+                >
+                  {{ item.condition === "Masuk" ? "+" : "-" }}{{ item.quantity }}
+                </span>
+              </td>
+
+              <td class="px-4 py-2 border font-bold text-center">
+                {{ item.current_stock }}
+              </td>
+              <td class="px-4 py-2 border text-center">
+                {{ formatDate(item.timestamp) }}
+              </td>
+              <td class="px-4 py-2 border text-center">
+                <span
+                  :class="
+                    item.condition === 'Masuk'
+                      ? 'text-green-600 font-bold'
+                      : 'text-red-600 font-bold'
+                  "
+                >
+                  {{ item.condition }}
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="flex justify-between mt-4">
+      <div>
+        Showing {{ (currentPage - 1) * itemsPerPage + 1 }} to
+        {{ Math.min(currentPage * itemsPerPage, filteredStocks.length) }} of
+        {{ filteredStocks.length }} entries
+      </div>
+      <div class="flex items-center space-x-2">
+        <button
+          @click="changePage(currentPage - 1)"
+          :disabled="currentPage === 1"
+          class="bg-gray-300 disabled:opacity-50 px-3 py-1 border rounded"
+        >
+          Prev
+        </button>
+
+        <button
+          v-for="page in generatePagination"
+          :key="page"
+          @click="changePage(page)"
+          class="px-3 py-1 border rounded transition-all duration-200"
+          :class="{
+            'bg-blue-500 text-white': currentPage === page,
+            'bg-white text-blue-500 hover:bg-blue-100':
+              currentPage !== page && page !== '...',
+          }"
+        >
+          {{ page }}
+        </button>
+
+        <button
+          @click="changePage(currentPage + 1)"
+          :disabled="currentPage === totalPages"
+          class="bg-gray-300 disabled:opacity-50 px-3 py-1 border rounded"
+        >
+          Next
+        </button>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup>
+import { ref, computed, onMounted } from "vue";
+
+const productStocks = ref([]);
+const selectedDate = ref("");
+const selectedMonthYear = ref("");
+const searchQuery = ref("");
+const currentPage = ref(1);
+const itemsPerPage = ref(10);
+
+const fetchStockReport = async () => {
+  try {
+    const response = await fetch("http://localhost:8000/api/product-stocks-report");
+    const data = await response.json();
+    if (data.success) {
+      productStocks.value = data.data.map((item) => ({
+        id: item.id,
+        name: item.name,
+        code: item.code,
+        photo: item.photo
+          ? `http://localhost:8000/storage/${item.photo}`
+          : "https://via.placeholder.com/50",
+        price: item.price,
+        exp_date: item.exp_date,
+        previous_stock: item.previous_stock,
+        quantity: item.quantity,
+        current_stock: item.current_stock,
+        timestamp: item.timestamp,
+        condition: item.current_stock > item.previous_stock ? "Masuk" : "Keluar",
+      }));
+    }
+  } catch (error) {
+    console.error("Error fetching stock report:", error);
+  }
+};
+
+const formatPrice = (price) => {
+  return new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+    minimumFractionDigits: 0,
+  }).format(price);
+};
+
+const formatDate = (dateString) => {
+  const date = new Date(dateString);
+  date.setHours(date.getHours() + 7);
+  return date.toLocaleString("id-ID", {
+    dateStyle: "medium",
+    timeStyle: "short",
+  });
+};
+
+const filteredStocks = computed(() => {
+  return productStocks.value.filter((item) => {
+    const itemDate = new Date(item.timestamp);
+    itemDate.setHours(itemDate.getHours() + 7);
+    const itemFormattedDate = itemDate.toISOString().split("T")[0];
+    const itemFormattedMonthYear = itemDate.toISOString().slice(0, 7);
+    if (selectedDate.value && itemFormattedDate !== selectedDate.value) {
+      return false;
+    }
+    if (selectedMonthYear.value && itemFormattedMonthYear !== selectedMonthYear.value) {
+      return false;
+    }
+    return true;
+  });
+});
+
+const applySearch = () => {
+  currentPage.value = 1;
+};
+
+const filteredStocksBySearch = computed(() => {
+  const query = searchQuery.value.toLowerCase();
+  return filteredStocks.value.filter(
+    (item) =>
+      item.name.toLowerCase().includes(query) ||
+      item.code.toLowerCase().includes(query) ||
+      item.price.toString().includes(query) ||
+      item.exp_date.toString().includes(query) ||
+      item.previous_stock.toString().includes(query) ||
+      item.quantity.toString().includes(query) ||
+      item.current_stock.toString().includes(query) ||
+      item.condition.toLowerCase().includes(query) ||
+      item.timestamp.toLowerCase().includes(query)
+  );
+});
+
+const totalPages = computed(() => {
+  return Math.ceil(filteredStocksBySearch.value.length / itemsPerPage.value);
+});
+
+const paginatedStocks = computed(() => {
+  const start = (currentPage.value - 1) * itemsPerPage.value;
+  return filteredStocksBySearch.value.slice(start, start + itemsPerPage.value);
+});
+
+const groupedStocks = computed(() => {
+  return paginatedStocks.value.reduce((acc, item) => {
+    if (!acc[item.name]) {
+      acc[item.name] = [];
+    }
+    acc[item.name].push(item);
+    return acc;
+  }, {});
+});
+
+const generatePagination = computed(() => {
+  const total = totalPages.value;
+  const current = currentPage.value;
+  const pages = [];
+  if (total <= 7) {
+    return Array.from({ length: total }, (_, i) => i + 1);
+  }
+  if (current <= 4) {
+    pages.push(1, 2, 3, 4, 5, "...", total);
+  } else if (current >= total - 3) {
+    pages.push(1, "...", total - 4, total - 3, total - 2, total - 1, total);
+  } else {
+    pages.push(1, "...", current - 1, current, current + 1, "...", total);
+  }
+  return pages;
+});
+
+const changePage = (page) => {
+  if (page >= 1 && page <= totalPages.value && page !== "...") {
+    currentPage.value = page;
+  }
+};
+
+const resetFilters = () => {
+  selectedDate.value = "";
+  selectedMonthYear.value = "";
+  searchQuery.value = "";
+  currentPage.value = 1;
+};
+
+onMounted(fetchStockReport);
+</script>
+
+<style>
+.container {
+  max-width: 1200px;
+}
+</style>
