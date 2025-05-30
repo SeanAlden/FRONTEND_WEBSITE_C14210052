@@ -7,7 +7,14 @@ export default defineNuxtConfig({
 
   devServer: {
     host: "127.0.0.1",
+    // host: "https://b67b-139-195-158-245.ngrok-free.app",
   },
+
+  // vite: {
+  //   server: {
+  //     allowedHosts: ['c1d2-139-195-162-44.ngrok-free.app'],
+  //   }
+  // },
 
   css: ["~/assets/css/tailwind.css"],
 
@@ -15,14 +22,13 @@ export default defineNuxtConfig({
     "@nuxtjs/tailwindcss",
     "@pinia/nuxt",
     "@qirolab/nuxt-sanctum-authentication",
+    // '@sidebase/nuxt-auth',
   ],
 
   laravelSanctum: {
-    // apiUrl: "http://api.localhost",
-    // apiUrl: "http://localhost:8000",
-    // apiUrl: "http://c45_best_seller_prediction.test",
     apiUrl: "http://127.0.0.1:8000",
     authMode: "cookie",
+    // withCredentials: true,
 
     sanctumEndpoints: {
       csrf: '/sanctum/csrf-cookie',
@@ -38,5 +44,9 @@ export default defineNuxtConfig({
       redirectToAfterLogin: '/',
       redirectToAfterLogout: '/'
     },
+  },
+
+  nitro: {
+    preset: 'netlify'
   }
 })

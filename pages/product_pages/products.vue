@@ -1,15 +1,31 @@
 <script setup>
 import { ref, computed, onMounted, watch } from "vue";
 
+definePageMeta({
+  middleware: ["auth"],
+});
+
 const products = ref([]);
 const searchQuery = ref("");
-const itemsPerPage = ref(10);
+const itemsPerPageOptions = [5, 10, 20, 50];
+const itemsPerPage = ref(5);
 const currentPage = ref(1);
+const isLoading = ref(true); // State untuk loading
 
 const fetchProducts = async () => {
-  const res = await fetch(`http://127.0.0.1:8000/api/products`);
-  const data = await res.json();
-  products.value = data.data;
+  isLoading.value = true; // Set loading to true
+  try {
+    const res = await fetch(`http://127.0.0.1:8000/api/products`);
+    const data = await res.json();
+    products.value = data.data;
+  } catch (error) {
+    alert("Terjadi kesalahan: " + error.message);
+  } finally {
+    isLoading.value = false; // Set loading to false after fetching
+    // setTimeout(() => {
+    //   isLoading.value = false;
+    // }, 200); // delay sedikit agar animasi terlihat smooth
+  }
 };
 
 const toggleProductStatus = async (id, status) => {
@@ -18,7 +34,7 @@ const toggleProductStatus = async (id, status) => {
   if (!confirm(confirmMessage)) return;
 
   try {
-    const res = await fetch(`http://127.0.0.1:8000/api/updateCondition/products/${id}`, {
+    const res = await fetch(`http://127.0.0.1:8000/api/products/updateCondition/${id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ condition: status }),
@@ -49,8 +65,6 @@ const isExpiredOrToday = (expDate) => {
   if (!expDate) return false;
   const today = new Date();
   const expirationDate = new Date(expDate);
-
-  // Memeriksa jika tanggal kedaluwarsa lebih kecil atau sama dengan hari ini
   return expirationDate <= today;
 };
 
@@ -58,25 +72,18 @@ const getTotalStock = (stocks) => {
   return stocks.reduce((total, stock) => total + stock.stock, 0);
 };
 
-// const filteredProducts = computed(() => {
-//   return products.value.filter((product) =>
-//     product.name.toLowerCase().includes(searchQuery.value.toLowerCase())
-//   );
-// });
-
 const filteredProducts = computed(() => {
   return products.value.filter((product) => {
     const query = searchQuery.value.toLowerCase();
-
     return (
       product.condition === "active" &&
-      (product.code.toLowerCase().includes(query) || // Pencarian berdasarkan kode
-        product.name.toLowerCase().includes(query) || // Pencarian berdasarkan nama
-        product.category?.name?.toLowerCase().includes(query) || // Pencarian berdasarkan kategori
-        product.price.toString().includes(query) || // Pencarian berdasarkan harga
-        product.stocks.some((stock) => stock.exp_date.includes(query)) || // Pencarian berdasarkan tanggal kedaluwarsa
-        getTotalStock(product.stocks).toString().includes(query) || // Pencarian berdasarkan total stok
-        product.condition.toLowerCase().includes(query)) // Pencarian berdasarkan kondisi (aktif/nonaktif)
+      (product.code.toLowerCase().includes(query) ||
+        product.name.toLowerCase().includes(query) ||
+        product.category?.name?.toLowerCase().includes(query) ||
+        product.price.toString().includes(query) ||
+        product.stocks.some((stock) => stock.exp_date.includes(query)) ||
+        getTotalStock(product.stocks).toString().includes(query) ||
+        product.condition.toLowerCase().includes(query))
     );
   });
 });
@@ -133,41 +140,24 @@ onMounted(fetchProducts);
 </script>
 
 <template>
-  <div class="mx-auto p-6 container">
-    <!-- <h1 class="mb-4 font-bold text-2xl">Daftar Produk</h1> -->
-
-    <!-- <div class="flex justify-between mb-4">
-      <button class="bg-blue-500 px-4 py-2 rounded text-white">Tambah Produk</button>
-    </div> -->
-
-    <!-- <NuxtLink
-      to="/product_pages/add_product"
-      class="inline-block bg-green-500 mb-4 p-2 rounded text-white"
-    >
-      Tambah Produk
-    </NuxtLink> -->
-
-    <div class="flex justify-between items-center mb-4">
-      <h1 class="font-bold text-2xl">Daftar Produk</h1>
+  <div class="container p-6 mx-auto">
+    <div class="flex items-center justify-between mb-4">
+      <h1 class="text-2xl font-bold">Daftar Produk</h1>
       <NuxtLink
         to="/product_pages/add_product"
-        class="inline-block bg-green-500 p-2 rounded text-white"
+        class="inline-block p-2 text-white bg-green-500 rounded"
       >
         Tambah Produk
       </NuxtLink>
     </div>
 
-    <!-- <div
-      class="bg-white shadow-md p-4 border rounded-lg w-full overflow-x-auto whitespace-nowrap"
-    > -->
-    <!-- <div class="bg-white shadow-md rounded-lg overflow-x-auto"> -->
-    <div class="flex justify-between items-center mb-4">
+    <div class="flex items-center justify-between mb-4">
       <div>
         <label class="mr-2">Show</label>
-        <select v-model="itemsPerPage" class="p-1 border rounded">
-          <option value="10">10</option>
-          <option value="20">20</option>
-          <option value="50">50</option>
+        <select v-model="itemsPerPage" id="itemsPerPage">
+          <option v-for="option in itemsPerPageOptions" :key="option" :value="option">
+            {{ option }}
+          </option>
         </select>
         <span class="ml-2">entries</span>
       </div>
@@ -180,195 +170,182 @@ onMounted(fetchProducts);
       />
     </div>
 
-    <!-- <table class="border w-full border-collapse">
-      <thead>
-        <tr class="bg-gray-200">
-          <th class="p-2 border">Kode</th>
-          <th class="p-2 border">Foto</th>
-          <th class="p-2 border">Nama</th>
-          <th class="p-2 border">Kategori</th>
-          <th class="p-2 border">Harga</th>
-          <th class="p-2 border">Aksi</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="product in paginatedProducts" :key="product.id">
-          <td class="p-2 border">{{ product.code }}</td>
-          <td class="p-2 border">
-            <img
-              :src="
-                product.photo
-                  ? `http://localhost:8000/storage/${product.photo}`
-                  : '/assets/images/avatar.png'
-              "
-              class="w-20 h-20 object-cover"
-            />
-          </td>
-          <td class="p-3 border">	
-            <NuxtLink
-              :to="`/product_pages/detail/${product.id}`"
-              class="text-blue-500 hover:underline"
-            >
-              {{ product.name }}
-            </NuxtLink>
-          </td>
-          <td class="p-2 border">{{ product.category?.name || "Tidak ada" }}</td>
-          <td class="p-2 border">Rp {{ product.price }}</td>
-          <td class="p-2 border">
-            <button
-              @click="changePage(1)"
-              class="bg-red-500 px-3 py-1 rounded text-white"
-            >
-              Edit
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table> -->
-    <div class="overflow-x-auto whitespace-nowrap">
-      <table
-        class="bg-white shadow-md border border-gray-300 rounded-lg min-w-full text-gray-700"
-      >
-        <!-- <table class="w-full text-gray-700"> -->
-        <thead>
-          <tr class="bg-gray-200">
-            <th class="p-2 border">#</th>
-            <th class="p-2 border">Foto</th>
-            <th class="p-2 border">Nama</th>
-            <th class="p-2 border">Kategori</th>
-            <th class="p-2 border">Harga</th>
-            <th class="p-2 border">Tanggal Kadaluarsa & Stok</th>
-            <th class="p-2 border">Total Stok</th>
-            <th class="p-2 border">Aksi</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="product in paginatedProducts" :key="product.id">
-            <td class="p-2 border">{{ product.code }}</td>
-            <td class="flex justify-center items-center p-2 border">
-              <img
-                :src="
-                  product.photo
-                    ? `http://localhost:8000/storage/${product.photo}`
-                    : '/assets/images/avatar.png'
-                "
-                class="w-20 h-20 object-cover"
-              />
-            </td>
-            <td class="p-3 border">
-              <NuxtLink
-                :to="`/product_pages/detail/${product.id}`"
-                class="text-blue-500 hover:underline"
+    <div class="flex items-center justify-center py-10" v-if="isLoading">
+      <!-- <p>Loading...</p> -->
+      <!-- Ganti dengan spinner jika perlu -->
+      <div
+        class="w-16 h-16 ease-linear border-8 border-t-8 border-gray-200 rounded-full loader"
+      ></div>
+    </div>
+
+    <transition name="fade">
+      <div v-if="!isLoading" class="overflow-x-auto whitespace-nowrap" key="content">
+        <table
+          class="min-w-full text-gray-700 bg-white border border-gray-300 rounded-lg shadow-md"
+        >
+          <thead>
+            <tr class="bg-gray-200">
+              <th class="p-2 border">#</th>
+              <th class="p-2 border">Foto</th>
+              <th class="p-2 border">Nama</th>
+              <th class="p-2 border">Kategori</th>
+              <th class="p-2 border">Harga</th>
+              <th class="p-2 border">Tanggal Kadaluarsa & Stok</th>
+              <th class="p-2 border">Total Stok</th>
+              <th class="p-2 border">Aksi</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="product in paginatedProducts" :key="product.id">
+              <td class="p-2 border">{{ product.code }}</td>
+              <!-- <td class="flex items-center justify-center p-2 border"> -->
+              <td
+                class="flex justify-center items-center p-2 border min-w-[100px] min-h-[100px]"
               >
-                {{ product.name }}
-              </NuxtLink>
-            </td>
-            <td class="p-2 border">{{ product.category?.name || "Tidak ada" }}</td>
-            <!-- <td class="p-2 border">Rp {{ product.price }}</td> -->
-            <td class="p-2 border">{{ formatPrice(product.price) }}</td>
-            <td class="p-2 border">
-              <ul>
-                <!-- <li
-                  v-for="stock in product.stocks"
-                  :key="stock.id"
-                  :class="{
-                    'bg-yellow-200': isExpiringSoon(stock.exp_date),
-                    'p-2 rounded-md': true,
-										'text-red-500': stock.stock < 7 
-                  }"
-                >
-                  <strong>{{ stock.exp_date }}</strong> - Stok: {{ stock.stock }}
-                </li> -->
-                <li
-                  v-for="stock in product.stocks"
-                  :key="stock.id"
-                  :class="{
-                    'bg-red-500 text-white': isExpiredOrToday(stock.exp_date), // Merah jika sudah kedaluwarsa atau hari ini
-                    'bg-yellow-200': isExpiringSoon(stock.exp_date),
-                    'p-2 rounded-md': true,
-                    'text-red-500': stock.stock < 7,
-                  }"
-                >
-                  <strong>{{ stock.exp_date }}</strong> - Stok: {{ stock.stock }}
-                </li>
-              </ul>
-            </td>
-            <td
-              class="p-2 border font-bold"
-              :class="{ 'text-red-500': getTotalStock(product.stocks) < 7 }"
-            >
-              <!-- <td class="p-2 border font-bold"> -->
-              {{ getTotalStock(product.stocks) }}
-            </td>
-            <td class="p-2 border">
-              <template v-if="product.condition === 'active'">
+                <img
+                  :src="
+                    product.photo
+                      ? `http://localhost:8000/storage/${product.photo}`
+                      : '/assets/images/avatar.png'
+                  "
+                  class="w-20 h-20 object-fit"
+                />
+              </td>
+              <!-- <td class="flex justify-center items-center p-2 border min-w-[120px] min-h-[120px]">
+                <img
+                  :src="
+                    product.photo
+                      ? `http://localhost:8000/storage/${product.photo}`
+                      : '/assets/images/avatar.png'
+                  "
+                  class="max-w-[100px] h-auto object-cover"
+                />
+              </td> -->
+              <td class="p-3 border">
                 <NuxtLink
-                  :to="`/product_pages/edit/${product.id}`"
-                  class="mr-2 text-blue-500"
+                  :to="`/product_pages/detail/${product.id}`"
+                  class="text-blue-500 hover:underline"
                 >
-                  Edit
+                  {{ product.name }}
                 </NuxtLink>
-                <button
-                  @click="toggleProductStatus(product.id, 'nonactive')"
-                  class="text-red-500"
-                >
-                  Hapus
-                </button>
-              </template>
-              <template v-else>
-                <span class="font-bold text-red-500">Nonaktif</span>
-                <button
-                  @click="toggleProductStatus(product.id, 'active')"
-                  class="bg-yellow-400 ml-2 p-1 rounded text-white"
-                >
-                  Batal
-                </button>
-              </template>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+              </td>
+              <td class="p-2 border">{{ product.category?.name || "Tidak ada" }}</td>
+              <td class="p-2 border">{{ formatPrice(product.price) }}</td>
+              <td class="p-2 border">
+                <ul>
+                  <li
+                    v-for="stock in product.stocks"
+                    :key="stock.id"
+                    :class="{
+                      'bg-red-500 text-white': isExpiredOrToday(stock.exp_date),
+                      'bg-yellow-200': isExpiringSoon(stock.exp_date),
+                      'p-2 rounded-md': true,
+                      'text-red-500': stock.stock < 7,
+                    }"
+                  >
+                    <strong>{{ stock.exp_date }}</strong> - Stok: {{ stock.stock }}
+                  </li>
+                </ul>
+              </td>
+              <td
+                class="p-2 font-bold border"
+                :class="{ 'text-red-500': getTotalStock(product.stocks) < 7 }"
+              >
+                {{ getTotalStock(product.stocks) }}
+              </td>
+              <td class="p-2 border">
+                <template v-if="product.condition === 'active'">
+                  <NuxtLink
+                    :to="`/product_pages/edit/${product.id}`"
+                    class="mr-2 text-blue-500"
+                  >
+                    Edit
+                  </NuxtLink>
+                  <button
+                    @click="toggleProductStatus(product.id, 'nonactive')"
+                    class="text-red-500"
+                  >
+                    Hapus
+                  </button>
+                </template>
+                <template v-else>
+                  <span class="font-bold text-red-500">Nonaktif</span>
+                  <button
+                    @click="toggleProductStatus(product.id, 'active')"
+                    class="p-1 ml-2 text-white bg-yellow-400 rounded"
+                  >
+                    Batal
+                  </button>
+                </template>
+              </td>
+            </tr>
+          </tbody>
+        </table>
 
-      <!-- Pagination -->
-      <div class="flex justify-between mt-4">
-        <div>
-          Showing {{ (currentPage - 1) * itemsPerPage + 1 }} to
-          {{ Math.min(currentPage * itemsPerPage, filteredProducts.length) }} of
-          {{ filteredProducts.length }} entries
-        </div>
-        <div class="flex items-center space-x-2">
-          <button
-            @click="changePage(currentPage - 1)"
-            :disabled="currentPage === 1"
-            class="bg-gray-300 disabled:opacity-50 px-3 py-1 border rounded"
-          >
-            Prev
-          </button>
+        <!-- Pagination -->
+        <div class="flex justify-between mt-4">
+          <div>
+            Showing {{ (currentPage - 1) * itemsPerPage + 1 }} to
+            {{ Math.min(currentPage * itemsPerPage, filteredProducts.length) }} of
+            {{ filteredProducts.length }} entries
+          </div>
+          <div class="flex items-center space-x-2">
+            <button
+              @click="changePage(currentPage - 1)"
+              :disabled="currentPage === 1"
+              class="px-3 py-1 bg-gray-300 border rounded disabled:opacity-50"
+            >
+              Prev
+            </button>
 
-          <button
-            v-for="page in generatePagination"
-            :key="page"
-            @click="changePage(page)"
-            class="px-3 py-1 border rounded transition-all duration-200"
-            :class="{
-              'bg-blue-500 text-white': currentPage === page,
-              'bg-white text-blue-500 hover:bg-blue-100':
-                currentPage !== page && page !== '...',
-            }"
-          >
-            {{ page }}
-          </button>
+            <button
+              v-for="page in generatePagination"
+              :key="page"
+              @click="changePage(page)"
+              class="px-3 py-1 transition-all duration-200 border rounded"
+              :class="{
+                'bg-blue-500 text-white': currentPage === page,
+                'bg-white text-blue-500 hover:bg-blue-100':
+                  currentPage !== page && page !== '...',
+              }"
+            >
+              {{ page }}
+            </button>
 
-          <button
-            @click="changePage(currentPage + 1)"
-            :disabled="currentPage === totalPages"
-            class="bg-gray-300 disabled:opacity-50 px-3 py-1 border rounded"
-          >
-            Next
-          </button>
+            <button
+              @click="changePage(currentPage + 1)"
+              :disabled="currentPage === totalPages"
+              class="px-3 py-1 bg-gray-300 border rounded disabled:opacity-50"
+            >
+              Next
+            </button>
+          </div>
         </div>
       </div>
-    </div>
+    </transition>
   </div>
-  <!-- </div> -->
 </template>
+
+<style scoped>
+.loader {
+  border-top-color: #3498db;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Fade Animation */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+</style>

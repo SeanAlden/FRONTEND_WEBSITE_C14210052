@@ -3,12 +3,17 @@ import { ref, reactive, onMounted, watch, nextTick } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import axios from "axios";
 
+definePageMeta({
+  middleware: ["auth"],
+});
+
 const route = useRoute();
 const router = useRouter();
 const categories = ref([]);
 const productImage = ref(null);
 const expStockList = ref([]); // Menyimpan stok berdasarkan tanggal expired
 const errorMessage = ref("");
+const descTextarea = ref(null); // Referensi untuk desctextarea
 
 const product = reactive({
   name: "",
@@ -60,6 +65,10 @@ const fetchProduct = async () => {
   }
 };
 
+const goBack = () => {
+  router.back(); // Fungsi untuk kembali ke halaman sebelumnya
+};
+
 // Menangani unggahan file gambar
 const handleFileUpload = (event) => {
   const file = event.target.files[0];
@@ -77,6 +86,16 @@ const addExpStock = () => {
 // Fungsi untuk menghapus entri stok tertentu
 const removeExpStock = (index) => {
   expStockList.value.splice(index, 1);
+};
+
+// Sesuaikan tinggi textarea secara otomatis
+const adjustHeight = (element) => {
+  nextTick(() => {
+    if (element) {
+      element.style.height = "auto";
+      element.style.height = `${element.scrollHeight}px`;
+    }
+  });
 };
 
 // Fungsi untuk memperbarui produk
@@ -173,16 +192,25 @@ const updateProduct = async () => {
   }
 };
 
+// Fungsi untuk auto resize desctextarea
+const descAutoResize = () => {
+  if (descTextarea.value) {
+    descTextarea.value.style.height = "auto"; // Reset tinggi sebelum menyesuaikan
+    descTextarea.value.style.height = descTextarea.value.scrollHeight + "px"; // Sesuaikan dengan konten
+  }
+};
+
 // Ambil data kategori dulu, lalu produk setelahnya
 onMounted(async () => {
   await fetchCategories();
   await fetchProduct();
+  nextTick(() => descAutoResize());
 });
 </script>
 
 <template>
   <div class="p-6">
-    <h1 class="mb-4 font-bold text-2xl">Edit Produk</h1>
+    <h1 class="mb-4 text-2xl font-bold">Edit Produk</h1>
 
     <form @submit.prevent="updateProduct" enctype="multipart/form-data">
       <!-- Nama Produk -->
@@ -190,7 +218,7 @@ onMounted(async () => {
       <textarea
         v-model="product.name"
         required
-        class="p-2 border w-full overflow-hidden resize-none"
+        class="w-full p-2 overflow-hidden border resize-none"
         rows="1"
       ></textarea>
 
@@ -199,13 +227,13 @@ onMounted(async () => {
       <textarea
         v-model="product.code"
         required
-        class="p-2 border w-full overflow-hidden resize-none"
+        class="w-full p-2 overflow-hidden border resize-none"
         rows="1"
       ></textarea>
 
       <!-- Kategori -->
       <label>Kategori:</label>
-      <select v-model="product.category_id" required class="p-2 border w-full">
+      <select v-model="product.category_id" required class="w-full p-2 border">
         <option v-for="cat in categories" :key="cat.id" :value="String(cat.id)">
           {{ cat.name }}
         </option>
@@ -217,7 +245,7 @@ onMounted(async () => {
         v-model.lazy="product.price"
         type="number"
         required
-        class="p-2 border w-full"
+        class="w-full p-2 border"
       />
 
       <!-- Stok berdasarkan tanggal expired -->
@@ -229,17 +257,12 @@ onMounted(async () => {
           class="flex items-center gap-2 mb-2"
         >
           <input v-model="item.exp_date" type="date" required class="p-2 border" />
-          <input
-            v-model="item.stock"
-            type="number"
-            required
-            class="p-2 border w-24"
-          />
-          <!-- <p class="p-2 border w-24">{{ item.stock || 10 }}</p> -->
+          <input v-model="item.stock" type="number" required class="w-24 p-2 border" />
+          <!-- <p class="w-24 p-2 border">{{ item.stock || 10 }}</p> -->
           <button
             type="button"
             @click="removeExpStock(index)"
-            class="bg-red-500 p-1 rounded text-white"
+            class="p-1 text-white bg-red-500 rounded"
           >
             Hapus
           </button>
@@ -247,7 +270,7 @@ onMounted(async () => {
         <button
           type="button"
           @click="addExpStock"
-          class="bg-green-500 mt-2 p-2 rounded text-white"
+          class="p-2 mt-2 text-white bg-green-500 rounded"
         >
           Tambah Stok Expired
         </button>
@@ -257,9 +280,13 @@ onMounted(async () => {
       <label>Deskripsi:</label>
       <textarea
         v-model="product.description"
-        required
-        class="p-2 border w-full overflow-hidden resize-none"
+        placeholder="Deskripsi"
+        class="w-full p-2 border"
         rows="3"
+        style="resize: none; overflow-y: hidden"
+        ref="descTextarea"
+        @input="descAutoResize"
+        required
       ></textarea>
 
       <!-- Foto Produk -->
@@ -268,21 +295,34 @@ onMounted(async () => {
         <img
           :src="productImage"
           alt="Foto Produk"
-          class="border rounded w-40 h-40 object-cover"
+          class="object-cover w-40 h-40 border rounded"
         />
       </div>
-      <input type="file" @change="handleFileUpload" class="p-2 border w-full" />
+      <input type="file" @change="handleFileUpload" class="w-full p-2 border" />
 
       <p
         v-if="errorMessage"
-        class="bg-red-100 mt-2 p-2 border border-red-400 rounded text-red-500"
+        class="p-2 mt-2 text-red-500 bg-red-100 border border-red-400 rounded"
       >
         {{ errorMessage }}
       </p>
-      <!-- Tombol Submit -->
-      <button type="submit" class="bg-blue-500 mt-4 p-2 rounded text-white">
-        Simpan Perubahan
-      </button>
+
+      <div class="flex justify-start">
+        <button
+          @click="goBack"
+          type="button"
+          class="px-4 py-2 mr-2 text-white bg-gray-500 rounded hover:bg-gray-600"
+        >
+          Kembali
+        </button>
+
+        <button
+          type="submit"
+          class="px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600"
+        >
+          Simpan Perubahan
+        </button>
+      </div>
     </form>
   </div>
 </template>

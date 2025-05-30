@@ -1,9 +1,9 @@
 <template>
-  <div class="mx-auto p-6 container">
-    <h1 class="mb-6 font-bold text-2xl text-center">Laporan Barang Masuk-Keluar</h1>
+  <div class="container p-6 mx-auto">
+    <h1 class="mb-6 text-2xl font-bold text-center">Laporan Barang Masuk-Keluar</h1>
 
     <!-- FILTER SECTION -->
-    <div class="flex flex-wrap justify-center items-center gap-4 mb-6">
+    <div class="flex flex-wrap items-center justify-center gap-4 mb-6">
       <div>
         <label class="font-semibold">Filter Tanggal:</label>
         <input
@@ -24,19 +24,24 @@
         />
       </div>
 
-      <button @click="resetFilters" class="bg-gray-500 px-4 py-2 rounded-md text-white">
+      <button @click="resetFilters" class="px-4 py-2 text-white bg-gray-500 rounded-md">
         Reset Filter
       </button>
     </div>
 
     <!-- SEARCH SECTION -->
-    <div class="flex justify-between items-center mb-4">
+    <div class="flex items-center justify-between mb-4">
       <div>
         <label class="mr-2">Show</label>
-        <select v-model="itemsPerPage" class="p-1 border rounded">
+        <!-- <select v-model="itemsPerPage" class="p-1 border rounded">
           <option value="10">10</option>
           <option value="20">20</option>
           <option value="50">50</option>
+        </select> -->
+        <select v-model="itemsPerPage" id="itemsPerPage">
+          <option v-for="option in itemsPerPageOptions" :key="option" :value="option">
+            {{ option }}
+          </option>
         </select>
         <span class="ml-2">entries</span>
       </div>
@@ -50,70 +55,91 @@
       </div>
     </div>
 
-    <div class="bg-white shadow-md rounded-lg overflow-x-auto whitespace-nowrap">
-      <div v-for="(group, productName) in groupedStocks" :key="productName" class="mb-4">
-        <h2 class="font-bold text-lg">{{ productName }}</h2>
-        <table class="border border-gray-300 min-w-full">
-          <thead class="bg-gray-200 text-gray-700">
-            <tr>
-              <th class="px-4 py-2 border">Kode</th>
-              <th class="px-4 py-2 border">Foto</th>
-              <th class="px-4 py-2 border">Harga</th>
-              <th class="px-4 py-2 border">Tanggal Expired</th>
-              <th class="px-4 py-2 border">Sebelum</th>
-              <th class="px-4 py-2 border">Jumlah</th>
-              <th class="px-4 py-2 border">Sesudah</th>
-              <th class="px-4 py-2 border">Waktu Masuk / Keluar</th>
-              <th class="px-4 py-2 border">Kondisi</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(item, index) in group" :key="index" class="hover:bg-gray-100">
-              <td class="px-4 py-2 border" v-if="index === 0">{{ item.code }}</td>
-              <td class="px-4 py-2 border" v-if="index !== 0"></td>
-              <td class="px-4 py-2 border">
-                <img
-                  :src="item.photo"
-                  alt="Foto Produk"
-                  class="rounded w-12 h-12 object-cover"
-                />
-              </td>
-              <td class="px-4 py-2 border text-center">{{ formatPrice(item.price) }}</td>
-              <td class="px-4 py-2 border text-center">{{ item.exp_date }}</td>
-              <td class="px-4 py-2 border font-bold text-center">
-                {{ item.previous_stock }}
-              </td>
-              <!-- <td class="px-4 py-2 border font-bold text-center">{{ item.quantity }}</td> -->
-              <td class="px-4 py-2 border font-bold text-center">
-                <span
-                  :class="item.condition === 'Masuk' ? 'text-green-600' : 'text-red-600'"
-                >
-                  {{ item.condition === "Masuk" ? "+" : "-" }}{{ item.quantity }}
-                </span>
-              </td>
-
-              <td class="px-4 py-2 border font-bold text-center">
-                {{ item.current_stock }}
-              </td>
-              <td class="px-4 py-2 border text-center">
-                {{ formatDate(item.timestamp) }}
-              </td>
-              <td class="px-4 py-2 border text-center">
-                <span
-                  :class="
-                    item.condition === 'Masuk'
-                      ? 'text-green-600 font-bold'
-                      : 'text-red-600 font-bold'
-                  "
-                >
-                  {{ item.condition }}
-                </span>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+    <div class="flex items-center justify-center py-10" v-if="isLoading">
+      <!-- <p>Loading...</p> -->
+      <!-- Ganti dengan spinner jika perlu -->
+      <div
+        class="w-16 h-16 ease-linear border-8 border-t-8 border-gray-200 rounded-full loader"
+      ></div>
     </div>
+
+    <transition name="fade">
+      <div
+        v-if="!isLoading"
+        class="overflow-x-auto bg-white rounded-lg shadow-md whitespace-nowrap"
+      >
+        <div
+          v-for="(group, productName) in groupedStocks"
+          :key="productName"
+          class="mb-4"
+        >
+          <h2 class="text-lg font-bold">{{ productName }}</h2>
+          <table class="min-w-full border border-gray-300">
+            <thead class="text-gray-700 bg-gray-200">
+              <tr>
+                <th class="px-4 py-2 border">Kode</th>
+                <th class="px-4 py-2 border">Foto</th>
+                <th class="px-4 py-2 border">Harga</th>
+                <th class="px-4 py-2 border">Tanggal Expired</th>
+                <th class="px-4 py-2 border">Sebelum</th>
+                <th class="px-4 py-2 border">Jumlah</th>
+                <th class="px-4 py-2 border">Sesudah</th>
+                <th class="px-4 py-2 border">Waktu Masuk / Keluar</th>
+                <th class="px-4 py-2 border">Kondisi</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(item, index) in group" :key="index" class="hover:bg-gray-100">
+                <td class="px-4 py-2 border" v-if="index === 0">{{ item.code }}</td>
+                <td class="px-4 py-2 border" v-if="index !== 0"></td>
+                <td class="px-4 py-2 border">
+                  <img
+                    :src="item.photo"
+                    alt="Foto Produk"
+                    class="object-cover w-12 h-12 rounded"
+                  />
+                </td>
+                <td class="px-4 py-2 text-center border">
+                  {{ formatPrice(item.price) }}
+                </td>
+                <td class="px-4 py-2 text-center border">{{ item.exp_date }}</td>
+                <td class="px-4 py-2 font-bold text-center border">
+                  {{ item.previous_stock }}
+                </td>
+                <!-- <td class="px-4 py-2 font-bold text-center border">{{ item.quantity }}</td> -->
+                <td class="px-4 py-2 font-bold text-center border">
+                  <span
+                    :class="
+                      item.condition === 'Masuk' ? 'text-green-600' : 'text-red-600'
+                    "
+                  >
+                    {{ item.condition === "Masuk" ? "+" : "-" }}{{ item.quantity }}
+                  </span>
+                </td>
+
+                <td class="px-4 py-2 font-bold text-center border">
+                  {{ item.current_stock }}
+                </td>
+                <td class="px-4 py-2 text-center border">
+                  {{ formatDate(item.timestamp) }}
+                </td>
+                <td class="px-4 py-2 text-center border">
+                  <span
+                    :class="
+                      item.condition === 'Masuk'
+                        ? 'text-green-600 font-bold'
+                        : 'text-red-600 font-bold'
+                    "
+                  >
+                    {{ item.condition }}
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </transition>
 
     <!-- Pagination -->
     <div class="flex justify-between mt-4">
@@ -126,7 +152,7 @@
         <button
           @click="changePage(currentPage - 1)"
           :disabled="currentPage === 1"
-          class="bg-gray-300 disabled:opacity-50 px-3 py-1 border rounded"
+          class="px-3 py-1 bg-gray-300 border rounded disabled:opacity-50"
         >
           Prev
         </button>
@@ -135,7 +161,7 @@
           v-for="page in generatePagination"
           :key="page"
           @click="changePage(page)"
-          class="px-3 py-1 border rounded transition-all duration-200"
+          class="px-3 py-1 transition-all duration-200 border rounded"
           :class="{
             'bg-blue-500 text-white': currentPage === page,
             'bg-white text-blue-500 hover:bg-blue-100':
@@ -148,7 +174,7 @@
         <button
           @click="changePage(currentPage + 1)"
           :disabled="currentPage === totalPages"
-          class="bg-gray-300 disabled:opacity-50 px-3 py-1 border rounded"
+          class="px-3 py-1 bg-gray-300 border rounded disabled:opacity-50"
         >
           Next
         </button>
@@ -160,14 +186,21 @@
 <script setup>
 import { ref, computed, onMounted } from "vue";
 
+definePageMeta({
+  middleware: ["auth"],
+});
+
 const productStocks = ref([]);
 const selectedDate = ref("");
 const selectedMonthYear = ref("");
 const searchQuery = ref("");
 const currentPage = ref(1);
-const itemsPerPage = ref(10);
+const itemsPerPageOptions = [5, 10, 20, 50];
+const itemsPerPage = ref(5);
+const isLoading = ref(true); // State untuk loading
 
 const fetchStockReport = async () => {
+  isLoading.value = true; // Set loading to true
   try {
     const response = await fetch("http://localhost:8000/api/product-stocks-report");
     const data = await response.json();
@@ -190,6 +223,8 @@ const fetchStockReport = async () => {
     }
   } catch (error) {
     console.error("Error fetching stock report:", error);
+  } finally {
+    isLoading.value = false;
   }
 };
 
@@ -295,11 +330,33 @@ const resetFilters = () => {
   currentPage.value = 1;
 };
 
+watch(itemsPerPage, () => {
+  currentPage.value = 1;
+});
+
 onMounted(fetchStockReport);
 </script>
 
-<style>
-.container {
-  max-width: 1200px;
+<style scoped>
+.loader {
+  border-top-color: #3498db;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Fade Animation */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 </style>

@@ -3,13 +3,18 @@
     <h1 class="mb-4 text-xl font-bold">Prediksi Produk Terlaris - Algoritma C4.5</h1>
     <h2 class="mt-6 text-lg font-semibold">3. Perhitungan Akurasi</h2>
 
-    <div class="my-4 flex justify-between">
+    <div class="flex justify-between my-4">
       <div>
         <label class="mr-2">Show</label>
-        <select v-model="itemsPerPage" class="rounded border p-1">
+        <!-- <select v-model="itemsPerPage" class="p-1 border rounded">
           <option value="10">10</option>
           <option value="20">20</option>
           <option value="50">50</option>
+        </select> -->
+        <select v-model="itemsPerPage" id="itemsPerPage">
+          <option v-for="option in itemsPerPageOptions" :key="option" :value="option">
+            {{ option }}
+          </option>
         </select>
         <span class="ml-2">entries</span>
       </div>
@@ -17,33 +22,41 @@
         type="text"
         v-model="searchQuery"
         placeholder="Search"
-        class="rounded border p-2"
+        class="p-2 border rounded"
       />
     </div>
 
-    <div class="overflow-x-auto whitespace-nowrap">
+    <div class="flex items-center justify-center py-10" v-if="isLoading">
+      <!-- <p>Loading...</p> -->
+      <!-- Ganti dengan spinner jika perlu -->
+      <div
+        class="w-16 h-16 ease-linear border-8 border-t-8 border-gray-200 rounded-full loader"
+      ></div>
+    </div>
+
+    <div v-if="!isLoading" class="overflow-x-auto whitespace-nowrap">
       <table
-        class="mt-0 min-w-full table-auto border-collapse border border-gray-300 bg-white"
+        class="min-w-full mt-0 bg-white border border-collapse border-gray-300 table-auto"
       >
         <thead>
           <tr class="bg-gray-200">
-            <th class="border p-2">Kode Produk</th>
-            <th class="border p-2">Nama</th>
-            <th class="border p-2">Kondisi</th>
-            <th class="border p-2">Foto</th>
-            <th class="border p-2">Kategori</th>
-            <th class="border p-2">Harga</th>
-            <th class="border p-2">Stok</th>
-            <th class="border p-2">Akurasi</th>
+            <th class="p-2 border">Kode Produk</th>
+            <th class="p-2 border">Nama</th>
+            <th class="p-2 border">Kondisi</th>
+            <th class="p-2 border">Foto</th>
+            <th class="p-2 border">Kategori</th>
+            <th class="p-2 border">Harga</th>
+            <th class="p-2 border">Stok</th>
+            <th class="p-2 border">Akurasi</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="product in paginatedProducts" :key="product.id">
-            <td class="border p-2">{{ product.code }}</td>
-            <td class="border p-2">{{ product.name || "Unknown" }}</td>
-            <td class="border p-2">
+            <td class="p-2 border">{{ product.code }}</td>
+            <td class="p-2 border">{{ product.name || "Unknown" }}</td>
+            <td class="p-2 border">
               <span
-                class="rounded-full px-3 py-1 text-base font-semibold md:text-lg"
+                class="px-3 py-1 text-base font-semibold rounded-full md:text-lg"
                 :class="{
                   'bg-green-100 text-green-600': product.condition === 'active',
                   'bg-red-100 text-red-600': product.condition === 'nonactive',
@@ -53,27 +66,32 @@
               </span>
             </td>
 
-            <td class="flex items-center justify-center border p-2">
+            <!-- <td class="flex items-center justify-center p-2 border"> -->
+            <td
+              class="flex justify-center items-center p-2 border min-w-[100px] min-h-[100px]"
+            >
               <img
                 :src="
                   product.photo
                     ? `http://localhost:8000/storage/${product.photo}`
                     : '/assets/images/avatar.png'
                 "
-                class="h-20 w-20 object-cover"
+                class="w-20 h-20 object-fit"
               />
             </td>
-            <td class="border p-2">{{ product.category_name || "Unknown" }}</td>
-            <td class="border p-2">{{ formatPrice(product.price) }}</td>
-            <td class="border p-2">{{ product.stocks }}</td>
-            <!-- <td class="border p-2">{{ product.accuracy.toFixed(2) }}%</td> -->
-            <td class="border p-2">
+            <td class="p-2 border">{{ product.category_name || "Unknown" }}</td>
+            <td class="p-2 border">{{ formatPrice(product.price) }}</td>
+            <td class="p-2 border">{{ product.stocks }}</td>
+            <!-- <td class="p-2 border">{{ product.accuracy.toFixed(2) }}%</td> -->
+            <td class="p-2 border">
               <span
-                class="rounded-full px-3 py-1 text-sm font-semibold"
+                class="px-3 py-1 text-sm font-semibold rounded-full"
                 :class="{
                   'bg-blue-100 text-blue-700': product.accuracy >= 75,
-                  'bg-yellow-100 text-yellow-700': product.accuracy < 75 && product.accuracy >= 50,
-                  'bg-orange-100 text-orange-700': product.accuracy < 50 && product.accuracy >= 25,
+                  'bg-yellow-100 text-yellow-700':
+                    product.accuracy < 75 && product.accuracy >= 50,
+                  'bg-orange-100 text-orange-700':
+                    product.accuracy < 50 && product.accuracy >= 25,
                   'bg-red-100 text-red-700': product.accuracy < 25,
                 }"
               >
@@ -84,7 +102,7 @@
         </tbody>
       </table>
 
-      <div class="mt-4 flex justify-between">
+      <div class="flex justify-between mt-4">
         <div>
           Showing {{ (currentPage - 1) * itemsPerPage + 1 }} to
           {{ Math.min(currentPage * itemsPerPage, filteredProducts.length) }} of
@@ -94,7 +112,7 @@
           <button
             @click="changePage(currentPage - 1)"
             :disabled="currentPage === 1"
-            class="rounded border bg-gray-300 px-3 py-1 disabled:opacity-50"
+            class="px-3 py-1 bg-gray-300 border rounded disabled:opacity-50"
           >
             Prev
           </button>
@@ -102,7 +120,7 @@
             v-for="page in generatePagination"
             :key="page"
             @click="changePage(page)"
-            class="rounded border px-3 py-1 transition-all duration-200"
+            class="px-3 py-1 transition-all duration-200 border rounded"
             :class="{
               'bg-blue-500 text-white': currentPage === page,
               'bg-white text-blue-500 hover:bg-blue-100':
@@ -114,7 +132,7 @@
           <button
             @click="changePage(currentPage + 1)"
             :disabled="currentPage === totalPages"
-            class="rounded border bg-gray-300 px-3 py-1 disabled:opacity-50"
+            class="px-3 py-1 bg-gray-300 border rounded disabled:opacity-50"
           >
             Next
           </button>
@@ -128,13 +146,19 @@
 import axios from "axios";
 import { computed, ref, onMounted } from "vue";
 
+definePageMeta({
+  middleware: ["auth"],
+});
+
 export default {
   setup() {
     const products = ref({});
     const accuracy = ref({});
     const searchQuery = ref("");
-    const itemsPerPage = ref(10);
+    const itemsPerPageOptions = [5, 10, 20, 50];
+    const itemsPerPage = ref(5);
     const currentPage = ref(1);
+    const isLoading = ref(true);
 
     const fetchData = async () => {
       try {
@@ -143,6 +167,8 @@ export default {
         accuracy.value = response.data.accuracy;
       } catch (error) {
         console.error("Error fetching analysis data:", error);
+      } finally {
+        isLoading.value = false;
       }
     };
 
@@ -210,12 +236,17 @@ export default {
       }).format(price);
     };
 
+    watch(itemsPerPage, () => {
+      currentPage.value = 1;
+    });
+
     onMounted(fetchData);
 
     return {
       products,
       accuracy,
       searchQuery,
+      itemsPerPageOptions,
       itemsPerPage,
       currentPage,
       filteredProducts,
@@ -224,7 +255,31 @@ export default {
       generatePagination,
       changePage,
       formatPrice,
+      isLoading,
     };
   },
 };
 </script>
+<style scoped>
+.loader {
+  border-top-color: #3498db;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Fade Animation */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+</style>

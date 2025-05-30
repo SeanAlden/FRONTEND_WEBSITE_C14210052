@@ -1,16 +1,22 @@
 <template>
-  <div class="mx-auto p-6 container">
-    <div class="flex justify-between items-center mb-4">
-      <h1 class="mb-4 font-bold text-2xl">Daftar Karyawan</h1>
+  <div class="container p-6 mx-auto">
+    <h1 class="mb-4 text-2xl font-bold">Daftar Karyawan Diterima</h1>
+    <div class="flex items-center justify-start mb-4">
       <router-link
         to="/employee_pages/add_employee"
-        class="inline-block bg-blue-500 mb-4 px-4 py-2 rounded text-white"
+        class="inline-block px-4 py-2 mb-4 mr-4 text-white bg-blue-500 rounded"
       >
         Tambah Karyawan
       </router-link>
+      <router-link
+        to="/employee_pages/registered_employees"
+        class="inline-block px-4 py-2 mb-4 text-white bg-blue-500 rounded"
+      >
+        Daftar Akun Karyawan
+      </router-link>
     </div>
 
-    <div class="flex justify-between items-center mb-4">
+    <div class="flex items-center justify-between mb-4">
       <!-- <div>
           <label class="mr-2">Tampilkan</label>
           <select v-model="itemsPerPage" class="p-1 border rounded">
@@ -23,10 +29,15 @@
 
       <div>
         <label class="mr-2">Show</label>
-        <select v-model="itemsPerPage" class="p-1 border rounded">
+        <!-- <select v-model="itemsPerPage" class="p-1 border rounded">
           <option value="10">10</option>
           <option value="20">20</option>
           <option value="50">50</option>
+        </select> -->
+        <select v-model="itemsPerPage" id="itemsPerPage">
+          <option v-for="option in itemsPerPageOptions" :key="option" :value="option">
+            {{ option }}
+          </option>
         </select>
         <span class="ml-2">entries</span>
       </div>
@@ -39,95 +50,108 @@
       />
     </div>
 
-    <div class="overflow-x-auto whitespace-nowrap">
-      <table class="bg-white border-gray-500 w-full border-collapse">
-        <thead>
-          <tr class="bg-gray-200">
-            <th class="p-2 border">#</th>
-            <th class="p-0 px-0 border">Foto</th>
-            <th class="p-2 border">Nama</th>
-            <th class="p-2 border">Posisi</th>
-            <th class="p-2 border">Kontak</th>
-            <th class="p-2 border">Aksi</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="employee in paginatedProducts" :key="employee.id">
-            <td class="p-2 border">{{ employee.code }}</td>
-            <td class="flex justify-center items-center p-2 px-0 border">
-              <img
-                :src="
-                  employee.employee_photo
-                    ? `http://localhost:8000/storage/${employee.employee_photo}`
-                    : '/assets/images/photo_default.png'
-                "
-                class="w-20 h-20 object-cover"
-              />
-            </td>
-            <td
-              class="p-2 border text-blue-500 underline cursor-pointer"
-              @click="goToDetail(employee.id)"
+    <div class="flex items-center justify-center py-10" v-if="isLoading">
+      <!-- <p>Loading...</p> -->
+      <!-- Ganti dengan spinner jika perlu -->
+      <div
+        class="w-16 h-16 ease-linear border-8 border-t-8 border-gray-200 rounded-full loader"
+      ></div>
+    </div>
+
+    <transition name="fade">
+      <div v-if="!isLoading" class="overflow-x-auto whitespace-nowrap">
+        <table class="w-full bg-white border-collapse border-gray-500">
+          <thead>
+            <tr class="bg-gray-200">
+              <th class="p-2 border">#</th>
+              <th class="p-0 px-0 border">Foto</th>
+              <th class="p-2 border">Nama</th>
+              <th class="p-2 border">Posisi</th>
+              <th class="p-2 border">Kontak</th>
+              <th class="p-2 border">Aksi</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="employee in paginatedProducts" :key="employee.id">
+              <td class="p-2 border">{{ employee.code }}</td>
+              <!-- <td class="flex items-center justify-center p-2 px-0 border"> -->
+              <td
+                class="flex justify-center items-center p-2 border min-w-[100px] min-h-[100px]"
+              >
+                <img
+                  :src="
+                    employee.employee_photo
+                      ? `http://localhost:8000/storage/${employee.employee_photo}`
+                      : '/assets/images/photo_default.png'
+                  "
+                  class="w-20 h-20 object-fit"
+                />
+              </td>
+              <td
+                class="p-2 text-blue-500 underline border cursor-pointer"
+                @click="goToDetail(employee.id)"
+              >
+                {{ employee.employee_name }}
+              </td>
+              <td class="p-2 border">{{ employee.employee_position }}</td>
+              <td class="p-2 border">{{ employee.employee_contact }}</td>
+              <td class="p-2 border">
+                <router-link
+                  :to="`/employee_pages/edit/${employee.id}`"
+                  class="px-2 py-1 mr-2 text-white bg-yellow-500 rounded"
+                  >Edit</router-link
+                >
+                <button
+                  @click="deleteEmployee(employee.id)"
+                  class="px-2 py-1 text-white bg-red-500 rounded"
+                >
+                  Hapus
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <!-- Pagination -->
+        <div class="flex justify-between mt-4">
+          <div>
+            Showing {{ (currentPage - 1) * itemsPerPage + 1 }} to
+            {{ Math.min(currentPage * itemsPerPage, filteredProducts.length) }} of
+            {{ filteredProducts.length }} entries
+          </div>
+          <div class="flex items-center space-x-2">
+            <button
+              @click="changePage(currentPage - 1)"
+              :disabled="currentPage === 1"
+              class="px-3 py-1 bg-gray-300 border rounded disabled:opacity-50"
             >
-              {{ employee.employee_name }}
-            </td>
-            <td class="p-2 border">{{ employee.employee_position }}</td>
-            <td class="p-2 border">{{ employee.employee_contact }}</td>
-            <td class="p-2 border">
-              <router-link
-                :to="`/employee_pages/edit/${employee.id}`"
-                class="bg-yellow-500 mr-2 px-2 py-1 rounded text-white"
-                >Edit</router-link
-              >
-              <button
-                @click="deleteEmployee(employee.id)"
-                class="bg-red-500 px-2 py-1 rounded text-white"
-              >
-                Hapus
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      <!-- Pagination -->
-      <div class="flex justify-between mt-4">
-        <div>
-          Showing {{ (currentPage - 1) * itemsPerPage + 1 }} to
-          {{ Math.min(currentPage * itemsPerPage, filteredProducts.length) }} of
-          {{ filteredProducts.length }} entries
-        </div>
-        <div class="flex items-center space-x-2">
-          <button
-            @click="changePage(currentPage - 1)"
-            :disabled="currentPage === 1"
-            class="bg-gray-300 disabled:opacity-50 px-3 py-1 border rounded"
-          >
-            Prev
-          </button>
+              Prev
+            </button>
 
-          <button
-            v-for="page in generatePagination"
-            :key="page"
-            @click="changePage(page)"
-            class="px-3 py-1 border rounded transition-all duration-200"
-            :class="{
-              'bg-blue-500 text-white': currentPage === page,
-              'bg-white text-blue-500 hover:bg-blue-100':
-                currentPage !== page && page !== '...',
-            }"
-          >
-            {{ page }}
-          </button>
+            <button
+              v-for="page in generatePagination"
+              :key="page"
+              @click="changePage(page)"
+              class="px-3 py-1 transition-all duration-200 border rounded"
+              :class="{
+                'bg-blue-500 text-white': currentPage === page,
+                'bg-white text-blue-500 hover:bg-blue-100':
+                  currentPage !== page && page !== '...',
+              }"
+            >
+              {{ page }}
+            </button>
 
-          <button
-            @click="changePage(currentPage + 1)"
-            :disabled="currentPage === totalPages"
-            class="bg-gray-300 disabled:opacity-50 px-3 py-1 border rounded"
-          >
-            Next
-          </button>
+            <button
+              @click="changePage(currentPage + 1)"
+              :disabled="currentPage === totalPages"
+              class="px-3 py-1 bg-gray-300 border rounded disabled:opacity-50"
+            >
+              Next
+            </button>
+          </div>
         </div>
       </div>
-    </div>
+    </transition>
   </div>
 </template>
 
@@ -136,18 +160,27 @@ import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import axios from "axios";
 
+definePageMeta({
+  middleware: ["auth"],
+});
+
 const router = useRouter();
 const employees = ref([]);
 const searchQuery = ref("");
-const itemsPerPage = ref(10);
+const itemsPerPageOptions = [5, 10, 20, 50];
+const itemsPerPage = ref(5);
 const currentPage = ref(1);
+const isLoading = ref(true); // State untuk loading
 
 const fetchEmployees = async () => {
+  isLoading.value = true; // Set loading to true
   try {
     const response = await axios.get("http://localhost:8000/api/employees");
     employees.value = response.data.data;
   } catch (error) {
     console.error("Error fetching employees:", error);
+  } finally {
+    isLoading.value = false;
   }
 };
 
@@ -220,3 +253,26 @@ watch(itemsPerPage, () => {
 
 onMounted(fetchEmployees);
 </script>
+<style scoped>
+.loader {
+  border-top-color: #3498db;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Fade Animation */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+</style>

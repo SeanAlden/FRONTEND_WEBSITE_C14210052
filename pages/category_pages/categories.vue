@@ -1,27 +1,22 @@
 <template>
-  <!-- <div class="mx-auto p-6 max-w-5xl"> -->
-  <div class="mx-auto p-6 container">
-    <div class="flex justify-between items-center mb-4">
-      <h1 class="mb-4 font-bold text-2xl">Daftar Kategori</h1>
+  <div class="container mx-auto p-6">
+    <div class="mb-4 flex items-center justify-between">
+      <h1 class="mb-4 text-2xl font-bold">Daftar Kategori</h1>
       <NuxtLink
         to="/category_pages/add_category"
-        class="inline-block bg-blue-500 mb-4 px-4 py-2 rounded text-white"
+        class="mb-4 inline-block rounded bg-blue-500 px-4 py-2 text-white"
       >
         Tambah Kategori
       </NuxtLink>
     </div>
 
-    <!-- <div
-      class="bg-white shadow-md p-4 border rounded-lg w-full overflow-x-auto whitespace-nowrap"
-    > -->
-
-    <div class="flex justify-between items-center mb-4">
+    <div class="mb-4 flex items-center justify-between">
       <div>
         <label class="mr-2">Show</label>
-        <select v-model="itemsPerPage" class="p-1 border rounded">
-          <option value="10">10</option>
-          <option value="20">20</option>
-          <option value="50">50</option>
+        <select v-model="itemsPerPage" id="itemsPerPage">
+          <option v-for="option in itemsPerPageOptions" :key="option" :value="option">
+            {{ option }}
+          </option>
         </select>
         <span class="ml-2">entries</span>
       </div>
@@ -30,32 +25,37 @@
         type="text"
         v-model="searchQuery"
         placeholder="Search"
-        class="p-2 border rounded"
+        class="rounded border p-2"
       />
     </div>
 
-    <div class="overflow-x-auto whitespace-nowrap">
+    <!-- Loading Spinner -->
+    <div v-if="isLoading" class="flex items-center justify-center py-10">
+      <div class="loader h-12 w-12 rounded-full border-4 border-t-4 border-gray-200 ease-linear"></div>
+    </div>
+
+    <!-- Table with fade animation -->
+		<transition name="fade">
+    <div
+      v-if="!isLoading"
+      class="overflow-x-auto whitespace-nowrap transition-opacity duration-300"
+      :class="{ 'opacity-50 pointer-events-none': isLoading }"
+    >
       <table
-        class="bg-white shadow-md border-gray-300 rounded-lg min-w-full text-gray-700"
+        class="min-w-full rounded-lg border-gray-300 bg-white text-gray-700 shadow-md"
       >
         <thead>
           <tr class="bg-gray-200">
             <th class="p-3">#</th>
             <th class="p-3">Nama</th>
-            <!-- <th class="p-3">Deskripsi</th> -->
             <th class="p-3">Produk</th>
             <th class="p-3">Aksi</th>
           </tr>
         </thead>
-        <tbody>
+        <!-- <transition-group name="fade" tag="tbody"> -->
           <tr v-for="category in paginatedCategories" :key="category.id" class="border-t">
             <td class="p-3">{{ category.code }}</td>
-            <!-- <td class="p-3">
-            <span @click="openModal(category)" class="text-blue-500 cursor-pointer">
-              {{ category.name }}
-            </span>
-          </td> -->
-
+            
             <td class="p-3">
               <NuxtLink
                 :to="`/category_pages/detail/${category.id}`"
@@ -65,7 +65,6 @@
               </NuxtLink>
             </td>
 
-            <!-- <td class="p-3">{{ category.description }}</td> -->
             <td class="p-3">
               <ul v-if="category.products && category.products.length > 0">
                 <li v-for="product in category.products" :key="product.id">
@@ -74,20 +73,16 @@
               </ul>
               <span v-else class="text-gray-500">Tidak ada produk</span>
             </td>
+
             <td class="p-3">
               <NuxtLink :to="`/category_pages/edit/${category.id}`" class="text-blue-500"
                 >Edit</NuxtLink
               >
-              <!-- <button @click="handleDelete(category.id)" class="ml-2 text-red-500">
-              Hapus
-            </button> -->
               <button
                 @click="handleDelete(category.id)"
-                :class="
-                  category.products && category.products.length > 0
-                    ? 'text-gray-500 cursor-not-allowed'
-                    : 'text-red-500'
-                "
+                :class="category.products && category.products.length > 0
+                  ? 'text-gray-500 cursor-not-allowed'
+                  : 'text-red-500'"
                 :disabled="category.products && category.products.length > 0"
                 class="ml-2"
               >
@@ -95,10 +90,11 @@
               </button>
             </td>
           </tr>
-        </tbody>
+        <!-- </transition-group> -->
       </table>
+
       <!-- Pagination -->
-      <div class="flex justify-between mt-4">
+      <div class="mt-4 flex justify-between">
         <div>
           Showing {{ (currentPage - 1) * itemsPerPage + 1 }} to
           {{ Math.min(currentPage * itemsPerPage, filteredCategories.length) }} of
@@ -108,7 +104,7 @@
           <button
             @click="changePage(currentPage - 1)"
             :disabled="currentPage === 1"
-            class="bg-gray-300 disabled:opacity-50 px-3 py-1 border rounded"
+            class="rounded border bg-gray-300 px-3 py-1 disabled:opacity-50"
           >
             Prev
           </button>
@@ -117,11 +113,10 @@
             v-for="page in generatePagination"
             :key="page"
             @click="changePage(page)"
-            class="px-3 py-1 border rounded transition-all duration-200"
+            class="rounded border px-3 py-1 transition-all duration-200"
             :class="{
               'bg-blue-500 text-white': currentPage === page,
-              'bg-white text-blue-500 hover:bg-blue-100':
-                currentPage !== page && page !== '...',
+              'bg-white text-blue-500 hover:bg-blue-100': currentPage !== page && page !== '...',
             }"
           >
             {{ page }}
@@ -130,52 +125,158 @@
           <button
             @click="changePage(currentPage + 1)"
             :disabled="currentPage === totalPages"
-            class="bg-gray-300 disabled:opacity-50 px-3 py-1 border rounded"
+            class="rounded border bg-gray-300 px-3 py-1 disabled:opacity-50"
           >
             Next
           </button>
         </div>
       </div>
     </div>
-    <!-- </div> -->
+		</transition>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
-import useApi from "@/composables/useApi";
+// import { ref, onMounted, computed, watch } from "vue";
+// import useApi from "@/composables/useApi";
 
-const { getCategories, deleteCategory } = useApi();
-const categories = ref([]);
-const searchQuery = ref("");
-const isModalOpen = ref(false);
-const selectedCategory = ref(null);
-const itemsPerPage = ref(10);
-const currentPage = ref(1);
+// const { getCategories, deleteCategory } = useApi();
+// const categories = ref([]);
+// const searchQuery = ref("");
+// const isModalOpen = ref(false);
+// const selectedCategory = ref(null);
+// const itemsPerPageOptions = [5, 10, 20, 50];
+// const itemsPerPage = ref(5);
+// const currentPage = ref(1);
+// const isLoading = ref(true);
 
-const fetchCategories = async () => {
-  categories.value = await getCategories();
-};
+// definePageMeta({
+//   middleware: ["auth"],
+// });
+
+// const fetchCategories = async () => {
+//   isLoading.value = true;
+//   categories.value = await getCategories();
+//   isLoading.value = false;
+// };
 
 // const handleDelete = async (id) => {
 //   const category = categories.value.find((cat) => cat.id === id);
-//   if (category.products && category.products.length > 0) {
-//     alert("Kategori ini tidak dapat dihapus karena masih memiliki produk terkait.");
-//     return;
-//   }
+//   if (!category) return;
+
+//   if (category.products && category.products.length > 0) return;
+
 //   if (confirm("Apakah Anda yakin ingin menghapus kategori ini?")) {
 //     const success = await deleteCategory(id);
 //     if (success) fetchCategories();
 //   }
 // };
 
+// const filteredCategories = computed(() => {
+//   return categories.value.filter((category) => {
+//     const query = searchQuery.value.toLowerCase();
+//     return (
+//       category.name.toLowerCase().includes(query) ||
+//       (category.products &&
+//         category.products.some((product) =>
+//           product.name.toLowerCase().includes(query)
+//         ))
+//     );
+//   });
+// });
+
+// const paginatedCategories = computed(() => {
+//   const start = (currentPage.value - 1) * itemsPerPage.value;
+//   return filteredCategories.value.slice(start, start + itemsPerPage.value);
+// });
+
+// const totalPages = computed(() => {
+//   return Math.ceil(filteredCategories.value.length / itemsPerPage.value);
+// });
+
+// const generatePagination = computed(() => {
+//   const total = totalPages.value;
+//   const current = currentPage.value;
+//   const pages = [];
+
+//   if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
+
+//   if (current <= 4) {
+//     pages.push(1, 2, 3, 4, 5, "...", total);
+//   } else if (current >= total - 3) {
+//     pages.push(1, "...", total - 4, total - 3, total - 2, total - 1, total);
+//   } else {
+//     pages.push(1, "...", current - 1, current, current + 1, "...", total);
+//   }
+
+//   return pages;
+// });
+
+// const changePage = (page) => {
+//   if (page >= 1 && page <= totalPages.value && page !== "...") {
+//     currentPage.value = page;
+//   }
+// };
+
+// watch(itemsPerPage, () => {
+//   currentPage.value = 1;
+//   fetchCategories();
+// });
+
+// onMounted(fetchCategories);
+
+import { ref, onMounted, computed, watch } from "vue";
+
+const apiUrl = "http://127.0.0.1:8000/api";
+
+const categories = ref([]);
+const searchQuery = ref("");
+const isModalOpen = ref(false);
+const selectedCategory = ref(null);
+const itemsPerPageOptions = [5, 10, 20, 50];
+const itemsPerPage = ref(5);
+const currentPage = ref(1);
+const isLoading = ref(true);
+
+definePageMeta({
+  middleware: ["auth"],
+});
+
+// Fungsi ambil semua kategori langsung di sini
+const getCategories = async () => {
+  try {
+    const response = await fetch(`${apiUrl}/categories`);
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching categories:", error);
+    return null;
+  }
+};
+
+// Fungsi hapus kategori langsung di sini
+const deleteCategory = async (id) => {
+  try {
+    const response = await fetch(`${apiUrl}/categories/${id}`, {
+      method: "DELETE",
+    });
+    return response.ok;
+  } catch (error) {
+    console.error("Error deleting category:", error);
+  }
+};
+
+const fetchCategories = async () => {
+  isLoading.value = true;
+  const data = await getCategories();
+  categories.value = data || [];
+  isLoading.value = false;
+};
+
 const handleDelete = async (id) => {
   const category = categories.value.find((cat) => cat.id === id);
   if (!category) return;
 
-  if (category.products && category.products.length > 0) {
-    return; // Tidak melakukan apa-apa jika kategori masih memiliki produk
-  }
+  if (category.products && category.products.length > 0) return;
 
   if (confirm("Apakah Anda yakin ingin menghapus kategori ini?")) {
     const success = await deleteCategory(id);
@@ -183,28 +284,15 @@ const handleDelete = async (id) => {
   }
 };
 
-const openModal = (category) => {
-  selectedCategory.value = category;
-  isModalOpen.value = true;
-};
-
-const closeModal = () => {
-  isModalOpen.value = false;
-};
-
-// const filteredCategories = computed(() => {
-//   return categories.value.filter((category) =>
-//     category.name.toLowerCase().includes(searchQuery.value.toLowerCase())
-//   );
-// });
-
 const filteredCategories = computed(() => {
   return categories.value.filter((category) => {
     const query = searchQuery.value.toLowerCase();
     return (
       category.name.toLowerCase().includes(query) ||
       (category.products &&
-        category.products.some((product) => product.name.toLowerCase().includes(query)))
+        category.products.some((product) =>
+          product.name.toLowerCase().includes(query)
+        ))
     );
   });
 });
@@ -223,9 +311,7 @@ const generatePagination = computed(() => {
   const current = currentPage.value;
   const pages = [];
 
-  if (total <= 7) {
-    return Array.from({ length: total }, (_, i) => i + 1);
-  }
+  if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
 
   if (current <= 4) {
     pages.push(1, 2, 3, 4, 5, "...", total);
@@ -251,3 +337,27 @@ watch(itemsPerPage, () => {
 
 onMounted(fetchCategories);
 </script>
+
+<style scoped>
+.loader {
+  border-top-color: #3498db;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Fade Animation */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+</style>

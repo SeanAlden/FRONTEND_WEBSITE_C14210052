@@ -5,7 +5,15 @@
       <h2 class="mb-4 text-2xl font-bold">Set Your Profile</h2>
       <div class="p-6 bg-gray-100 rounded-lg">
         <div class="flex items-center mb-4">
-          <img :src="profileImage" class="w-20 h-20 rounded-full" />
+          <!-- <img :src="profileImage" class="w-20 h-20 rounded-full" /> -->
+          <img
+            :src="
+              user.profile_image
+                ? `http://localhost:8000/storage/profile_images/${user.profile_image}`
+                : '/assets/images/photo_default.png'
+            "
+            class="w-20 h-20 rounded-full"
+          />
           <h3 class="ml-4 text-xl font-bold">{{ user.name }}</h3>
         </div>
         <div class="text-left">
@@ -15,11 +23,11 @@
           <p class="text-sm font-bold text-gray-600">EMAIL</p>
           <p class="mb-2 text-gray-800">{{ user.email }}</p>
 
-          <p class="text-sm font-bold text-gray-600">CREATED AT</p>
-          <p class="mb-2 text-gray-800">{{ user.createdAt }}</p>
+          <p class="text-sm font-bold text-gray-600">PHONE</p>
+          <p class="mb-2 text-gray-800">{{ user.phone }}</p>
 
-          <p class="text-sm font-bold text-gray-600">UPDATED AT</p>
-          <p class="text-gray-800">{{ user.updatedAt }}</p>
+          <p class="text-sm font-bold text-gray-600">USERTYPE</p>
+          <p class="text-gray-800">{{ user.usertype }}</p>
         </div>
       </div>
     </div>
@@ -97,35 +105,213 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+// import { ref, onMounted } from "vue";
+// import axios from "axios";
 
-// Data profil pengguna
-const user = ref({
-  name: "John Doe",
-  email: "johndoe7@gmail.com",
-  createdAt: "2024-07-23 14:15:32",
-  updatedAt: "2024-07-23 14:15:32",
+// const user = ref({
+//   name: "",
+//   email: "",
+// });
+// const profileImage = ref("/assets/images/photo_default.png"); // default
+// const isEditing = ref(false);
+// const token = useCookie("my_auth_token");
+
+// // Ambil data user dari Laravel API saat komponen di-mount
+// const fetchUser = async () => {
+//   try {
+//     const res = await axios.get("http://127.0.0.1:8000/api/user", {
+//       headers: {
+//         Authorization: `Bearer ${token.value}`,
+//       },
+//     });
+//     user.value = res.data;
+//     console.log("User:", user.value);
+//   } catch (error) {
+//     console.error("Gagal mengambil data user:", error);
+//     if (error.response?.status === 401) {
+//       alert("Sesi Anda telah habis. Silakan login ulang.");
+//       window.location.href = "/login";
+//     }
+//   }
+// };
+
+// // Handle file upload lokal
+// const handleFileUpload = (event) => {
+//   const file = event.target.files[0];
+//   if (file) {
+//     profileImage.value = URL.createObjectURL(file);
+//     // NOTE: Di sini hanya preview lokal, untuk upload ke server perlu implementasi tambahan.
+//   }
+// };
+
+// const toggleEdit = () => {
+//   isEditing.value = !isEditing.value;
+// };
+
+// // Dummy update function
+// // const updateProfile = () => {
+// //   alert("Profile updated successfully!");
+// //   isEditing.value = false;
+// // };
+
+// const updateProfile = async () => {
+//   try {
+//     const res = await axios.put(
+//       "http://127.0.0.1:8000/api/auth/user/update",
+//       {
+//         name: user.value.name,
+//         email: user.value.email,
+//       },
+//       {
+//         headers: {
+//           Authorization: `Bearer ${token.value}`,
+//         },
+//       }
+//     );
+
+//     // Update data lokal dengan respons dari server
+//     user.value = res.data.user;
+
+//     alert("Profile updated successfully!");
+//     isEditing.value = false;
+//   } catch (error) {
+//     console.error("Gagal mengupdate profile:", error);
+//     if (error.response?.status === 422) {
+//       // Menampilkan error validasi Laravel
+//       const errors = error.response.data.errors;
+//       const messages = Object.values(errors).flat().join("\n");
+//       alert(`Validasi gagal:\n${messages}`);
+//     } else if (error.response?.status === 401) {
+//       alert("Sesi Anda habis. Silakan login ulang.");
+//       window.location.href = "/login";
+//     } else {
+//       alert("Terjadi kesalahan saat mengupdate profil.");
+//     }
+//   }
+// };
+
+// // Panggil fetchUser saat komponen dipasang
+// onMounted(() => {
+//   fetchUser();
+// });
+
+import { ref, onMounted } from "vue";
+import axios from "axios";
+
+definePageMeta({
+  middleware: ["auth"],
 });
 
-const profileImage = ref("/assets/images/photo_default.png"); // Default image
-const isEditing = ref(false); // Mode edit
+const user = ref({
+  name: "",
+  email: "",
+  profile_image: "",
+});
+const profileImage = ref("/assets/images/photo_default.png");
+const selectedFile = ref(null); // Untuk menyimpan file gambar
+const isEditing = ref(false);
+const token = useCookie("my_auth_token");
 
-// Handle file upload
+// Ambil data user saat mount
+const fetchUser = async () => {
+  try {
+    const res = await axios.get("http://127.0.0.1:8000/api/user", {
+      headers: {
+        Authorization: `Bearer ${token.value}`,
+      },
+    });
+    user.value = res.data;
+    profileImage.value = user.value.profile_image
+      ? `http://localhost:8000/storage/profile_images/${user.value.profile_image}`
+      : "/assets/images/photo_default.png";
+  } catch (error) {
+    console.error("Gagal mengambil data user:", error);
+    if (error.response?.status === 401) {
+      alert("Sesi Anda telah habis. Silakan login ulang.");
+      window.location.href = "/login";
+    }
+  }
+};
+
+// Simpan file lokal dan tampilkan preview
 const handleFileUpload = (event) => {
   const file = event.target.files[0];
   if (file) {
+    selectedFile.value = file;
     profileImage.value = URL.createObjectURL(file);
   }
 };
 
-// Toggle edit mode
+// Fungsi untuk upload gambar ke server
+const uploadProfileImage = async () => {
+  if (!selectedFile.value) return;
+
+  const formData = new FormData();
+  formData.append("profile_image", selectedFile.value);
+
+  try {
+    const res = await axios.post(
+      "http://127.0.0.1:8000/api/auth/user/update-profile-image",
+      formData,
+      {
+        headers: {
+          Authorization: `Bearer ${token.value}`,
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+    // Update gambar jika berhasil
+    user.value.profile_image = res.data.profile_image;
+    profileImage.value = `http://localhost:8000/storage/profile_images/${res.data.profile_image}`;
+  } catch (error) {
+    console.error("Gagal mengupload gambar:", error);
+    alert("Gagal mengupload gambar profil.");
+  }
+};
+
+// Fungsi update profil (name + email + optional image)
+const updateProfile = async () => {
+  try {
+    // 1. Kirim name & email
+    await axios.put(
+      "http://127.0.0.1:8000/api/auth/user/update",
+      {
+        name: user.value.name,
+        email: user.value.email,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token.value}`,
+        },
+      }
+    );
+
+    // 2. Jika ada gambar baru, upload
+    if (selectedFile.value) {
+      await uploadProfileImage();
+    }
+
+    alert("Profile updated successfully!");
+    isEditing.value = false;
+  } catch (error) {
+    console.error("Gagal mengupdate profile:", error);
+    if (error.response?.status === 422) {
+      const messages = Object.values(error.response.data.errors).flat().join("\n");
+      alert(`Validasi gagal:\n${messages}`);
+    } else if (error.response?.status === 401) {
+      alert("Sesi Anda habis. Silakan login ulang.");
+      window.location.href = "/login";
+    } else {
+      alert("Terjadi kesalahan saat mengupdate profil.");
+    }
+  }
+};
+
 const toggleEdit = () => {
   isEditing.value = !isEditing.value;
 };
 
-// Simpan perubahan (dummy function)
-const updateProfile = () => {
-  alert("Profile updated successfully!");
-  isEditing.value = false;
-};
+onMounted(() => {
+  fetchUser();
+});
 </script>

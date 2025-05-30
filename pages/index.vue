@@ -1,11 +1,12 @@
 <template>
-  <div class="bg-gray-100 p-6 min-h-screen">
-    <h1 class="font-bold text-2xl">Dashboard</h1>
-    <p class="text-gray-600">Hello, john doe</p>
+  <div class="min-h-screen p-6 bg-gray-100">
+    <h1 class="text-2xl font-bold">Dashboard</h1>
+    <!-- <p class="text-gray-600">Hello, john doe</p> -->
+    <p class="text-gray-600">Hello, {{ user?.name || "Guest" }}</p>
 
     <!-- Dropdown untuk pilih bulan -->
-    <div class="mt-4 mb-4">
-      <label for="month" class="mr-2 font-medium text-gray-700 text-sm"
+    <!-- <div class="flex flex-wrap items-center mt-4 mb-4">
+      <label for="month" class="mr-2 text-sm font-medium text-gray-700"
         >Pilih Bulan:</label
       >
       <select
@@ -15,38 +16,87 @@
       >
         <option v-for="month in months" :key="month" :value="month">{{ month }}</option>
       </select>
+
+      <label for="year" class="mr-2 text-sm font-medium text-gray-700"
+        >Pilih Tahun:</label
+      >
+      <select
+        v-model="currentYear"
+        @change="fetchData"
+        class="px-2 py-1 border border-gray-300 rounded-md"
+      >
+        <option v-for="year in years" :key="year" :value="year">{{ year }}</option>
+      </select>
+    </div> -->
+
+    <div class="flex flex-wrap items-center mt-4 mb-4">
+      <!-- Dropdown Bulan -->
+      <div class="flex items-center mb-2 mr-6">
+        <label for="month" class="mr-2 text-sm font-medium text-gray-700">
+          Pilih Bulan:
+        </label>
+        <select
+          v-model="currentMonth"
+          @change="fetchData"
+          class="px-2 py-1 border border-gray-300 rounded-md"
+        >
+          <option v-for="month in months" :key="month" :value="month">
+            {{ month }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Dropdown Tahun -->
+      <div class="flex items-center mb-2">
+        <label for="year" class="mr-2 text-sm font-medium text-gray-700">
+          Pilih Tahun:
+        </label>
+        <!-- <select
+          v-model="currentYear"
+          @change="fetchData"
+          class="px-2 py-1 border border-gray-300 rounded-md"
+        >
+          <option v-for="year in years" :key="year" :value="year">{{ year }}</option>
+        </select> -->
+        <input
+          v-model="currentYear"
+          type="number"
+          @change="fetchData"
+          class="px-2 py-1 border border-gray-300 rounded-md"
+        />
+      </div>
     </div>
 
-    <div class="gap-4 grid grid-cols-1 md:grid-cols-3 mt-4">
-      <div class="flex items-center bg-white shadow p-4 rounded-lg">
-        <img src="/assets/icons/income.png" class="mr-3 w-10 h-10" />
+    <div class="grid grid-cols-1 gap-4 mt-4 md:grid-cols-3">
+      <div class="flex items-center p-4 bg-white rounded-lg shadow">
+        <img src="/assets/icons/income.png" class="w-10 h-10 mr-3" />
         <div class="overflow-x-auto whitespace-nowrap">
           <p class="text-gray-500">Income Total ({{ currentMonth }})</p>
-          <p class="font-bold text-xl">{{ formatPrice(totalRevenue) }}</p>
+          <p class="text-xl font-bold">{{ formatPrice(totalRevenue) }}</p>
         </div>
       </div>
 
-      <div class="flex items-center bg-white shadow p-4 rounded-lg">
-        <img src="/assets/icons/transaction.png" class="mr-3 w-10 h-10" />
+      <div class="flex items-center p-4 bg-white rounded-lg shadow">
+        <img src="/assets/icons/transaction.png" class="w-10 h-10 mr-3" />
         <div class="overflow-x-auto whitespace-nowrap">
           <p class="text-gray-500">Transaction Total ({{ currentMonth }})</p>
-          <p class="font-bold text-xl">{{ totalTransactions }}</p>
+          <p class="text-xl font-bold">{{ totalTransactions }}</p>
         </div>
       </div>
 
-      <div class="flex items-center bg-white shadow p-4 rounded-lg">
-        <img src="/assets/icons/product_data.png" class="mr-3 w-10 h-10" />
+      <div class="flex items-center p-4 bg-white rounded-lg shadow">
+        <img src="/assets/icons/product_data.png" class="w-10 h-10 mr-3" />
         <div class="overflow-x-auto whitespace-nowrap">
           <p class="text-gray-500">Product Total</p>
-          <p class="font-bold text-xl">{{ totalProducts }}</p>
+          <p class="text-xl font-bold">{{ totalProducts }}</p>
         </div>
       </div>
     </div>
 
-    <div class="gap-4 grid grid-cols-1 md:grid-cols-2 mt-6">
-      <div class="bg-white shadow p-4 rounded-lg overflow-x-auto whitespace-nowrap">
-        <h2 class="font-bold text-lg">Top Products</h2>
-        <table class="mt-3 border border-gray-200 w-full border-collapse">
+    <div class="grid grid-cols-1 gap-4 mt-6 md:grid-cols-2">
+      <div class="p-4 overflow-x-auto bg-white rounded-lg shadow whitespace-nowrap">
+        <h2 class="text-lg font-bold">Top Products</h2>
+        <table class="w-full mt-3 border border-collapse border-gray-200">
           <thead>
             <tr class="bg-gray-100">
               <th class="p-2 border">Photo</th>
@@ -65,7 +115,7 @@
                       ? `http://localhost:8000/storage/${product.photo}`
                       : '/assets/images/avatar.png'
                   "
-                  class="mr-2 w-16 h-16"
+                  class="w-10 h-10 mr-2"
                 />
               </td>
               <td>{{ product.name }}</td>
@@ -77,8 +127,8 @@
         </table>
       </div>
 
-      <div class="bg-white shadow p-4 rounded-lg overflow-x-auto whitespace-nowrap">
-        <h2 class="font-bold text-lg">Grafik Penjualan</h2>
+      <div class="p-4 overflow-x-auto bg-white rounded-lg shadow whitespace-nowrap">
+        <h2 class="text-lg font-bold">Grafik Penjualan</h2>
         <canvas id="salesChart"></canvas>
       </div>
     </div>
@@ -89,13 +139,15 @@
 import { onMounted, ref } from "vue";
 import Chart from "chart.js/auto";
 import axios from "axios";
+import { useCookie } from "#app";
 
-// definePageMeta({
-// 	middleware: ['$auth']
-// });
+definePageMeta({
+  middleware: ["auth"],
+});
 
 export default {
   setup() {
+    const isLoading = ref(true);
     const totalRevenue = ref(0);
     const totalTransactions = ref(0);
     const totalProducts = ref(0);
@@ -117,23 +169,65 @@ export default {
       "November",
       "Desember",
     ];
+    const currentYear = ref(new Date().getFullYear());
+    const years = ref(new Date().getFullYear());
 
     let chartInstance = null;
 
+    // ✅ Tambahan: State untuk user login
+    const user = ref(null);
+    const token = useCookie("my_auth_token");
+
+    // ✅ Tambahan: Ambil data user
+    const fetchUser = async () => {
+      try {
+        const res = await axios.get("http://127.0.0.1:8000/api/user", {
+          headers: {
+            Authorization: `Bearer ${token.value}`,
+          },
+        });
+        user.value = res.data;
+        console.log("User:", user.value);
+      } catch (error) {
+        console.error("Gagal mengambil data user:", error);
+        if (error.response?.status === 401) {
+          alert("Sesi Anda telah habis. Silakan login ulang.");
+          window.location.href = "/login";
+        }
+      }
+    };
+
     const fetchData = async () => {
       try {
+        isLoading.value = true;
+
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/dashboard?month=${currentMonth.value}`
+          `http://127.0.0.1:8000/api/dashboard?month=${currentMonth.value}&year=${currentYear.value}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token.value}`, // ✅ Pakai token untuk semua request
+            },
+          }
         );
+
         totalRevenue.value = response.data.total_revenue;
         totalTransactions.value = response.data.total_transactions;
         totalProducts.value = response.data.total_products;
         topProducts.value = response.data.top_products;
         salesData.value = response.data.sales_by_month.map((item) => item.revenue);
         salesLabels.value = response.data.sales_by_month.map((item) => item.month);
+
         renderChart();
       } catch (error) {
         console.error("Error fetching dashboard data:", error);
+        if (error.response?.status === 401) {
+          alert("Autentikasi gagal, silakan login ulang.");
+          window.location.href = "/login";
+        }
+      } finally {
+        setTimeout(() => {
+          isLoading.value = false;
+        }, 500);
       }
     };
 
@@ -173,7 +267,11 @@ export default {
       }).format(price);
     };
 
-    onMounted(fetchData);
+    // ✅ Jalankan fetch user dan dashboard saat mounted
+    onMounted(() => {
+      fetchUser();
+      fetchData();
+    });
 
     return {
       totalRevenue,
@@ -184,8 +282,11 @@ export default {
       salesData,
       currentMonth,
       months,
+      currentYear,
+      years,
       fetchData,
       formatPrice,
+      user, // ✅ kembalikan jika ingin ditampilkan di template
     };
   },
 };

@@ -1,63 +1,151 @@
 <template>
-  <div class="mx-auto p-6 container">
-    <h1 class="mb-4 font-bold text-2xl">Edit Karyawan</h1>
-    
-    <button @click="$router.back()" class="bg-gray-500 mb-4 px-4 py-2 rounded text-white">Kembali</button>
+  <div class="container p-6 mx-auto">
+    <h1 class="mb-4 text-2xl font-bold">Edit Karyawan</h1>
 
     <form @submit.prevent="updateEmployee" class="space-y-4">
-      <!-- <input v-model="employee_name" placeholder="Nama" class="p-2 border w-full" required /> -->
-			<textarea 
-        v-model="employee_name"
-        placeholder="Nama"
-        class="p-2 border w-full"
-        rows="3"
-        style="resize: none; overflow-y: hidden;"
-        ref="nameTextarea"
-        @input="nameAutoResize"
-        required
-      ></textarea>
-			<input v-model="code" placeholder="Kode Karyawan" type="text" class="p-2 border w-full" required />
-      <input type="file" @change="onFileChange" class="p-2 border w-full" />
-      <input v-model="employee_position" placeholder="Posisi" class="p-2 border w-full" required />
-      <input v-model="employee_birth" type="date" class="p-2 border w-full" required />
-      <input v-model="employee_contact" placeholder="Kontak" type="text" class="p-2 border w-full" required />
-      
-      <!-- Textarea Deskripsi dengan auto-resize -->
-      <textarea 
-        v-model="employee_description"
-        placeholder="Deskripsi"
-        class="p-2 border w-full"
-        rows="3"
-        style="resize: none; overflow-y: hidden;"
-        ref="descTextarea"
-        @input="descAutoResize"
-        required
-      ></textarea>
-      
-      <button type="submit" class="bg-green-500 px-4 py-2 rounded text-white">Simpan Perubahan</button>
+      <div>
+        <label class="block text-gray-600">Foto</label>
+        <img
+          :src="
+            employee_photo
+              ? `http://localhost:8000/storage/${employee_photo}`
+              : '/assets/images/photo_default.png'
+          "
+          class="w-20 h-20 object-fit"
+        />
+        <input type="file" @change="onFileChange" class="w-full p-2 border rounded" />
+      </div>
+
+      <div>
+        <label class="block text-gray-600">Nama</label>
+        <!-- <textarea
+          v-model="employee_name"
+          placeholder="Nama Karyawan"
+          class="w-full p-2 overflow-hidden border rounded resize-none"
+          rows="3"
+          ref="nameInputRef"
+          @input="nameAutoResize"
+          required
+        ></textarea> -->
+        <textarea
+          v-model="employee_name"
+          placeholder="Nama Karyawan"
+          class="w-full p-2 overflow-hidden border rounded resize-none"
+          rows="3"
+          ref="nameTextarea"
+          @input="nameAutoResize"
+          required
+        ></textarea>
+      </div>
+
+      <div>
+        <label class="block text-gray-600">Kode</label>
+        <input
+          v-model="code"
+          type="text"
+          placeholder="Kode Karyawan"
+          class="w-full p-2 border rounded"
+          required
+        />
+      </div>
+
+      <div>
+        <label class="block text-gray-600">Posisi</label>
+        <input
+          v-model="employee_position"
+          type="text"
+          placeholder="Jabatan / Posisi"
+          class="w-full p-2 border rounded"
+          required
+        />
+      </div>
+
+      <div>
+        <label class="block text-gray-600">Tanggal Lahir</label>
+        <input
+          v-model="employee_birth"
+          type="date"
+          class="w-full p-2 border rounded"
+          required
+        />
+      </div>
+
+      <div>
+        <label class="block text-gray-600">Kontak</label>
+        <input
+          v-model="employee_contact"
+          type="text"
+          placeholder="Nomor Telepon"
+          class="w-full p-2 border rounded"
+          required
+        />
+      </div>
+
+      <div>
+        <label class="block text-gray-600">Deskripsi</label>
+        <!-- <textarea
+          v-model="employee_description"
+          placeholder="Deskripsi Karyawan"
+          class="w-full p-2 overflow-hidden border rounded resize-none"
+          rows="3"
+          ref="descInputRef"
+          @input="descAutoResize"
+          required
+        ></textarea> -->
+        <textarea
+          v-model="employee_description"
+          placeholder="Deskripsi Karyawan"
+          class="w-full p-2 overflow-hidden border rounded resize-none"
+          rows="3"
+          ref="descTextarea"
+          @input="descAutoResize"
+          required
+        ></textarea>
+      </div>
+
+      <div class="flex justify-start">
+        <button
+          @click="goBack"
+          type="button"
+          class="px-4 py-2 mr-2 text-white bg-gray-500 rounded hover:bg-gray-600"
+        >
+          Kembali
+        </button>
+
+        <button
+          type="submit"
+          class="px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600"
+        >
+          Simpan Perubahan
+        </button>
+      </div>
     </form>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, nextTick } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
-import axios from 'axios';
+import { ref, onMounted, nextTick } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import axios from "axios";
 
 const route = useRoute();
 const router = useRouter();
 const id = route.params.id;
 
-const code = ref('');
-const employee_name = ref('');
+const code = ref("");
+const employee_name = ref("");
 const employee_photo = ref(null);
-const employee_position = ref('');
-const employee_birth = ref('');
-const employee_contact = ref('');
-const employee_description = ref('');
+const employee_position = ref("");
+const employee_birth = ref("");
+const employee_contact = ref("");
+const employee_description = ref("");
 const nameTextarea = ref(null); // Referensi untuk nametextarea
 const codeTextarea = ref(null); // Referensi untuk codetextarea
 const descTextarea = ref(null); // Referensi untuk desctextarea
+
+definePageMeta({
+  middleware: ["auth"],
+});
 
 const fetchEmployee = async () => {
   try {
@@ -65,16 +153,17 @@ const fetchEmployee = async () => {
     const employee = response.data.data;
     code.value = employee.code;
     employee_name.value = employee.employee_name;
+    employee_photo.value = employee.employee_photo;
     employee_position.value = employee.employee_position;
     employee_birth.value = employee.employee_birth;
     employee_contact.value = employee.employee_contact;
     employee_description.value = employee.employee_description;
-    
+
     // Setelah data dimuat, atur tinggi textarea
     await nextTick();
     autoResize();
   } catch (error) {
-    console.error('Error fetching employee:', error);
+    console.error("Error fetching employee:", error);
   }
 };
 
@@ -82,27 +171,31 @@ const onFileChange = (event) => {
   employee_photo.value = event.target.files[0];
 };
 
+const goBack = () => {
+  router.back(); // Fungsi untuk kembali ke halaman sebelumnya
+};
+
 const updateEmployee = async () => {
   const formData = new FormData();
-  formData.append('code', code.value);
-  formData.append('employee_name', employee_name.value);
-  formData.append('employee_position', employee_position.value);
-  formData.append('employee_birth', employee_birth.value);
-  formData.append('employee_contact', employee_contact.value);
-  formData.append('employee_description', employee_description.value);
+  formData.append("code", code.value);
+  formData.append("employee_name", employee_name.value);
+  formData.append("employee_position", employee_position.value);
+  formData.append("employee_birth", employee_birth.value);
+  formData.append("employee_contact", employee_contact.value);
+  formData.append("employee_description", employee_description.value);
   if (employee_photo.value) {
-    formData.append('employee_photo', employee_photo.value);
+    formData.append("employee_photo", employee_photo.value);
   }
-  formData.append('_method', 'PUT'); // Laravel membutuhkan ini
+  formData.append("_method", "PUT"); // Laravel membutuhkan ini
 
   try {
     await axios.post(`http://localhost:8000/api/employees/${id}`, formData, {
-      headers: { 'Content-Type': 'multipart/form-data' }
+      headers: { "Content-Type": "multipart/form-data" },
     });
-    alert('Karyawan berhasil diperbarui!');
+    alert("Karyawan berhasil diperbarui!");
     router.back(); // Kembali ke halaman sebelumnya setelah update
   } catch (error) {
-    console.error('Error updating employee:', error);
+    console.error("Error updating employee:", error);
   }
 };
 
@@ -110,7 +203,7 @@ const updateEmployee = async () => {
 const descAutoResize = () => {
   if (descTextarea.value) {
     descTextarea.value.style.height = "auto"; // Reset tinggi sebelum menyesuaikan
-    descTextarea.value.style.height = descTextarea.value.scrollHeight + "px"; // Sesuaikan dengan konten
+    descTextarea.value.style.height = `${descTextarea.value.scrollHeight}px`; // Sesuaikan dengan konten
   }
 };
 
@@ -122,21 +215,17 @@ const nameAutoResize = () => {
   }
 };
 
-// Fungsi untuk auto resize codetextarea
-const codeAutoResize = () => {
-  if (codeTextarea.value) {
-    codeTextarea.value.style.height = "auto"; // Reset tinggi sebelum menyesuaikan
-    codeTextarea.value.style.height = codeTextarea.value.scrollHeight + "px"; // Sesuaikan dengan konten
-  }
-};
-
 // onMounted(fetchEmployee);
 
 // Ambil data kategori dulu, lalu produk setelahnya
 onMounted(async () => {
   await fetchEmployee();
-  nextTick(() => nameAutoResize());
-  nextTick(() => descAutoResize());
-  nextTick(() => codeTextarea());
+  await nextTick(() => {
+    nameAutoResize();
+    descAutoResize();
+  });
+  // await nextTick(() => codeTextarea());
+  // await nextTick(() => descTextarea());
+  // await nextTick(() => nameTextarea());
 });
 </script>

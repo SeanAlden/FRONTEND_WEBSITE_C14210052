@@ -1,18 +1,18 @@
 <template>
-  <div class="flex justify-center items-center bg-gray-100 min-h-screen">
-    <div class="bg-white shadow-md p-8 rounded-lg w-full max-w-md">
-      <h2 class="mb-6 font-semibold text-gray-800 text-2xl text-center">
+  <div class="flex items-center justify-center min-h-screen bg-gray-100">
+    <div class="w-full max-w-md p-8 bg-white rounded-lg shadow-md">
+      <h2 class="mb-6 text-2xl font-semibold text-center text-gray-800">
         Register Your Account
       </h2>
 
-      <form @submit.prevent="registerUser">
+      <form @submit.prevent="register">
         <!-- Error Alert -->
-        <div v-if="errorMessage" class="mb-4 text-red-500 text-sm">
+        <div v-if="errorMessage" class="mb-4 text-sm text-red-500">
           {{ errorMessage }}
         </div>
 
         <!-- Success Alert -->
-        <div v-if="successMessage" class="mb-4 text-green-500 text-sm">
+        <div v-if="successMessage" class="mb-4 text-sm text-green-500">
           {{ successMessage }}
         </div>
 
@@ -20,11 +20,11 @@
         <div class="mb-4">
           <label class="block mb-1 text-gray-700" for="name">Name</label>
           <input
-            v-model="form.name"
+            v-model="name"
             type="text"
             id="name"
             placeholder="Enter your name"
-            class="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 w-full"
+            class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
             required
           />
         </div>
@@ -33,11 +33,11 @@
         <div class="mb-4">
           <label class="block mb-1 text-gray-700" for="email">Email</label>
           <input
-            v-model="form.email"
+            v-model="email"
             type="email"
             id="email"
             placeholder="Enter your email"
-            class="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 w-full"
+            class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
             required
           />
         </div>
@@ -46,11 +46,11 @@
         <div class="mb-4">
           <label class="block mb-1 text-gray-700" for="phone">Phone</label>
           <input
-            v-model="form.phone"
+            v-model="phone"
             type="text"
             id="phone"
             placeholder="Enter your phone"
-            class="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 w-full"
+            class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
             required
           />
         </div>
@@ -59,11 +59,11 @@
         <div class="mb-4">
           <label class="block mb-1 text-gray-700" for="password">Password</label>
           <input
-            v-model="form.password"
+            v-model="password"
             type="password"
             id="password"
             placeholder="Enter your password"
-            class="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 w-full"
+            class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
             required
           />
         </div>
@@ -74,11 +74,11 @@
             >Confirm Password</label
           >
           <input
-            v-model="form.password_confirmation"
+            v-model="confirm_password"
             type="password"
-            id="password_confirmation"
+            id="confirm_password"
             placeholder="Confirm your password"
-            class="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 w-full"
+            class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
             required
           />
         </div>
@@ -95,89 +95,37 @@
   </div>
 </template>
 
-<script>
-import axios from "axios";
+<script setup>
+const router = useRouter();
+const name = ref('');
+const email = ref('');
+const phone = ref('');
+const password = ref('');
+const confirm_password = ref('');
+const cookie = useCookie('my_auth_token');
 
 definePageMeta({
   layout: false,
 });
 
-export default {
-  data() {
-    return {
-      form: {
-        name: "",
-        email: "",
-        phone: "",
-        password: "",
-        password_confirmation: "",
-      },
-      errorMessage: "",
-      successMessage: "",
-    };
-  },
-
-  //   methods: {
-  //     async registerUser() {
-  //       this.errorMessage = ''
-  //       this.successMessage = ''
-
-  //       try {
-  //         const response = await axios.post('http://localhost:8000/api/register', this.form)
-  //         this.successMessage = response.data.message
-  //         this.form = {
-  //           name: '',
-  //           email: '',
-  //           phone: '',
-  //           password: '',
-  //           password_confirmation: ''
-  //         }
-  //       } catch (error) {
-  //         if (error.response && error.response.status === 422) {
-  //           // Tampilkan semua error dari validasi
-  //           const errors = error.response.data.errors
-  //           this.errorMessage = Object.values(errors).flat().join(', ')
-  //         } else {
-  //           this.errorMessage = 'Something went wrong. Please try again.'
-  //         }
-  //       }
-  //     }
-  //   }
-
-  methods: {
-    async registerUser() {
-      this.errorMessage = "";
-      this.successMessage = "";
-
-      try {
-        const response = await axios.post(
-          "http://localhost:8000/api/auth/register",
-          this.form
-        );
-        this.successMessage = response.data.message;
-
-        // Reset form
-        this.form = {
-          name: "",
-          email: "",
-          phone: "",
-          password: "",
-          password_confirmation: "",
-        };
-
-        // Redirect ke halaman login setelah 2 detik
-        setTimeout(() => {
-          this.$router.push("/login");
-        }, 2000);
-      } catch (error) {
-        if (error.response && error.response.status === 422) {
-          const errors = error.response.data.errors;
-          this.errorMessage = Object.values(errors).flat().join(", ");
-        } else {
-          this.errorMessage = "Something went wrong. Please try again.";
-        }
+async function register() {
+  try {
+    const result = await $fetch('http://127.0.0.1:8000/api/auth/signup', {
+      method: 'POST',
+      body: {
+        name: name.value,
+        email: email.value,
+        phone: phone.value,
+        password: password.value,
+        password_confirmation: confirm_password.value
       }
-    },
-  },
-};
+    });
+    console.log('Register success:', result);
+    // Redirect ke login
+    router.push('/login');
+  } catch (error) {
+    console.error('Register failed:', error);
+    alert('Registrasi gagal. Periksa data Anda.');
+  }
+}
 </script>

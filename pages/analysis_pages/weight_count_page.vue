@@ -5,19 +5,24 @@
     </h1>
     <button
       @click="$router.push('/analysis_pages/entropy_gain_page')"
-      class="mt-4 rounded bg-blue-500 px-4 py-2 text-white"
+      class="px-4 py-2 mt-4 text-white bg-blue-500 rounded"
     >
       Entropy & Gain
     </button>
     <h2 class="mt-6 text-lg font-semibold">2. Perhitungan Total Penjualan Berbobot</h2>
 
-    <div class="my-4 flex justify-between">
+    <div class="flex justify-between my-4">
       <div>
         <label class="mr-2">Show</label>
-        <select v-model="itemsPerPage" class="rounded border p-1">
+        <!-- <select v-model="itemsPerPage" class="p-1 border rounded">
           <option value="10">10</option>
           <option value="20">20</option>
           <option value="50">50</option>
+        </select> -->
+        <select v-model="itemsPerPage" id="itemsPerPage">
+          <option v-for="option in itemsPerPageOptions" :key="option" :value="option">
+            {{ option }}
+          </option>
         </select>
         <span class="ml-2">entries</span>
       </div>
@@ -25,75 +30,89 @@
         type="text"
         v-model="searchQuery"
         placeholder="Search"
-        class="rounded border p-2"
+        class="p-2 border rounded"
       />
     </div>
 
-    <div class="overflow-x-auto whitespace-nowrap">
-      <table class="mt-2 w-full border bg-white">
-        <thead>
-          <tr class="bg-gray-200">
-            <th class="border p-2">Product Name</th>
-            <th class="border p-2">Product Code</th>
-            <th class="border p-2">Product Price</th>
-            <th class="border p-2">Raw Sales</th>
-            <th class="border p-2">Weighted Sales</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(sales, productId) in paginatedProducts" :key="productId">
-            <td class="border p-2">{{ productNames[productId] }}</td>
-            <td class="border p-2">{{ productCodes[productId] }}</td>
-            <td class="border p-2">{{ formatPrice(productPrices[productId]) }}</td>
-            <td class="border p-2">{{ sales.raw }}</td>
-            <td class="border p-2">{{ sales.weighted.toFixed(2) }}</td>
-          </tr>
-        </tbody>
-      </table>
+    <div class="flex items-center justify-center py-10" v-if="isLoading">
+      <!-- <p>Loading...</p> -->
+      <!-- Ganti dengan spinner jika perlu -->
+      <div
+        class="w-16 h-16 ease-linear border-8 border-t-8 border-gray-200 rounded-full loader"
+      ></div>
+    </div>
 
-      <div class="mt-4 flex justify-between">
-        <div>
-          Showing {{ (currentPage - 1) * itemsPerPage + 1 }} to
-          {{ Math.min(currentPage * itemsPerPage, filteredProducts.length) }} of
-          {{ filteredProducts.length }} entries
-        </div>
-        <div class="flex items-center space-x-2">
-          <button
-            @click="changePage(currentPage - 1)"
-            :disabled="currentPage === 1"
-            class="rounded border bg-gray-300 px-3 py-1 disabled:opacity-50"
-          >
-            Prev
-          </button>
-          <button
-            v-for="page in generatePagination"
-            :key="page"
-            @click="changePage(page)"
-            class="rounded border px-3 py-1 transition-all duration-200"
-            :class="{
-              'bg-blue-500 text-white': currentPage === page,
-              'bg-white text-blue-500 hover:bg-blue-100':
-                currentPage !== page && page !== '...',
-            }"
-          >
-            {{ page }}
-          </button>
-          <button
-            @click="changePage(currentPage + 1)"
-            :disabled="currentPage === totalPages"
-            class="rounded border bg-gray-300 px-3 py-1 disabled:opacity-50"
-          >
-            Next
-          </button>
+    <transition name="fade">
+      <div v-if="!isLoading" class="overflow-x-auto whitespace-nowrap">
+        <table class="w-full mt-2 bg-white border">
+          <thead>
+            <tr class="bg-gray-200">
+              <th class="p-2 border">Product Name</th>
+              <th class="p-2 border">Product Code</th>
+              <th class="p-2 border">Product Price</th>
+              <th class="p-2 border">Raw Sales</th>
+              <th class="p-2 border">Weighted Sales</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(sales, productId) in paginatedProducts" :key="productId">
+              <td class="p-2 border">{{ productNames[productId] }}</td>
+              <td class="p-2 border">{{ productCodes[productId] }}</td>
+              <td class="p-2 border">{{ formatPrice(productPrices[productId]) }}</td>
+              <td class="p-2 border">{{ sales.raw }}</td>
+              <td class="p-2 border">{{ sales.weighted.toFixed(2) }}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="flex justify-between mt-4">
+          <div>
+            Showing {{ (currentPage - 1) * itemsPerPage + 1 }} to
+            {{ Math.min(currentPage * itemsPerPage, filteredProducts.length) }} of
+            {{ filteredProducts.length }} entries
+          </div>
+          <div class="flex items-center space-x-2">
+            <button
+              @click="changePage(currentPage - 1)"
+              :disabled="currentPage === 1"
+              class="px-3 py-1 bg-gray-300 border rounded disabled:opacity-50"
+            >
+              Prev
+            </button>
+            <button
+              v-for="page in generatePagination"
+              :key="page"
+              @click="changePage(page)"
+              class="px-3 py-1 transition-all duration-200 border rounded"
+              :class="{
+                'bg-blue-500 text-white': currentPage === page,
+                'bg-white text-blue-500 hover:bg-blue-100':
+                  currentPage !== page && page !== '...',
+              }"
+            >
+              {{ page }}
+            </button>
+            <button
+              @click="changePage(currentPage + 1)"
+              :disabled="currentPage === totalPages"
+              class="px-3 py-1 bg-gray-300 border rounded disabled:opacity-50"
+            >
+              Next
+            </button>
+          </div>
         </div>
       </div>
-    </div>
+    </transition>
   </div>
 </template>
 
 <script>
 import axios from "axios";
 import { computed, ref, onMounted } from "vue";
+
+definePageMeta({
+  middleware: ["auth"],
+});
 
 export default {
   setup() {
@@ -102,12 +121,17 @@ export default {
     const productPrices = ref({});
     const productCodes = ref({});
     const searchQuery = ref("");
-    const itemsPerPage = ref(10);
+    const itemsPerPageOptions = [5, 10, 20, 50];
+    const itemsPerPage = ref(5);
     const currentPage = ref(1);
+    const isLoading = ref(true);
 
     const fetchData = async () => {
+      // isLoading.value = true;
       try {
-        const response = await axios.get("http://localhost:8000/api/analysis/countAttributes");
+        const response = await axios.get(
+          "http://localhost:8000/api/analysis/countAttributes"
+        );
         const data = response.data;
         weightedSales.value = data.weightedSales;
         data.transactions.forEach((transaction) => {
@@ -119,6 +143,8 @@ export default {
         });
       } catch (error) {
         console.error("Error fetching data:", error);
+      } finally {
+        isLoading.value = false;
       }
     };
 
@@ -154,7 +180,6 @@ export default {
     const totalPages = computed(() =>
       Math.ceil(filteredProducts.value.length / itemsPerPage.value)
     );
-
     const generatePagination = computed(() => {
       const total = totalPages.value;
       const current = currentPage.value;
@@ -178,6 +203,11 @@ export default {
       }
     };
 
+    watch(itemsPerPage, () => {
+      currentPage.value = 1;
+      fetchData();
+    });
+
     onMounted(fetchData);
 
     return {
@@ -187,6 +217,7 @@ export default {
       productPrices,
       productCodes,
       searchQuery,
+      itemsPerPageOptions,
       itemsPerPage,
       currentPage,
       filteredProducts,
@@ -194,7 +225,31 @@ export default {
       totalPages,
       generatePagination,
       changePage,
+      isLoading,
     };
   },
 };
 </script>
+<style scoped>
+.loader {
+  border-top-color: #3498db;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Fade Animation */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+</style>

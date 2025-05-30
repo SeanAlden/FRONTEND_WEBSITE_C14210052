@@ -1,25 +1,30 @@
 <template>
   <div>
-    <h1 class="mb-4 font-bold text-xl">Prediksi Produk Terlaris - Algoritma C4.5</h1>
+    <h1 class="mb-4 text-xl font-bold">Prediksi Produk Terlaris - Algoritma C4.5</h1>
 
     <div class="mt-4">
       <button
-        class="bg-blue-500 hover:bg-blue-700 px-4 py-2 rounded text-white"
+        class="px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-700"
         @click="$router.push('/analysis_pages/decision_tree_page')"
       >
         Decision Tree
       </button>
     </div>
 
-    <h2 class="mt-6 font-semibold text-lg">1. Perhitungan Entropy & Gain</h2>
+    <h2 class="mt-6 text-lg font-semibold">1. Perhitungan Entropy & Gain</h2>
 
     <div class="flex justify-between my-4">
       <div class="overflow-x-auto whitespace-nowrap">
         <label class="mr-2">Show</label>
-        <select v-model="itemsPerPage" class="p-1 border rounded">
+        <!-- <select v-model="itemsPerPage" class="p-1 border rounded">
           <option value="10">10</option>
           <option value="20">20</option>
           <option value="50">50</option>
+        </select> -->
+        <select v-model="itemsPerPage" id="itemsPerPage">
+          <option v-for="option in itemsPerPageOptions" :key="option" :value="option">
+            {{ option }}
+          </option>
         </select>
         <span class="ml-2">entries</span>
       </div>
@@ -31,67 +36,79 @@
       />
     </div>
 
-    <div>
-      <table
-        class="bg-white mt-2 border border-gray-300 w-full border-collapse table-auto"
-      >
-        <thead>
-          <tr class="bg-gray-200">
-            <th class="p-2 border">Atribut (Produk)</th>
-            <th class="p-2 border">Kode Produk</th>
-            <th class="p-2 border">Harga Produk</th>
-            <th class="p-2 border">Entropy</th>
-            <th class="p-2 border">Gain</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(gain, id) in paginatedProducts" :key="id">
-            <td class="p-2 border">{{ products[id]?.name || "Unknown" }}</td>
-            <td class="p-2 border">{{ products[id]?.code || "Unknown" }}</td>
-            <td class="p-2 border">{{ formatPrice(products[id]?.price || "Unknown") }}</td>
-            <td class="p-2 border">{{ entropyValues[id].toFixed(4) }}</td>
-            <td class="p-2 border">{{ gain.toFixed(4) }}</td>
-          </tr>
-        </tbody>
-      </table>
+    <div class="flex items-center justify-center py-10" v-if="isLoading">
+      <!-- <p>Loading...</p> -->
+      <!-- Ganti dengan spinner jika perlu -->
+      <div
+        class="w-16 h-16 ease-linear border-8 border-t-8 border-gray-200 rounded-full loader"
+      ></div>
+    </div>
 
-      <div class="flex justify-between mt-4">
-        <div>
-          Showing {{ (currentPage - 1) * itemsPerPage + 1 }} to
-          {{ Math.min(currentPage * itemsPerPage, filteredProducts.length) }} of
-          {{ filteredProducts.length }} entries
-        </div>
-        <div class="flex items-center space-x-2">
-          <button
-            @click="changePage(currentPage - 1)"
-            :disabled="currentPage === 1"
-            class="bg-gray-300 disabled:opacity-50 px-3 py-1 border rounded"
-          >
-            Prev
-          </button>
-          <button
-            v-for="page in generatePagination"
-            :key="page"
-            @click="changePage(page)"
-            class="px-3 py-1 border rounded transition-all duration-200"
-            :class="{
-              'bg-blue-500 text-white': currentPage === page,
-              'bg-white text-blue-500 hover:bg-blue-100':
-                currentPage !== page && page !== '...',
-            }"
-          >
-            {{ page }}
-          </button>
-          <button
-            @click="changePage(currentPage + 1)"
-            :disabled="currentPage === totalPages"
-            class="bg-gray-300 disabled:opacity-50 px-3 py-1 border rounded"
-          >
-            Next
-          </button>
+    <transition name="fade">
+      <div v-if="!isLoading">
+        <table
+          class="w-full mt-2 bg-white border border-collapse border-gray-300 table-auto"
+        >
+          <thead>
+            <tr class="bg-gray-200">
+              <th class="p-2 border">Atribut (Produk)</th>
+              <th class="p-2 border">Kode Produk</th>
+              <th class="p-2 border">Harga Produk</th>
+              <th class="p-2 border">Entropy</th>
+              <th class="p-2 border">Gain</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(gain, id) in paginatedProducts" :key="id">
+              <td class="p-2 border">{{ products[id]?.name || "Unknown" }}</td>
+              <td class="p-2 border">{{ products[id]?.code || "Unknown" }}</td>
+              <td class="p-2 border">
+                {{ formatPrice(products[id]?.price || "Unknown") }}
+              </td>
+              <td class="p-2 border">{{ entropyValues[id].toFixed(4) }}</td>
+              <td class="p-2 border">{{ gain.toFixed(4) }}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="flex justify-between mt-4">
+          <div>
+            Showing {{ (currentPage - 1) * itemsPerPage + 1 }} to
+            {{ Math.min(currentPage * itemsPerPage, filteredProducts.length) }} of
+            {{ filteredProducts.length }} entries
+          </div>
+          <div class="flex items-center space-x-2">
+            <button
+              @click="changePage(currentPage - 1)"
+              :disabled="currentPage === 1"
+              class="px-3 py-1 bg-gray-300 border rounded disabled:opacity-50"
+            >
+              Prev
+            </button>
+            <button
+              v-for="page in generatePagination"
+              :key="page"
+              @click="changePage(page)"
+              class="px-3 py-1 transition-all duration-200 border rounded"
+              :class="{
+                'bg-blue-500 text-white': currentPage === page,
+                'bg-white text-blue-500 hover:bg-blue-100':
+                  currentPage !== page && page !== '...',
+              }"
+            >
+              {{ page }}
+            </button>
+            <button
+              @click="changePage(currentPage + 1)"
+              :disabled="currentPage === totalPages"
+              class="px-3 py-1 bg-gray-300 border rounded disabled:opacity-50"
+            >
+              Next
+            </button>
+          </div>
         </div>
       </div>
-    </div>
+    </transition>
   </div>
 </template>
 
@@ -99,15 +116,20 @@
 import axios from "axios";
 import { computed, ref, onMounted } from "vue";
 
+definePageMeta({
+  middleware: ["auth"],
+});
+
 export default {
   setup() {
     const entropyValues = ref({});
     const gainValues = ref({});
     const products = ref({});
     const searchQuery = ref("");
-    const itemsPerPage = ref(10);
+    const itemsPerPageOptions = [5, 10, 20, 50];
+    const itemsPerPage = ref(5);
     const currentPage = ref(1);
-
+    const isLoading = ref(true);
     const fetchData = async () => {
       try {
         const response = await axios.get("http://localhost:8000/api/analysis/results");
@@ -116,6 +138,8 @@ export default {
         products.value = response.data.products;
       } catch (error) {
         console.error("Error fetching analysis data:", error);
+      } finally {
+        isLoading.value = false;
       }
     };
 
@@ -175,6 +199,10 @@ export default {
       }
     };
 
+    watch(itemsPerPage, () => {
+      currentPage.value = 1;
+    });
+
     onMounted(fetchData);
 
     return {
@@ -183,6 +211,7 @@ export default {
       gainValues,
       products,
       searchQuery,
+      itemsPerPageOptions,
       itemsPerPage,
       currentPage,
       filteredProducts,
@@ -190,7 +219,31 @@ export default {
       totalPages,
       generatePagination,
       changePage,
+      isLoading,
     };
   },
 };
 </script>
+<style scoped>
+.loader {
+  border-top-color: #3498db;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Fade Animation */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+</style>

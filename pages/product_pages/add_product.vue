@@ -3,6 +3,10 @@ import { ref, reactive, onMounted, nextTick } from "vue";
 import { useRouter } from "vue-router";
 import axios from "axios";
 
+definePageMeta({
+  middleware: ["auth"],
+});
+
 const router = useRouter();
 const categories = ref([]);
 const existingProductCodes = ref([]); // Menyimpan daftar kode produk yang ada
@@ -180,6 +184,10 @@ const addProduct = async () => {
   }
 };
 
+const goBack = () => {
+  router.back(); // Fungsi untuk kembali ke halaman sebelumnya
+};
+
 // Sesuaikan tinggi textarea secara otomatis
 const adjustHeight = (element) => {
   nextTick(() => {
@@ -198,7 +206,7 @@ onMounted(() => {
 
 <template>
   <div class="p-6">
-    <h1 class="mb-4 font-bold text-2xl">Tambah Produk</h1>
+    <h1 class="mb-4 text-2xl font-bold">Tambah Produk</h1>
 
     <form @submit.prevent="addProduct">
       <!-- Nama Produk -->
@@ -208,7 +216,7 @@ onMounted(() => {
         v-model="form.name"
         rows="1"
         required
-        class="p-2 border w-full overflow-hidden resize-none"
+        class="w-full p-2 overflow-hidden border resize-none"
         @input="adjustHeight($event.target)"
       ></textarea>
 
@@ -218,7 +226,7 @@ onMounted(() => {
         v-model="form.code"
         rows="1"
         required
-        class="p-2 border w-full overflow-hidden resize-none"
+        class="w-full p-2 overflow-hidden border resize-none"
         @input="
           adjustHeight($event.target);
           validateProductCode();
@@ -229,7 +237,7 @@ onMounted(() => {
 
       <!-- Kategori -->
       <label>Kategori:</label>
-      <select v-model="form.category_id" required class="p-2 border w-full">
+      <select v-model="form.category_id" required class="w-full p-2 border">
         <option value="">Pilih Kategori</option>
         <option v-for="cat in categories" :key="cat.id" :value="cat.id">
           {{ cat.name }}
@@ -238,7 +246,7 @@ onMounted(() => {
 
       <!-- Harga -->
       <label>Harga:</label>
-      <input v-model="form.price" type="number" required class="p-2 border w-full" />
+      <input v-model="form.price" type="number" required class="w-full p-2 border" />
 
       <!-- Stok & Tanggal Kadaluarsa -->
       <label>Stok & Tanggal Kadaluarsa:</label>
@@ -248,13 +256,13 @@ onMounted(() => {
           type="number"
           placeholder="Jumlah Stok"
           required
-          class="p-2 border w-1/2"
+          class="w-1/2 p-2 border"
         />
-        <input v-model="stock.exp_date" type="date" required class="p-2 border w-1/2" />
+        <input v-model="stock.exp_date" type="date" required class="w-1/2 p-2 border" />
         <button
           type="button"
           @click="removeStockField(index)"
-          class="bg-red-500 p-2 rounded text-white"
+          class="p-2 text-white bg-red-500 rounded"
           v-if="form.stocks.length > 1"
         >
           ✕
@@ -263,7 +271,7 @@ onMounted(() => {
       <button
         type="button"
         @click="addStockField"
-        class="bg-blue-500 mb-4 p-2 rounded text-white"
+        class="p-2 mb-4 text-white bg-blue-500 rounded"
       >
         + Tambah Stok
       </button>
@@ -274,29 +282,30 @@ onMounted(() => {
         ref="textareaRef"
         v-model="form.description"
         required
-        class="p-2 border w-full overflow-hidden resize-none"
+        class="w-full p-2 overflow-hidden border resize-none"
         @input="adjustHeight($event.target)"
       ></textarea>
 
       <!-- Foto Produk -->
       <label>Foto Produk:</label>
-      <input type="file" @change="handleFileUpload" class="p-2 border w-full" />
+      <input type="file" @change="handleFileUpload" class="w-full p-2 border" />
 
       <p
         v-if="errorMessage"
-        class="bg-red-100 mt-2 p-2 border border-red-400 rounded text-red-500"
+        class="p-2 mt-2 text-red-500 bg-red-100 border border-red-400 rounded"
       >
         {{ errorMessage }}
       </p>
 
-      <!-- Tombol Submit -->
-      <button
-        type="submit"
-        class="bg-green-500 mt-4 p-2 rounded text-white"
-        :disabled="!!codeError"
-      >
-        Tambah
-      </button>
+      <div class="flex justify-start mb-4">
+        <button @click="goBack" type="button" class="px-4 py-2 mr-2 text-white bg-gray-500 rounded hover:bg-gray-600">
+          Kembali
+        </button>
+        
+        <button type="submit" class="px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600">
+          Tambah Produk
+        </button>
+      </div>
     </form>
   </div>
 </template>

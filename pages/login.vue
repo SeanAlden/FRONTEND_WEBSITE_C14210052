@@ -1,91 +1,88 @@
 <template>
-  <div class="flex justify-center items-center bg-gray-100 min-h-screen">
-    <div class="bg-white shadow-md p-8 rounded w-full max-w-md">
-      <h2 class="mb-6 font-bold text-2xl text-center">Login</h2>
+  <div class="flex items-center justify-center min-h-screen bg-gray-100">
+    <div class="w-full max-w-md p-8 bg-white rounded-lg shadow-md">
+      <h2 class="mb-6 text-2xl font-semibold text-center text-gray-800">
+        Login
+      </h2>
 
-      <form @submit.prevent="handleLogin">
+      <form @submit.prevent="login">
+        <!-- Error Alert -->
+        <div v-if="errorMessage" class="mb-4 text-sm text-red-500">
+          {{ errorMessage }}
+        </div>
+
+        <!-- Success Alert -->
+        <div v-if="successMessage" class="mb-4 text-sm text-green-500">
+          {{ successMessage }}
+        </div>
+
+        <!-- Email -->
         <div class="mb-4">
-          <label class="block text-gray-700">Email</label>
+          <label class="block mb-1 text-gray-700" for="email">Email</label>
           <input
             v-model="email"
             type="email"
-            class="px-4 py-2 border rounded w-full"
+            id="email"
+            placeholder="Enter your email"
+            class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
             required
           />
         </div>
 
-        <div class="mb-6">
-          <label class="block text-gray-700">Password</label>
+        <!-- Password -->
+        <div class="mb-4">
+          <label class="block mb-1 text-gray-700" for="password">Password</label>
           <input
             v-model="password"
             type="password"
-            class="px-4 py-2 border rounded w-full"
+            id="password"
+            placeholder="Enter your password"
+            class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
             required
           />
         </div>
 
+        <!-- Login Button -->
         <button
           type="submit"
-          class="bg-blue-600 hover:bg-blue-700 py-2 rounded w-full text-white"
+          class="bg-[#0004FF] hover:bg-blue-800 px-4 py-2 rounded-lg w-full font-semibold text-white transition duration-300"
         >
           Login
         </button>
-
-        <p v-if="errorMessage" class="mt-4 text-red-600 text-sm text-center">
-          {{ errorMessage }}
-        </p>
       </form>
     </div>
   </div>
 </template>
 
-<script setup>
-import { ref } from "vue";
-import { useRouter } from "vue-router";
 
-const email = ref("");
-const password = ref("");
-const errorMessage = ref("");
+<script setup>
 const router = useRouter();
+const email = ref('');
+const password = ref('');
+const cookie = useCookie('my_auth_token');
 
 definePageMeta({
   layout: false,
-  middleware: ["$guest"],
+  middleware: ["guest"],
 });
 
-// async function login() {
-//   await axios.get("http://127.0.0.1:8000/sanctum/csrf-cookie", {
-//     withCredentials: true,
-//   });
-// }
-
-const handleLogin = async () => {
-  errorMessage.value = "";
-
-  const { data, error } = await useFetch("http://localhost:8000/api/auth/login", {
-    method: "POST",
-    body: {
-      email: email.value,
-      password: password.value,
-    },
-	withCredentials: true,
-    headers: {
-      accept: "application/json",
-    },
-  });
-
-  if (error.value) {
-    errorMessage.value =
-      error.value.data?.message || "Login failed. Check your credentials.";
-    return;
+async function login() {
+  try {
+    const result = await $fetch('http://127.0.0.1:8000/api/auth/signin', {
+      method: 'POST',
+      body: {
+        email: email.value,
+        password: password.value
+      }
+    });
+    console.log('Login success:', result);
+    // cookie.value = result.token || result; // Simpan token ke cookie jika tersedia
+    cookie.value = result.token; // Simpan token ke cookie jika tersedia
+    // Redirect ke home page
+    router.push('/');
+  } catch (error) {
+    console.error('Login failed:', error);
+    alert('Login gagal. Periksa email dan password Anda.');
   }
-
-  const token = data.value;
-
-  // Simpan token di localStorage atau cookie
-  localStorage.setItem("auth_token", token);
-
-  // Arahkan ke halaman dashboard (atau home)
-  router.push("/");
-};
+}
 </script>
