@@ -255,10 +255,10 @@ const getCategories = async () => {
         headers: {
           "Content-type": "application/json; charset=UTF-8",
         },
-        body: JSON.stringify({
-          summoner: this.sumInput,
-          region: this.regInput,
-        }),
+        // body: JSON.stringify({
+        //   summoner: this.sumInput,
+        //   region: this.regInput,
+        // }),
       }
     );
     return await response.json();
