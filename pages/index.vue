@@ -142,9 +142,9 @@ import axios from "axios";
 import { useCookie } from "#app";
 import { useApi } from "~/composables/useApi";
 
-// definePageMeta({
-//   middleware: ["auth"],
-// });
+definePageMeta({
+  middleware: ["auth"],
+});
 
 export default {
   setup() {
