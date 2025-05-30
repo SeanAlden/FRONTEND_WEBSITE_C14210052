@@ -243,7 +243,7 @@ definePageMeta({
 // Fungsi ambil semua kategori langsung di sini
 const getCategories = async () => {
   try {
-    const response = await fetch(useApi(`/api/categories`));
+    const response = await fetch(`https://275f-139-195-169-182.ngrok-free.app/api/categories`);
     return await response.json();
   } catch (error) {
     console.error("Error fetching categories:", error);
