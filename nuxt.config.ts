@@ -6,7 +6,7 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
 
   devServer: {
-    host: "127.0.0.1",
+    host: "https://asiaraya.netlify.app/",
     // host: "https://b67b-139-195-158-245.ngrok-free.app",
   },
 
@@ -52,7 +52,7 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      apiBase: 'https://9d99-139-195-169-182.ngrok-free.app'
+      apiBase: 'http://127.0.0.1:8000'
     }
   }
 })
