@@ -1,6 +1,7 @@
 // utils/apiClient.js
 
-const BASE_URL = 'http://127.0.0.1:8000'; // Ganti sesuai backendmu
+// const BASE_URL = 'http://127.0.0.1:8000'; // Ganti sesuai backendmu
+const BASE_URL = 'https://a651-139-195-169-182.ngrok-free.app'; // Ganti sesuai backendmu
 
 export const initSanctum = async () => {
     await fetch(`${BASE_URL}/sanctum/csrf-cookie`, {
