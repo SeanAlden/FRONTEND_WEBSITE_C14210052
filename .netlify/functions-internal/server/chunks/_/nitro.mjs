@@ -5356,7 +5356,7 @@ function _expandFromEnv(value) {
 const _inlineRuntimeConfig = {
   "app": {
     "baseURL": "/",
-    "buildId": "54008baf-a85a-4e6f-b2b7-9211ce4a4805",
+    "buildId": "ec1bf2a8-b2af-412c-a721-66987ffb24fc",
     "buildAssetsDir": "/_nuxt/",
     "cdnURL": ""
   },
@@ -5384,7 +5384,7 @@ const _inlineRuntimeConfig = {
     }
   },
   "public": {
-    "apiBase": "https://a651-139-195-169-182.ngrok-free.app",
+    "apiBase": "https://275f-139-195-169-182.ngrok-free.app",
     "laravelSanctum": {
       "authMode": "cookie",
       "userStateKey": "sanctum.authenticated.user",
@@ -5418,7 +5418,7 @@ const _inlineRuntimeConfig = {
         "guest": "$guest"
       },
       "logLevel": 3,
-      "apiUrl": "http://127.0.0.1:8000"
+      "apiUrl": "https://275f-139-195-169-182.ngrok-free.app"
     }
   }
 };
