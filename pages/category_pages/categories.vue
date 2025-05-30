@@ -31,31 +31,33 @@
 
     <!-- Loading Spinner -->
     <div v-if="isLoading" class="flex items-center justify-center py-10">
-      <div class="w-12 h-12 ease-linear border-4 border-t-4 border-gray-200 rounded-full loader"></div>
+      <div
+        class="w-12 h-12 ease-linear border-4 border-t-4 border-gray-200 rounded-full loader"
+      ></div>
     </div>
 
     <!-- Table with fade animation -->
-		<transition name="fade">
-    <div
-      v-if="!isLoading"
-      class="overflow-x-auto transition-opacity duration-300 whitespace-nowrap"
-      :class="{ 'opacity-50 pointer-events-none': isLoading }"
-    >
-      <table
-        class="min-w-full text-gray-700 bg-white border-gray-300 rounded-lg shadow-md"
+    <transition name="fade">
+      <div
+        v-if="!isLoading"
+        class="overflow-x-auto transition-opacity duration-300 whitespace-nowrap"
+        :class="{ 'opacity-50 pointer-events-none': isLoading }"
       >
-        <thead>
-          <tr class="bg-gray-200">
-            <th class="p-3">#</th>
-            <th class="p-3">Nama</th>
-            <th class="p-3">Produk</th>
-            <th class="p-3">Aksi</th>
-          </tr>
-        </thead>
-        <!-- <transition-group name="fade" tag="tbody"> -->
+        <table
+          class="min-w-full text-gray-700 bg-white border-gray-300 rounded-lg shadow-md"
+        >
+          <thead>
+            <tr class="bg-gray-200">
+              <th class="p-3">#</th>
+              <th class="p-3">Nama</th>
+              <th class="p-3">Produk</th>
+              <th class="p-3">Aksi</th>
+            </tr>
+          </thead>
+          <!-- <transition-group name="fade" tag="tbody"> -->
           <tr v-for="category in paginatedCategories" :key="category.id" class="border-t">
             <td class="p-3">{{ category.code }}</td>
-            
+
             <td class="p-3">
               <NuxtLink
                 :to="`/category_pages/detail/${category.id}`"
@@ -80,9 +82,11 @@
               >
               <button
                 @click="handleDelete(category.id)"
-                :class="category.products && category.products.length > 0
-                  ? 'text-gray-500 cursor-not-allowed'
-                  : 'text-red-500'"
+                :class="
+                  category.products && category.products.length > 0
+                    ? 'text-gray-500 cursor-not-allowed'
+                    : 'text-red-500'
+                "
                 :disabled="category.products && category.products.length > 0"
                 class="ml-2"
               >
@@ -90,49 +94,50 @@
               </button>
             </td>
           </tr>
-        <!-- </transition-group> -->
-      </table>
+          <!-- </transition-group> -->
+        </table>
 
-      <!-- Pagination -->
-      <div class="flex justify-between mt-4">
-        <div>
-          Showing {{ (currentPage - 1) * itemsPerPage + 1 }} to
-          {{ Math.min(currentPage * itemsPerPage, filteredCategories.length) }} of
-          {{ filteredCategories.length }} entries
-        </div>
-        <div class="flex items-center space-x-2">
-          <button
-            @click="changePage(currentPage - 1)"
-            :disabled="currentPage === 1"
-            class="px-3 py-1 bg-gray-300 border rounded disabled:opacity-50"
-          >
-            Prev
-          </button>
+        <!-- Pagination -->
+        <div class="flex justify-between mt-4">
+          <div>
+            Showing {{ (currentPage - 1) * itemsPerPage + 1 }} to
+            {{ Math.min(currentPage * itemsPerPage, filteredCategories.length) }} of
+            {{ filteredCategories.length }} entries
+          </div>
+          <div class="flex items-center space-x-2">
+            <button
+              @click="changePage(currentPage - 1)"
+              :disabled="currentPage === 1"
+              class="px-3 py-1 bg-gray-300 border rounded disabled:opacity-50"
+            >
+              Prev
+            </button>
 
-          <button
-            v-for="page in generatePagination"
-            :key="page"
-            @click="changePage(page)"
-            class="px-3 py-1 transition-all duration-200 border rounded"
-            :class="{
-              'bg-blue-500 text-white': currentPage === page,
-              'bg-white text-blue-500 hover:bg-blue-100': currentPage !== page && page !== '...',
-            }"
-          >
-            {{ page }}
-          </button>
+            <button
+              v-for="page in generatePagination"
+              :key="page"
+              @click="changePage(page)"
+              class="px-3 py-1 transition-all duration-200 border rounded"
+              :class="{
+                'bg-blue-500 text-white': currentPage === page,
+                'bg-white text-blue-500 hover:bg-blue-100':
+                  currentPage !== page && page !== '...',
+              }"
+            >
+              {{ page }}
+            </button>
 
-          <button
-            @click="changePage(currentPage + 1)"
-            :disabled="currentPage === totalPages"
-            class="px-3 py-1 bg-gray-300 border rounded disabled:opacity-50"
-          >
-            Next
-          </button>
+            <button
+              @click="changePage(currentPage + 1)"
+              :disabled="currentPage === totalPages"
+              class="px-3 py-1 bg-gray-300 border rounded disabled:opacity-50"
+            >
+              Next
+            </button>
+          </div>
         </div>
       </div>
-    </div>
-		</transition>
+    </transition>
   </div>
 </template>
 
@@ -243,7 +248,14 @@ definePageMeta({
 // Fungsi ambil semua kategori langsung di sini
 const getCategories = async () => {
   try {
-    const response = await fetch(`https://275f-139-195-169-182.ngrok-free.app/api/categories`);
+    const response = await fetch(
+      `https://275f-139-195-169-182.ngrok-free.app/api/categories`,
+      {
+        headers: {
+          Accept: "application/json",
+        },
+      }
+    );
     return await response.json();
   } catch (error) {
     console.error("Error fetching categories:", error);
@@ -288,9 +300,7 @@ const filteredCategories = computed(() => {
     return (
       category.name.toLowerCase().includes(query) ||
       (category.products &&
-        category.products.some((product) =>
-          product.name.toLowerCase().includes(query)
-        ))
+        category.products.some((product) => product.name.toLowerCase().includes(query)))
     );
   });
 });
