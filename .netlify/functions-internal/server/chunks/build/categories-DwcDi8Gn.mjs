@@ -34,7 +34,19 @@ const _sfc_main = {
     const isLoading = ref(true);
     const getCategories = async () => {
       try {
-        const response = await fetch(useApi(`/api/categories`));
+        const response = await fetch(
+          useApi(`/api/categories`),
+          {
+            method: "GET",
+            headers: {
+              "Content-type": "application/json; charset=UTF-8"
+            },
+            body: JSON.stringify({
+              summoner: this.sumInput,
+              region: this.regInput
+            })
+          }
+        );
         return await response.json();
       } catch (error) {
         console.error("Error fetching categories:", error);
@@ -50,9 +62,7 @@ const _sfc_main = {
     const filteredCategories = computed(() => {
       return categories2.value.filter((category) => {
         const query = searchQuery.value.toLowerCase();
-        return category.name.toLowerCase().includes(query) || category.products && category.products.some(
-          (product) => product.name.toLowerCase().includes(query)
-        );
+        return category.name.toLowerCase().includes(query) || category.products && category.products.some((product) => product.name.toLowerCase().includes(query));
       });
     });
     const paginatedCategories = computed(() => {
@@ -82,7 +92,7 @@ const _sfc_main = {
     });
     return (_ctx, _push, _parent, _attrs) => {
       const _component_NuxtLink = __nuxt_component_0;
-      _push(`<div${ssrRenderAttrs(mergeProps({ class: "container p-6 mx-auto" }, _attrs))} data-v-61105a6e><div class="flex items-center justify-between mb-4" data-v-61105a6e><h1 class="mb-4 text-2xl font-bold" data-v-61105a6e>Daftar Kategori</h1>`);
+      _push(`<div${ssrRenderAttrs(mergeProps({ class: "container p-6 mx-auto" }, _attrs))} data-v-380dcfdf><div class="flex items-center justify-between mb-4" data-v-380dcfdf><h1 class="mb-4 text-2xl font-bold" data-v-380dcfdf>Daftar Kategori</h1>`);
       _push(ssrRenderComponent(_component_NuxtLink, {
         to: "/category_pages/add_category",
         class: "inline-block px-4 py-2 mb-4 text-white bg-blue-500 rounded"
@@ -98,20 +108,20 @@ const _sfc_main = {
         }),
         _: 1
       }, _parent));
-      _push(`</div><div class="flex items-center justify-between mb-4" data-v-61105a6e><div data-v-61105a6e><label class="mr-2" data-v-61105a6e>Show</label><select id="itemsPerPage" data-v-61105a6e><!--[-->`);
+      _push(`</div><div class="flex items-center justify-between mb-4" data-v-380dcfdf><div data-v-380dcfdf><label class="mr-2" data-v-380dcfdf>Show</label><select id="itemsPerPage" data-v-380dcfdf><!--[-->`);
       ssrRenderList(itemsPerPageOptions, (option) => {
-        _push(`<option${ssrRenderAttr("value", option)} data-v-61105a6e${ssrIncludeBooleanAttr(Array.isArray(itemsPerPage.value) ? ssrLooseContain(itemsPerPage.value, option) : ssrLooseEqual(itemsPerPage.value, option)) ? " selected" : ""}>${ssrInterpolate(option)}</option>`);
+        _push(`<option${ssrRenderAttr("value", option)} data-v-380dcfdf${ssrIncludeBooleanAttr(Array.isArray(itemsPerPage.value) ? ssrLooseContain(itemsPerPage.value, option) : ssrLooseEqual(itemsPerPage.value, option)) ? " selected" : ""}>${ssrInterpolate(option)}</option>`);
       });
-      _push(`<!--]--></select><span class="ml-2" data-v-61105a6e>entries</span></div><input type="text"${ssrRenderAttr("value", searchQuery.value)} placeholder="Search" class="p-2 border rounded" data-v-61105a6e></div>`);
+      _push(`<!--]--></select><span class="ml-2" data-v-380dcfdf>entries</span></div><input type="text"${ssrRenderAttr("value", searchQuery.value)} placeholder="Search" class="p-2 border rounded" data-v-380dcfdf></div>`);
       if (isLoading.value) {
-        _push(`<div class="flex items-center justify-center py-10" data-v-61105a6e><div class="w-12 h-12 ease-linear border-4 border-t-4 border-gray-200 rounded-full loader" data-v-61105a6e></div></div>`);
+        _push(`<div class="flex items-center justify-center py-10" data-v-380dcfdf><div class="w-12 h-12 ease-linear border-4 border-t-4 border-gray-200 rounded-full loader" data-v-380dcfdf></div></div>`);
       } else {
         _push(`<!---->`);
       }
       if (!isLoading.value) {
-        _push(`<div class="${ssrRenderClass([{ "opacity-50 pointer-events-none": isLoading.value }, "overflow-x-auto transition-opacity duration-300 whitespace-nowrap"])}" data-v-61105a6e><table class="min-w-full text-gray-700 bg-white border-gray-300 rounded-lg shadow-md" data-v-61105a6e><thead data-v-61105a6e><tr class="bg-gray-200" data-v-61105a6e><th class="p-3" data-v-61105a6e>#</th><th class="p-3" data-v-61105a6e>Nama</th><th class="p-3" data-v-61105a6e>Produk</th><th class="p-3" data-v-61105a6e>Aksi</th></tr></thead><!--[-->`);
+        _push(`<div class="${ssrRenderClass([{ "opacity-50 pointer-events-none": isLoading.value }, "overflow-x-auto transition-opacity duration-300 whitespace-nowrap"])}" data-v-380dcfdf><table class="min-w-full text-gray-700 bg-white border-gray-300 rounded-lg shadow-md" data-v-380dcfdf><thead data-v-380dcfdf><tr class="bg-gray-200" data-v-380dcfdf><th class="p-3" data-v-380dcfdf>#</th><th class="p-3" data-v-380dcfdf>Nama</th><th class="p-3" data-v-380dcfdf>Produk</th><th class="p-3" data-v-380dcfdf>Aksi</th></tr></thead><!--[-->`);
         ssrRenderList(paginatedCategories.value, (category) => {
-          _push(`<tr class="border-t" data-v-61105a6e><td class="p-3" data-v-61105a6e>${ssrInterpolate(category.code)}</td><td class="p-3" data-v-61105a6e>`);
+          _push(`<tr class="border-t" data-v-380dcfdf><td class="p-3" data-v-380dcfdf>${ssrInterpolate(category.code)}</td><td class="p-3" data-v-380dcfdf>`);
           _push(ssrRenderComponent(_component_NuxtLink, {
             to: `/category_pages/detail/${category.id}`,
             class: "text-blue-500 hover:underline"
@@ -127,17 +137,17 @@ const _sfc_main = {
             }),
             _: 2
           }, _parent));
-          _push(`</td><td class="p-3" data-v-61105a6e>`);
+          _push(`</td><td class="p-3" data-v-380dcfdf>`);
           if (category.products && category.products.length > 0) {
-            _push(`<ul data-v-61105a6e><!--[-->`);
+            _push(`<ul data-v-380dcfdf><!--[-->`);
             ssrRenderList(category.products, (product) => {
-              _push(`<li data-v-61105a6e>${ssrInterpolate(product.name)} - ${ssrInterpolate(product.code)}</li>`);
+              _push(`<li data-v-380dcfdf>${ssrInterpolate(product.name)} - ${ssrInterpolate(product.code)}</li>`);
             });
             _push(`<!--]--></ul>`);
           } else {
-            _push(`<span class="text-gray-500" data-v-61105a6e>Tidak ada produk</span>`);
+            _push(`<span class="text-gray-500" data-v-380dcfdf>Tidak ada produk</span>`);
           }
-          _push(`</td><td class="p-3" data-v-61105a6e>`);
+          _push(`</td><td class="p-3" data-v-380dcfdf>`);
           _push(ssrRenderComponent(_component_NuxtLink, {
             to: `/category_pages/edit/${category.id}`,
             class: "text-blue-500"
@@ -153,16 +163,19 @@ const _sfc_main = {
             }),
             _: 2
           }, _parent));
-          _push(`<button class="${ssrRenderClass([category.products && category.products.length > 0 ? "text-gray-500 cursor-not-allowed" : "text-red-500", "ml-2"])}"${ssrIncludeBooleanAttr(category.products && category.products.length > 0) ? " disabled" : ""} data-v-61105a6e> Hapus </button></td></tr>`);
+          _push(`<button class="${ssrRenderClass([
+            category.products && category.products.length > 0 ? "text-gray-500 cursor-not-allowed" : "text-red-500",
+            "ml-2"
+          ])}"${ssrIncludeBooleanAttr(category.products && category.products.length > 0) ? " disabled" : ""} data-v-380dcfdf> Hapus </button></td></tr>`);
         });
-        _push(`<!--]--></table><div class="flex justify-between mt-4" data-v-61105a6e><div data-v-61105a6e> Showing ${ssrInterpolate((currentPage.value - 1) * itemsPerPage.value + 1)} to ${ssrInterpolate(Math.min(currentPage.value * itemsPerPage.value, filteredCategories.value.length))} of ${ssrInterpolate(filteredCategories.value.length)} entries </div><div class="flex items-center space-x-2" data-v-61105a6e><button${ssrIncludeBooleanAttr(currentPage.value === 1) ? " disabled" : ""} class="px-3 py-1 bg-gray-300 border rounded disabled:opacity-50" data-v-61105a6e> Prev </button><!--[-->`);
+        _push(`<!--]--></table><div class="flex justify-between mt-4" data-v-380dcfdf><div data-v-380dcfdf> Showing ${ssrInterpolate((currentPage.value - 1) * itemsPerPage.value + 1)} to ${ssrInterpolate(Math.min(currentPage.value * itemsPerPage.value, filteredCategories.value.length))} of ${ssrInterpolate(filteredCategories.value.length)} entries </div><div class="flex items-center space-x-2" data-v-380dcfdf><button${ssrIncludeBooleanAttr(currentPage.value === 1) ? " disabled" : ""} class="px-3 py-1 bg-gray-300 border rounded disabled:opacity-50" data-v-380dcfdf> Prev </button><!--[-->`);
         ssrRenderList(generatePagination.value, (page) => {
           _push(`<button class="${ssrRenderClass([{
             "bg-blue-500 text-white": currentPage.value === page,
             "bg-white text-blue-500 hover:bg-blue-100": currentPage.value !== page && page !== "..."
-          }, "px-3 py-1 transition-all duration-200 border rounded"])}" data-v-61105a6e>${ssrInterpolate(page)}</button>`);
+          }, "px-3 py-1 transition-all duration-200 border rounded"])}" data-v-380dcfdf>${ssrInterpolate(page)}</button>`);
         });
-        _push(`<!--]--><button${ssrIncludeBooleanAttr(currentPage.value === totalPages.value) ? " disabled" : ""} class="px-3 py-1 bg-gray-300 border rounded disabled:opacity-50" data-v-61105a6e> Next </button></div></div></div>`);
+        _push(`<!--]--><button${ssrIncludeBooleanAttr(currentPage.value === totalPages.value) ? " disabled" : ""} class="px-3 py-1 bg-gray-300 border rounded disabled:opacity-50" data-v-380dcfdf> Next </button></div></div></div>`);
       } else {
         _push(`<!---->`);
       }
@@ -176,7 +189,7 @@ _sfc_main.setup = (props, ctx) => {
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("pages/category_pages/categories.vue");
   return _sfc_setup ? _sfc_setup(props, ctx) : void 0;
 };
-const categories = /* @__PURE__ */ _export_sfc(_sfc_main, [["__scopeId", "data-v-61105a6e"]]);
+const categories = /* @__PURE__ */ _export_sfc(_sfc_main, [["__scopeId", "data-v-380dcfdf"]]);
 
 export { categories as default };
-//# sourceMappingURL=categories-Czl9aclX.mjs.map
+//# sourceMappingURL=categories-DwcDi8Gn.mjs.map

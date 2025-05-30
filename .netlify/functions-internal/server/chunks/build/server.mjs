@@ -745,7 +745,7 @@ const _routes = [
     name: "category_pages-categories",
     path: "/category_pages/categories",
     meta: __nuxt_page_meta$p || {},
-    component: () => import('./categories-Czl9aclX.mjs')
+    component: () => import('./categories-DwcDi8Gn.mjs')
   },
   {
     name: "category_pages-detail-id",
@@ -883,7 +883,7 @@ const _routes = [
     name: "sales_report_pages-sales_reports",
     path: "/sales_report_pages/sales_reports",
     meta: __nuxt_page_meta$2 || {},
-    component: () => import('./sales_reports-QglPlApn.mjs')
+    component: () => import('./sales_reports-Bzbq2gZA.mjs')
   },
   {
     name: "transaction_pages-detail-id",

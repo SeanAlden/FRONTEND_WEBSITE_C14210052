@@ -249,7 +249,7 @@ definePageMeta({
 const getCategories = async () => {
   try {
     const response = await fetch(
-      `https://275f-139-195-169-182.ngrok-free.app/api/categories`,
+      useApi(`/api/categories`),
       {
         method: "GET",
         headers: {
