@@ -246,17 +246,29 @@ definePageMeta({
 });
 
 // Fungsi ambil semua kategori langsung di sini
+// const getCategories = async () => {
+//   try {
+//     const response = await fetch(
+//       `https://275f-139-195-169-182.ngrok-free.app/api/categories`,
+//       {
+//         headers: {
+//           Accept: "application/json",
+//         },
+//       }
+//     );
+//     return await response.json();
+//   } catch (error) {
+//     console.error("Error fetching categories:", error);
+//     return null;
+//   }
+// };
+
 const getCategories = async () => {
   try {
-    const response = await fetch(
-      `https://275f-139-195-169-182.ngrok-free.app/api/categories`,
-      {
-        headers: {
-          Accept: "application/json",
-        },
-      }
-    );
-    return await response.json();
+    const response = await fetch(`https://275f-139-195-169-182.ngrok-free.app/api/categories`);
+    const text = await response.text(); // baca response sebagai teks
+    console.log("Raw Response:", text);
+    return JSON.parse(text); // coba parse JSON manual
   } catch (error) {
     console.error("Error fetching categories:", error);
     return null;
