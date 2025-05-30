@@ -170,7 +170,7 @@ const addEmployee = async () => {
 
   try {
     const response = await axios.post(
-      "http://localhost:8000/api/employees/store",
+      useApi("/api/employees/store"),
       formData,
       {
         headers: {

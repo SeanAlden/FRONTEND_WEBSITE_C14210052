@@ -130,7 +130,7 @@ const formatDate = (dateString) => {
 onMounted(async () => {
   isLoading.value = true; // Set loading to true
   try {
-    const response = await axios.get("http://localhost:8000/api/transactions", {
+    const response = await axios.get(useApi("/api/transactions"), {
       headers: {
         Authorization: `Bearer ${token.value}`,
       },
@@ -585,7 +585,7 @@ watch(itemsPerPage, () => {
               >
                 <img
                   :src="
-                    'http://localhost:8000/storage/' + transaction.mergedDetails[0].photo
+                    useApi('/storage/') + transaction.mergedDetails[0].photo
                   "
                   alt="Foto Produk"
                   class="w-12 h-12 rounded-md"

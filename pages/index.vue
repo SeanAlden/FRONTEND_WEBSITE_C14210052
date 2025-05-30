@@ -112,7 +112,7 @@
                 <img
                   :src="
                     product.photo
-                      ? `http://localhost:8000/storage/${product.photo}`
+                      ? useApi(`/storage/${product.photo}`)
                       : '/assets/images/avatar.png'
                   "
                   class="w-10 h-10 mr-2"
@@ -140,6 +140,7 @@ import { onMounted, ref } from "vue";
 import Chart from "chart.js/auto";
 import axios from "axios";
 import { useCookie } from "#app";
+import { useApi } from "~/composables/useApi";
 
 definePageMeta({
   middleware: ["auth"],
@@ -181,7 +182,7 @@ export default {
     // ✅ Tambahan: Ambil data user
     const fetchUser = async () => {
       try {
-        const res = await axios.get("http://127.0.0.1:8000/api/user", {
+        const res = await axios.get(useApi("/api/user"), {
           headers: {
             Authorization: `Bearer ${token.value}`,
           },
@@ -201,8 +202,8 @@ export default {
       try {
         isLoading.value = true;
 
-        const response = await axios.get(
-          `http://127.0.0.1:8000/api/dashboard?month=${currentMonth.value}&year=${currentYear.value}`,
+        const response = await axios.get(useApi(
+          `/api/dashboard?month=${currentMonth.value}&year=${currentYear.value}`),
           {
             headers: {
               Authorization: `Bearer ${token.value}`, // ✅ Pakai token untuk semua request

@@ -9,7 +9,7 @@
           <img
             :src="
               user.profile_image
-                ? `http://localhost:8000/storage/profile_images/${user.profile_image}`
+                ? useApi(`/storage/profile_images/${user.profile_image}`)
                 : '/assets/images/photo_default.png'
             "
             class="w-20 h-20 rounded-full"
@@ -215,14 +215,14 @@ const token = useCookie("my_auth_token");
 // Ambil data user saat mount
 const fetchUser = async () => {
   try {
-    const res = await axios.get("http://127.0.0.1:8000/api/user", {
+    const res = await axios.get(useApi("/api/user"), {
       headers: {
         Authorization: `Bearer ${token.value}`,
       },
     });
     user.value = res.data;
     profileImage.value = user.value.profile_image
-      ? `http://localhost:8000/storage/profile_images/${user.value.profile_image}`
+      ? useApi(`/storage/profile_images/${user.value.profile_image}`)
       : "/assets/images/photo_default.png";
   } catch (error) {
     console.error("Gagal mengambil data user:", error);
@@ -251,7 +251,7 @@ const uploadProfileImage = async () => {
 
   try {
     const res = await axios.post(
-      "http://127.0.0.1:8000/api/auth/user/update-profile-image",
+      useApi("/api/auth/user/update-profile-image"),
       formData,
       {
         headers: {
@@ -262,7 +262,7 @@ const uploadProfileImage = async () => {
     );
     // Update gambar jika berhasil
     user.value.profile_image = res.data.profile_image;
-    profileImage.value = `http://localhost:8000/storage/profile_images/${res.data.profile_image}`;
+    profileImage.value = useApi(`/storage/profile_images/${res.data.profile_image}`);
   } catch (error) {
     console.error("Gagal mengupload gambar:", error);
     alert("Gagal mengupload gambar profil.");
@@ -274,7 +274,7 @@ const updateProfile = async () => {
   try {
     // 1. Kirim name & email
     await axios.put(
-      "http://127.0.0.1:8000/api/auth/user/update",
+      useApi("/api/auth/user/update"),
       {
         name: user.value.name,
         email: user.value.email,

@@ -1,16 +1,16 @@
 <template>
-  <div class="container mx-auto p-6">
-    <div class="mb-4 flex items-center justify-between">
+  <div class="container p-6 mx-auto">
+    <div class="flex items-center justify-between mb-4">
       <h1 class="mb-4 text-2xl font-bold">Daftar Kategori</h1>
       <NuxtLink
         to="/category_pages/add_category"
-        class="mb-4 inline-block rounded bg-blue-500 px-4 py-2 text-white"
+        class="inline-block px-4 py-2 mb-4 text-white bg-blue-500 rounded"
       >
         Tambah Kategori
       </NuxtLink>
     </div>
 
-    <div class="mb-4 flex items-center justify-between">
+    <div class="flex items-center justify-between mb-4">
       <div>
         <label class="mr-2">Show</label>
         <select v-model="itemsPerPage" id="itemsPerPage">
@@ -25,24 +25,24 @@
         type="text"
         v-model="searchQuery"
         placeholder="Search"
-        class="rounded border p-2"
+        class="p-2 border rounded"
       />
     </div>
 
     <!-- Loading Spinner -->
     <div v-if="isLoading" class="flex items-center justify-center py-10">
-      <div class="loader h-12 w-12 rounded-full border-4 border-t-4 border-gray-200 ease-linear"></div>
+      <div class="w-12 h-12 ease-linear border-4 border-t-4 border-gray-200 rounded-full loader"></div>
     </div>
 
     <!-- Table with fade animation -->
 		<transition name="fade">
     <div
       v-if="!isLoading"
-      class="overflow-x-auto whitespace-nowrap transition-opacity duration-300"
+      class="overflow-x-auto transition-opacity duration-300 whitespace-nowrap"
       :class="{ 'opacity-50 pointer-events-none': isLoading }"
     >
       <table
-        class="min-w-full rounded-lg border-gray-300 bg-white text-gray-700 shadow-md"
+        class="min-w-full text-gray-700 bg-white border-gray-300 rounded-lg shadow-md"
       >
         <thead>
           <tr class="bg-gray-200">
@@ -94,7 +94,7 @@
       </table>
 
       <!-- Pagination -->
-      <div class="mt-4 flex justify-between">
+      <div class="flex justify-between mt-4">
         <div>
           Showing {{ (currentPage - 1) * itemsPerPage + 1 }} to
           {{ Math.min(currentPage * itemsPerPage, filteredCategories.length) }} of
@@ -104,7 +104,7 @@
           <button
             @click="changePage(currentPage - 1)"
             :disabled="currentPage === 1"
-            class="rounded border bg-gray-300 px-3 py-1 disabled:opacity-50"
+            class="px-3 py-1 bg-gray-300 border rounded disabled:opacity-50"
           >
             Prev
           </button>
@@ -113,7 +113,7 @@
             v-for="page in generatePagination"
             :key="page"
             @click="changePage(page)"
-            class="rounded border px-3 py-1 transition-all duration-200"
+            class="px-3 py-1 transition-all duration-200 border rounded"
             :class="{
               'bg-blue-500 text-white': currentPage === page,
               'bg-white text-blue-500 hover:bg-blue-100': currentPage !== page && page !== '...',
@@ -125,7 +125,7 @@
           <button
             @click="changePage(currentPage + 1)"
             :disabled="currentPage === totalPages"
-            class="rounded border bg-gray-300 px-3 py-1 disabled:opacity-50"
+            class="px-3 py-1 bg-gray-300 border rounded disabled:opacity-50"
           >
             Next
           </button>
@@ -227,8 +227,6 @@
 
 import { ref, onMounted, computed, watch } from "vue";
 
-const apiUrl = "http://127.0.0.1:8000/api";
-
 const categories = ref([]);
 const searchQuery = ref("");
 const isModalOpen = ref(false);
@@ -245,7 +243,7 @@ definePageMeta({
 // Fungsi ambil semua kategori langsung di sini
 const getCategories = async () => {
   try {
-    const response = await fetch(`${apiUrl}/categories`);
+    const response = await fetch(useApi(`/api/categories`));
     return await response.json();
   } catch (error) {
     console.error("Error fetching categories:", error);
@@ -256,7 +254,7 @@ const getCategories = async () => {
 // Fungsi hapus kategori langsung di sini
 const deleteCategory = async (id) => {
   try {
-    const response = await fetch(`${apiUrl}/categories/${id}`, {
+    const response = await fetch(useApi(`/api/categories/${id}`), {
       method: "DELETE",
     });
     return response.ok;

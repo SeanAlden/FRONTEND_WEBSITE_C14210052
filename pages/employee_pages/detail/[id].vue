@@ -7,7 +7,7 @@
         <img
           :src="
             employee.employee_photo
-              ? `http://localhost:8000/storage/${employee.employee_photo}`
+              ? useApi(`/storage/${employee.employee_photo}`)
               : '/assets/images/photo_default.png'
           "
           class="object-cover w-40 h-40 mb-4 rounded-lg"
@@ -55,7 +55,7 @@ definePageMeta({
 const fetchEmployeeDetail = async () => {
   try {
     const response = await axios.get(
-      `http://localhost:8000/api/employees/${route.params.id}`
+      useApi(`/api/employees/${route.params.id}`)
     );
     employee.value = response.data.data;
   } catch (error) {

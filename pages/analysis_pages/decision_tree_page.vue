@@ -185,7 +185,7 @@ export default {
 
   async mounted() {
     try {
-      const response = await axios.get("http://localhost:8000/api/analysis/results");
+      const response = await axios.get(useApi("/api/analysis/results"));
       this.entropyValues = response.data.entropyValues;
       this.gainValues = response.data.gainValues;
       this.accuracy = response.data.accuracy;

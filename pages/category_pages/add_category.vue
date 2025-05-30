@@ -113,7 +113,7 @@ const adjustTextareaHeight = () => {
 // Fungsi createCategory langsung di-define di sini tanpa useApi
 const createCategory = async (data) => {
   try {
-    const response = await fetch("http://127.0.0.1:8000/api/categories", {
+    const response = await fetch(useApi("/api/categories"), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
@@ -143,8 +143,8 @@ onMounted(() => {
 </script>
 
 <template>
-  <!-- <div class="mx-auto max-w-lg p-6"> -->
-  <div class="mx-auto p-6">
+  <!-- <div class="max-w-lg p-6 mx-auto"> -->
+  <div class="p-6 mx-auto">
     <h1 class="mb-4 text-2xl font-bold">Tambah Kategori</h1>
     <form @submit.prevent="handleSubmit">
       <div class="relative">
@@ -153,7 +153,7 @@ onMounted(() => {
           v-model="name"
           @input="adjustNameHeight"
           placeholder="Nama"
-          class="mb-2 w-full resize-none overflow-hidden border p-2"
+          class="w-full p-2 mb-2 overflow-hidden border resize-none"
           rows="1"
         ></textarea>
       </div>
@@ -163,7 +163,7 @@ onMounted(() => {
           v-model="code"
           @input="adjustCodeHeight"
           placeholder="Kode"
-          class="mb-2 w-full resize-none overflow-hidden border p-2"
+          class="w-full p-2 mb-2 overflow-hidden border resize-none"
           rows="1"
         ></textarea>
       </div>
@@ -173,12 +173,12 @@ onMounted(() => {
           v-model="description"
           @input="adjustTextareaHeight"
           placeholder="Deskripsi"
-          class="mb-2 w-full resize-none overflow-hidden border p-2"
+          class="w-full p-2 mb-2 overflow-hidden border resize-none"
           rows="10"
         ></textarea>
       </div>
-			<button @click="$router.back()" class="mb-4 mr-2 rounded bg-gray-500 px-4 py-2 text-white">Kembali</button>
-      <button type="submit" class="rounded bg-blue-600 px-4 py-2 text-white">Tambah Kategori</button>
+			<button @click="$router.back()" class="px-4 py-2 mb-4 mr-2 text-white bg-gray-500 rounded">Kembali</button>
+      <button type="submit" class="px-4 py-2 text-white bg-blue-600 rounded">Tambah Kategori</button>
     </form>
   </div>
 </template>

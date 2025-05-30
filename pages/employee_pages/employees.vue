@@ -81,7 +81,7 @@
                 <img
                   :src="
                     employee.employee_photo
-                      ? `http://localhost:8000/storage/${employee.employee_photo}`
+                      ? useApi(`/storage/${employee.employee_photo}`)
                       : '/assets/images/photo_default.png'
                   "
                   class="w-20 h-20 object-fit"
@@ -175,7 +175,7 @@ const isLoading = ref(true); // State untuk loading
 const fetchEmployees = async () => {
   isLoading.value = true; // Set loading to true
   try {
-    const response = await axios.get("http://localhost:8000/api/employees");
+    const response = await axios.get(useApi("/api/employees"));
     employees.value = response.data.data;
   } catch (error) {
     console.error("Error fetching employees:", error);
@@ -187,7 +187,7 @@ const fetchEmployees = async () => {
 const deleteEmployee = async (id) => {
   if (confirm("Apakah Anda yakin ingin menghapus karyawan ini?")) {
     try {
-      await axios.delete(`http://localhost:8000/api/employees/${id}`);
+      await axios.delete(useApi(`/api/employees/${id}`));
       fetchEmployees();
     } catch (error) {
       console.error("Error deleting employee:", error);

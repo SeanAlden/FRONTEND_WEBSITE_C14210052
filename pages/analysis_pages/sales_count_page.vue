@@ -101,7 +101,7 @@ definePageMeta({
 const fetchData = async () => {
   try {
     const response = await axios.get(
-      "http://localhost:8000/api/analysis/getTransactions"
+      useApi("/api/analysis/getTransactions")
     );
     transactions.value = response.data.transactions;
   } catch (err) {

@@ -202,7 +202,7 @@ const isLoading = ref(true); // State untuk loading
 const fetchStockReport = async () => {
   isLoading.value = true; // Set loading to true
   try {
-    const response = await fetch("http://localhost:8000/api/product-stocks-report");
+    const response = await fetch(useApi("/api/product-stocks-report"));
     const data = await response.json();
     if (data.success) {
       productStocks.value = data.data.map((item) => ({
@@ -210,8 +210,8 @@ const fetchStockReport = async () => {
         name: item.name,
         code: item.code,
         photo: item.photo
-          ? `http://localhost:8000/storage/${item.photo}`
-          : "https://via.placeholder.com/50",
+          ? useApi(`/storage/${item.photo}`)
+          : '/assets/images/avatar.png',
         price: item.price,
         exp_date: item.exp_date,
         previous_stock: item.previous_stock,

@@ -15,7 +15,7 @@ const isLoading = ref(true);
 const fetchProducts = async () => {
   isLoading.value = true; // Set loading to true
   try {
-    const res = await fetch(`http://127.0.0.1:8000/api/nonactive-history`);
+    const res = await fetch(useApi(`/api/nonactive-history`));
     const data = await res.json();
     products.value = data.data;
   } catch (error) {
@@ -180,7 +180,7 @@ onMounted(fetchProducts);
                 <img
                   :src="
                     item.product.photo
-                      ? `http://localhost:8000/storage/${item.product.photo}`
+                      ? useApi(`/storage/${item.product.photo}`)
                       : '/assets/images/avatar.png'
                   "
                   class="w-20 h-20 object-fit"

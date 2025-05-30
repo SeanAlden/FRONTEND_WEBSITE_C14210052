@@ -30,7 +30,7 @@
               <img
                 :src="
                   user.profile_image
-                    ? `http://localhost:8000/storage/profile_images/${user.profile_image}`
+                    ? useApi(`/storage/profile_images/${user.profile_image}`)
                     : '/assets/images/photo_default.png'
                 "
                 class="object-cover w-full h-full"
@@ -55,7 +55,7 @@
               <img
                 :src="
                   user.profile_image
-                    ? `http://localhost:8000/storage/profile_images/${user.profile_image}`
+                    ? useApi(`/storage/profile_images/${user.profile_image}`)
                     : '/assets/images/photo_default.png'
                 "
                 class="w-16 h-16 mx-auto border border-gray-300 rounded-full"
@@ -186,7 +186,7 @@ const profileImage = ref(""); // Kosongkan awalnya
 // ✅ Tambahan: Ambil data user
 const fetchUser = async () => {
   try {
-    const res = await axios.get("http://127.0.0.1:8000/api/user", {
+    const res = await axios.get(useApi("/api/user"), {
       headers: {
         Authorization: `Bearer ${token.value}`,
       },
@@ -275,7 +275,7 @@ const goToChangePassword = () => router.push("/profile_pages/edit_password_page"
 // Logout
 async function logout() {
   try {
-    const res = await axios.delete("http://127.0.0.1:8000/api/auth/signout", {
+    const res = await axios.delete(useApi("/api/auth/signout"), {
       headers: {
         Authorization: `Bearer ${token.value}`,
       },

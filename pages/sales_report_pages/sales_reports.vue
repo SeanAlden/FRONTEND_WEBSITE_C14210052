@@ -54,7 +54,7 @@ const formatPrice = (price) => {
 const fetchTransactions = async () => {
   try {
     isLoading.value = true;
-    const response = await fetch("http://localhost:8000/api/transactions", {
+    const response = await fetch(useApi("/api/transactions"), {
       headers: {
         Authorization: `Bearer ${token.value}`,
       },
@@ -639,7 +639,7 @@ watch(itemsPerPage, () => {
                   <img
                     :src="
                       product.photo
-                        ? `http://localhost:8000/storage/${product.photo}`
+                        ? useApi(`/storage/${product.photo}`)
                         : '/assets/images/avatar.png'
                     "
                     class="w-20 h-20 object-fit"

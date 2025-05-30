@@ -110,7 +110,7 @@ definePageMeta({
 
 async function register() {
   try {
-    const result = await $fetch('http://127.0.0.1:8000/api/auth/signup', {
+    const result = await $fetch(useApi('/api/auth/signup'), {
       method: 'POST',
       body: {
         name: name.value,

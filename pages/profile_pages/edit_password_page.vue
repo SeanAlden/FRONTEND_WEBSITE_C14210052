@@ -125,14 +125,14 @@ const token = useCookie("my_auth_token");
 // Ambil data user saat mount
 const fetchUser = async () => {
   try {
-    const res = await axios.get("http://127.0.0.1:8000/api/user", {
+    const res = await axios.get(useApi("/api/user"), {
       headers: {
         Authorization: `Bearer ${token.value}`,
       },
     });
     user.value = res.data;
     profileImage.value = user.value.profile_image
-      ? `http://localhost:8000/storage/profile_images/${user.value.profile_image}`
+      ? useApi(`/storage/profile_images/${user.value.profile_image}`)
       : "/assets/images/photo_default.png";
   } catch (error) {
     console.error("Gagal mengambil data user:", error);
@@ -166,7 +166,7 @@ const updatePassword = async () => {
 
   try {
     const response = await axios.put(
-      "http://127.0.0.1:8000/api/auth/user/password",
+      useApi("/api/auth/user/password"),
       {
         current_password: password.value.oldPassword,
         new_password: password.value.newPassword,

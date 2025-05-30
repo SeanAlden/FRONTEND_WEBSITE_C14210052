@@ -5,7 +5,7 @@ definePageMeta({
   middleware: ["auth"],
 });
 
-const BASE_URL = "http://localhost:8000";
+// const BASE_URL = "http://localhost:8000";
 
 // Data utama
 const exitProducts = ref([]);
@@ -24,7 +24,7 @@ const isLoading = ref(true); // State untuk loading
 const fetchExits = async () => {
   isLoading.value = true; // Set loading to true
   try {
-    const response = await fetch(`${BASE_URL}/api/exit-products`);
+    const response = await fetch(useApi(`/api/exit-products`));
     const data = await response.json();
     exitProducts.value = data.data;
   } catch (error) {
@@ -36,7 +36,7 @@ const fetchExits = async () => {
 
 // Ambil daftar produk
 const fetchProducts = async () => {
-  const response = await fetch(`${BASE_URL}/api/products`);
+  const response = await fetch(useApi(`/api/products`));
   const data = await response.json();
   products.value = data.data;
 };
@@ -45,7 +45,7 @@ const fetchProducts = async () => {
 const fetchExpDates = async () => {
   if (!formData.value.product_id) return;
   const response = await fetch(
-    `${BASE_URL}/api/products/product/${formData.value.product_id}/exp-dates`
+    useApi(`/api/products/product/${formData.value.product_id}/exp-dates`)
   );
   const data = await response.json();
   expDates.value = data.data;
@@ -105,8 +105,8 @@ const saveExit = async () => {
 
   // Jika stok mencukupi, lanjutkan simpan data
   const url = selectedProduct.value
-    ? `${BASE_URL}/api/exit-products/${selectedProduct.value.id}`
-    : `${BASE_URL}/api/exit-products/store`;
+    ? useApi(`/api/exit-products/${selectedProduct.value.id}`)
+    : useApi(`/api/exit-products/store`);
 
   const method = selectedProduct.value ? "PUT" : "POST";
 
@@ -132,7 +132,7 @@ const saveExit = async () => {
 const deleteExit = async (id) => {
   if (!confirm("Apakah Anda yakin ingin menghapus data ini?")) return;
 
-  await fetch(`${BASE_URL}/api/exit-products/${id}`, { method: "DELETE" });
+  await fetch(useApi(`/api/exit-products/${id}`), { method: "DELETE" });
   fetchExits();
 };
 

@@ -27,7 +27,7 @@ const product = reactive({
 // Fetch kategori terlebih dahulu
 const fetchCategories = async () => {
   try {
-    const res = await fetch("http://127.0.0.1:8000/api/categories");
+    const res = await fetch(useApi("/api/categories"));
     if (!res.ok) throw new Error("Gagal mengambil data kategori");
     const data = await res.json();
     categories.value = data;
@@ -39,7 +39,7 @@ const fetchCategories = async () => {
 // Fetch produk berdasarkan ID
 const fetchProduct = async () => {
   try {
-    const res = await fetch(`http://127.0.0.1:8000/api/products/${route.params.id}`);
+    const res = await fetch(useApi(`/api/products/${route.params.id}`));
     if (!res.ok) throw new Error("Gagal mengambil data produk");
 
     const data = await res.json();
@@ -56,7 +56,7 @@ const fetchProduct = async () => {
 
     // Set URL gambar jika ada foto
     productImage.value = data.data.photo
-      ? `http://127.0.0.1:8000/storage/${data.data.photo}`
+      ? useApi(`/storage/${data.data.photo}`)
       : null;
 
     await nextTick();
@@ -163,7 +163,7 @@ const updateProduct = async () => {
       // });
 
       await axios.post(
-        `http://127.0.0.1:8000/api/products/${route.params.id}`,
+        useApi(`/api/products/${route.params.id}`),
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },

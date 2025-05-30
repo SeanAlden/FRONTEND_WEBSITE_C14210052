@@ -248,7 +248,7 @@ const exportToPDF = () => {
 const exportToExcel = () => {
   const data = products.value.map((product) => ({
     Foto: product.product_photo
-      ? `http://localhost:8000/storage/${product.product_photo}`
+      ? useApi(`/storage/${product.product_photo}`)
       : "-",
     "Nama Produk": product.product_name,
     "Kode Produk": product.product_code,
@@ -329,7 +329,7 @@ const getStatusClass = (status) => {
 onMounted(async () => {
   try {
     const response = await axios.get(
-      `http://localhost:8000/api/transactions/${transactionId}`,
+      useApi(`/api/transactions/${transactionId}`),
       {
         headers: {
           Authorization: `Bearer ${token.value}`,
@@ -451,7 +451,7 @@ const latestStatus = () => {
                   <td class="px-4 py-3 border">
                     <img
                       v-if="product.product_photo"
-                      :src="`http://localhost:8000/storage/${product.product_photo}`"
+                      :src="useApi(`/storage/${product.product_photo}`)"
                       class="object-cover w-16 h-16 rounded"
                     />
                     <span v-else>-</span>

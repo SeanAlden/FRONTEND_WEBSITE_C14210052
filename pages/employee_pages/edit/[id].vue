@@ -8,7 +8,7 @@
         <img
           :src="
             employee_photo
-              ? `http://localhost:8000/storage/${employee_photo}`
+              ? useApi(`/storage/${employee_photo}`)
               : '/assets/images/photo_default.png'
           "
           class="w-20 h-20 object-fit"
@@ -149,7 +149,7 @@ definePageMeta({
 
 const fetchEmployee = async () => {
   try {
-    const response = await axios.get(`http://localhost:8000/api/employees/${id}`);
+    const response = await axios.get(useApi(`/api/employees/${id}`));
     const employee = response.data.data;
     code.value = employee.code;
     employee_name.value = employee.employee_name;
@@ -189,7 +189,7 @@ const updateEmployee = async () => {
   formData.append("_method", "PUT"); // Laravel membutuhkan ini
 
   try {
-    await axios.post(`http://localhost:8000/api/employees/${id}`, formData, {
+    await axios.post(useApi(`/api/employees/${id}`), formData, {
       headers: { "Content-Type": "multipart/form-data" },
     });
     alert("Karyawan berhasil diperbarui!");

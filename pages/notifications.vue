@@ -78,7 +78,7 @@ const loading = ref(true);
 
 onMounted(async () => {
   try {
-    const res = await fetch("http://localhost:8000/api/notifications");
+    const res = await fetch(useApi("/api/notifications"));
     const data = await res.json();
     notifications.value = data;
   } catch (error) {
@@ -124,7 +124,7 @@ const deleteNotification = async (id: number) => {
   if (!confirmDelete) return;
 
   try {
-    const res = await fetch(`http://localhost:8000/api/notifications/${id}`, {
+    const res = await fetch(useApi(`/api/notifications/${id}`), {
       method: "PUT",
     });
 

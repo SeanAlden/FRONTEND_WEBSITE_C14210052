@@ -73,7 +73,7 @@
               <img
                 :src="
                   product.photo
-                    ? `http://localhost:8000/storage/${product.photo}`
+                    ? useApi(`/storage/${product.photo}`)
                     : '/assets/images/avatar.png'
                 "
                 class="w-20 h-20 object-fit"
@@ -162,7 +162,7 @@ export default {
 
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/api/analysis/results");
+        const response = await axios.get(useApi("/api/analysis/results"));
         products.value = response.data.products;
         accuracy.value = response.data.accuracy;
       } catch (error) {

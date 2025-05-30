@@ -132,7 +132,7 @@ export default {
     const isLoading = ref(true);
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/api/analysis/results");
+        const response = await axios.get(useApi("/api/analysis/results"));
         entropyValues.value = response.data.entropyValues;
         gainValues.value = response.data.gainValues;
         products.value = response.data.products;

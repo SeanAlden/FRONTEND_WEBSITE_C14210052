@@ -48,5 +48,11 @@ export default defineNuxtConfig({
 
   nitro: {
     preset: 'netlify'
+  },
+
+  runtimeConfig: {
+    public: {
+      apiBase: 'https://9d99-139-195-169-182.ngrok-free.app'
+    }
   }
 })

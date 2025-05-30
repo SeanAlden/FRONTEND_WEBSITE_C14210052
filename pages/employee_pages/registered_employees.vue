@@ -58,7 +58,7 @@
                 <img
                   :src="
                     user.profile_image
-                      ? `http://localhost:8000/storage/profile_images/${user.profile_image}`
+                      ? useApi(`/storage/profile_images/${user.profile_image}`)
                       : '/assets/images/photo_default.png'
                   "
                   class="object-cover w-20 h-20"
@@ -148,7 +148,7 @@ const fetchUsers = async () => {
     // } else if (data.value && data.value.data) {
     //   cashiers.value = data.value.data.filter((user) => user.usertype === "cashier");
     // }
-    const response = await axios.get("http://127.0.0.1:8000/api/auth/users");
+    const response = await axios.get(useApi("/api/auth/users"));
     // Sesuaikan dengan struktur response API Anda
     cashiers.value = response.data.data.filter((user) => user.usertype === "employee");
   } catch (error) {

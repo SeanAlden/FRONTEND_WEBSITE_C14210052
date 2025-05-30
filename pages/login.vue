@@ -68,7 +68,7 @@ definePageMeta({
 
 async function login() {
   try {
-    const result = await $fetch('http://127.0.0.1:8000/api/auth/signin', {
+    const result = await $fetch(useApi('/api/auth/signin'), {
       method: 'POST',
       body: {
         email: email.value,

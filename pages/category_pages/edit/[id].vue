@@ -125,13 +125,10 @@ const nameInputRef = ref(null);
 const codeInputRef = ref(null);
 const descTextarea = ref(null);
 
-// API base URL
-const apiUrl = "http://127.0.0.1:8000/api";
-
 // Fungsi getCategoryById dipindah dari useApi.js
 const getCategoryById = async (id) => {
   try {
-    const response = await fetch(`${apiUrl}/categories/${id}`);
+    const response = await fetch(useApi(`/api/categories/${id}`));
     if (!response.ok) throw new Error("Gagal mengambil data kategori");
     return await response.json();
   } catch (error) {
@@ -143,7 +140,7 @@ const getCategoryById = async (id) => {
 // Fungsi updateCategory dipindah dari useApi.js
 const updateCategory = async (id, data) => {
   try {
-    const response = await fetch(`${apiUrl}/categories/${id}`, {
+    const response = await fetch(useApi(`/api/categories/${id}`), {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
@@ -226,48 +223,48 @@ const handleSubmit = async () => {
 </script>
 
 <template>
-  <!-- <div class="mx-auto max-w-lg p-6"> -->
-  <div class="mx-auto p-6">
+  <!-- <div class="max-w-lg p-6 mx-auto"> -->
+  <div class="p-6 mx-auto">
     <h1 class="mb-4 text-2xl font-bold">Edit Kategori</h1>
 
     <div v-if="isLoading" class="text-center text-gray-500">Loading...</div>
     <form v-else @submit.prevent="handleSubmit">
-      <label class="mb-1 block">Nama Kategori:</label>
+      <label class="block mb-1">Nama Kategori:</label>
       <textarea
         v-model="name"
         ref="nameInputRef"
         @input="adjustNameHeight"
-        class="mb-2 w-full resize-none overflow-hidden border p-2"
+        class="w-full p-2 mb-2 overflow-hidden border resize-none"
         rows="1"
         required
       ></textarea>
 
-      <label class="mb-1 block">Kode Kategori:</label>
+      <label class="block mb-1">Kode Kategori:</label>
       <textarea
         v-model="code"
         ref="codeInputRef"
         @input="adjustCodeHeight"
-        class="mb-2 w-full resize-none overflow-hidden border p-2"
+        class="w-full p-2 mb-2 overflow-hidden border resize-none"
         rows="1"
         required
       ></textarea>
 
-      <label class="mb-1 block">Deskripsi:</label>
+      <label class="block mb-1">Deskripsi:</label>
       <textarea
         v-model="description"
         ref="descTextarea"
         @input="adjustTextareaHeight"
-        class="mb-2 w-full resize-none overflow-hidden border p-2"
+        class="w-full p-2 mb-2 overflow-hidden border resize-none"
         rows="10"
       ></textarea>
 
       <button
         @click="$router.back()"
-        class="mb-4 mr-2 rounded bg-gray-500 px-4 py-2 text-white"
+        class="px-4 py-2 mb-4 mr-2 text-white bg-gray-500 rounded"
       >
         Kembali
       </button>
-      <button type="submit" class="rounded bg-blue-500 px-4 py-2 text-white">
+      <button type="submit" class="px-4 py-2 text-white bg-blue-500 rounded">
         Simpan Perubahan
       </button>
     </form>

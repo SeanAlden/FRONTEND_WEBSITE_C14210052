@@ -27,13 +27,13 @@ const errorMessage = ref("");
 
 // Ambil kategori & produk yang ada saat halaman dimuat
 const fetchCategories = async () => {
-  const res = await fetch(`http://127.0.0.1:8000/api/categories`);
+  const res = await fetch(useApi(`/api/categories`));
   const data = await res.json();
   categories.value = data;
 };
 
 const fetchExistingProducts = async () => {
-  const res = await fetch(`http://127.0.0.1:8000/api/products`);
+  const res = await fetch(useApi(`/api/products`));
   const data = await res.json();
   existingProductCodes.value = data.map((product) => product.code); // Simpan kode produk yang sudah ada
 };
@@ -164,7 +164,7 @@ const addProduct = async () => {
   }
 
   try {
-    const response = await axios.post(`http://127.0.0.1:8000/api/products`, formData, {
+    const response = await axios.post(useApi(`/api/products`), formData, {
       headers: { 'Content-Type': 'multipart/form-data' }
     });
 
