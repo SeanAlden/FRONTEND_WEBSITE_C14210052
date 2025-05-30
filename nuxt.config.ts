@@ -52,7 +52,7 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      apiBase: 'http://127.0.0.1:8000'
+      apiBase: 'https://a651-139-195-169-182.ngrok-free.app'
     }
   }
 })
