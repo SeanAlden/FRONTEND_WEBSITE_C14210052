@@ -54,7 +54,7 @@ const formatPrice = (price) => {
 const fetchTransactions = async () => {
   try {
     isLoading.value = true;
-    const response = await axios.get(useApi("/api/transactions"), {
+    const response = await fetch(useApi("/api/transactions"), {
       headers: {
         Authorization: `Bearer ${token.value}`,
       },

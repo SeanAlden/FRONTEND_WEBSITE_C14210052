@@ -1,5 +1,5 @@
 import { u as useApi } from './useApi-Dqh0F_3-.mjs';
-import { defineComponent, ref, mergeProps, unref, useSSRContext, watch, withCtx, createVNode, createBlock, createCommentVNode, openBlock, createTextVNode } from 'vue';
+import { defineComponent, ref, mergeProps, unref, useSSRContext, withCtx, createVNode, createBlock, createCommentVNode, openBlock, createTextVNode } from 'vue';
 import { ssrRenderAttrs, ssrRenderComponent, ssrRenderClass, ssrRenderSlot, ssrRenderAttr, ssrInterpolate } from 'vue/server-renderer';
 import { p as publicAssetsURL } from '../routes/renderer.mjs';
 import { u as useRouter, e as useCookie } from './server.mjs';
@@ -82,37 +82,29 @@ const _imports_7 = publicAssetsURL("/assets/icons/analysis.png");
 const _sfc_main$1 = {
   __name: "Sidebar",
   __ssrInlineRender: true,
-  props: ["isSidebarOpen"],
-  emits: ["toggle-sidebar"],
-  setup(__props, { emit: __emit }) {
+  setup(__props) {
+    const isSidebarOpen = ref(true);
     const isProductsOpen = ref(false);
-    const props = __props;
-    watch(
-      () => props.isSidebarOpen,
-      (val) => {
-        if (!val) isProductsOpen.value = false;
-      }
-    );
     return (_ctx, _push, _parent, _attrs) => {
       const _component_NuxtLink = __nuxt_component_0;
       _push(`<div${ssrRenderAttrs(mergeProps({
-        class: [__props.isSidebarOpen ? "w-64" : "w-16", "fixed flex flex-col bg-gray-800 min-h-screen max-h-screen text-white transition-all duration-300"]
-      }, _attrs))} data-v-efc0fff6><div class="flex justify-between items-center p-4" data-v-efc0fff6>`);
-      if (__props.isSidebarOpen) {
-        _push(`<span class="font-bold text-red-400 text-lg" data-v-efc0fff6>Asia Raya Cashier</span>`);
+        class: [isSidebarOpen.value ? "w-64" : "w-16", "fixed top-0 bottom-0 left-0 z-50 flex flex-col overflow-y-auto text-white transition-all duration-300 bg-gray-800"]
+      }, _attrs))} data-v-d345b714><div class="flex items-center justify-between p-4" data-v-d345b714>`);
+      if (isSidebarOpen.value) {
+        _push(`<span class="text-lg font-bold text-red-400" data-v-d345b714> Asia Raya Cashier </span>`);
       } else {
         _push(`<!---->`);
       }
-      _push(`<button class="hover:bg-gray-700 p-2 rounded" data-v-efc0fff6><img${ssrRenderAttr("src", _imports_0)} alt="Toggle" class="w-6 h-6" data-v-efc0fff6></button></div><div class="flex-1 overflow-y-auto" data-v-efc0fff6><nav class="flex flex-col space-y-2 mt-4" data-v-efc0fff6>`);
+      _push(`<button class="p-2 rounded hover:bg-gray-700" data-v-d345b714><img${ssrRenderAttr("src", _imports_0)} alt="Toggle" class="w-6 h-6" data-v-d345b714></button></div><div class="flex-1 overflow-y-auto" data-v-d345b714><nav class="flex flex-col mt-4 space-y-2" data-v-d345b714>`);
       _push(ssrRenderComponent(_component_NuxtLink, {
         to: "/",
-        class: "flex items-center hover:bg-gray-700 p-3"
+        class: "flex items-center p-3 hover:bg-gray-700"
       }, {
         default: withCtx((_, _push2, _parent2, _scopeId) => {
           if (_push2) {
-            _push2(`<img${ssrRenderAttr("src", _imports_1)} class="mr-3 w-6 h-6" data-v-efc0fff6${_scopeId}>`);
-            if (__props.isSidebarOpen) {
-              _push2(`<span data-v-efc0fff6${_scopeId}>Dashboard</span>`);
+            _push2(`<img${ssrRenderAttr("src", _imports_1)} class="w-6 h-6 mr-3" data-v-d345b714${_scopeId}>`);
+            if (isSidebarOpen.value) {
+              _push2(`<span data-v-d345b714${_scopeId}>Dashboard</span>`);
             } else {
               _push2(`<!---->`);
             }
@@ -120,9 +112,9 @@ const _sfc_main$1 = {
             return [
               createVNode("img", {
                 src: _imports_1,
-                class: "mr-3 w-6 h-6"
+                class: "w-6 h-6 mr-3"
               }),
-              __props.isSidebarOpen ? (openBlock(), createBlock("span", { key: 0 }, "Dashboard")) : createCommentVNode("", true)
+              isSidebarOpen.value ? (openBlock(), createBlock("span", { key: 0 }, "Dashboard")) : createCommentVNode("", true)
             ];
           }
         }),
@@ -130,13 +122,13 @@ const _sfc_main$1 = {
       }, _parent));
       _push(ssrRenderComponent(_component_NuxtLink, {
         to: "/sales_report_pages/sales_reports",
-        class: "flex items-center hover:bg-gray-700 p-3"
+        class: "flex items-center p-3 hover:bg-gray-700"
       }, {
         default: withCtx((_, _push2, _parent2, _scopeId) => {
           if (_push2) {
-            _push2(`<img${ssrRenderAttr("src", _imports_2)} class="mr-3 w-6 h-6" data-v-efc0fff6${_scopeId}>`);
-            if (__props.isSidebarOpen) {
-              _push2(`<span data-v-efc0fff6${_scopeId}>Sales Reports</span>`);
+            _push2(`<img${ssrRenderAttr("src", _imports_2)} class="w-6 h-6 mr-3" data-v-d345b714${_scopeId}>`);
+            if (isSidebarOpen.value) {
+              _push2(`<span data-v-d345b714${_scopeId}>Sales Reports</span>`);
             } else {
               _push2(`<!---->`);
             }
@@ -144,9 +136,9 @@ const _sfc_main$1 = {
             return [
               createVNode("img", {
                 src: _imports_2,
-                class: "mr-3 w-6 h-6"
+                class: "w-6 h-6 mr-3"
               }),
-              __props.isSidebarOpen ? (openBlock(), createBlock("span", { key: 0 }, "Sales Reports")) : createCommentVNode("", true)
+              isSidebarOpen.value ? (openBlock(), createBlock("span", { key: 0 }, "Sales Reports")) : createCommentVNode("", true)
             ];
           }
         }),
@@ -154,13 +146,13 @@ const _sfc_main$1 = {
       }, _parent));
       _push(ssrRenderComponent(_component_NuxtLink, {
         to: "/category_pages/categories",
-        class: "flex items-center hover:bg-gray-700 p-3"
+        class: "flex items-center p-3 hover:bg-gray-700"
       }, {
         default: withCtx((_, _push2, _parent2, _scopeId) => {
           if (_push2) {
-            _push2(`<img${ssrRenderAttr("src", _imports_3)} class="mr-3 w-6 h-6" data-v-efc0fff6${_scopeId}>`);
-            if (__props.isSidebarOpen) {
-              _push2(`<span data-v-efc0fff6${_scopeId}>Categories</span>`);
+            _push2(`<img${ssrRenderAttr("src", _imports_3)} class="w-6 h-6 mr-3" data-v-d345b714${_scopeId}>`);
+            if (isSidebarOpen.value) {
+              _push2(`<span data-v-d345b714${_scopeId}>Categories</span>`);
             } else {
               _push2(`<!---->`);
             }
@@ -168,35 +160,32 @@ const _sfc_main$1 = {
             return [
               createVNode("img", {
                 src: _imports_3,
-                class: "mr-3 w-6 h-6"
+                class: "w-6 h-6 mr-3"
               }),
-              __props.isSidebarOpen ? (openBlock(), createBlock("span", { key: 0 }, "Categories")) : createCommentVNode("", true)
+              isSidebarOpen.value ? (openBlock(), createBlock("span", { key: 0 }, "Categories")) : createCommentVNode("", true)
             ];
           }
         }),
         _: 1
       }, _parent));
-      _push(`<div data-v-efc0fff6><div class="flex justify-between items-center hover:bg-gray-700 p-3 cursor-pointer" data-v-efc0fff6><div class="flex items-center" data-v-efc0fff6><img${ssrRenderAttr("src", _imports_4)} class="mr-3 w-6 h-6" data-v-efc0fff6>`);
-      if (__props.isSidebarOpen) {
-        _push(`<span data-v-efc0fff6>Products</span>`);
+      _push(`<div data-v-d345b714><div class="flex items-center justify-between p-3 cursor-pointer hover:bg-gray-700" data-v-d345b714><div class="flex items-center" data-v-d345b714><img${ssrRenderAttr("src", _imports_4)} class="w-6 h-6 mr-3" data-v-d345b714>`);
+      if (isSidebarOpen.value) {
+        _push(`<span data-v-d345b714>Products</span>`);
       } else {
         _push(`<!---->`);
       }
       _push(`</div>`);
-      if (__props.isSidebarOpen) {
-        _push(`<img${ssrRenderAttr(
-          "src",
-          isProductsOpen.value ? "/assets/icons/chevron_up.png" : "/assets/icons/chevron_down.png"
-        )} class="w-4 h-4 transition-transform duration-300" data-v-efc0fff6>`);
+      if (isSidebarOpen.value) {
+        _push(`<img${ssrRenderAttr("src", isProductsOpen.value ? "/assets/icons/chevron_up.png" : "/assets/icons/chevron_down.png")} class="w-4 h-4 transition-transform duration-300" data-v-d345b714>`);
       } else {
         _push(`<!---->`);
       }
       _push(`</div>`);
       if (isProductsOpen.value) {
-        _push(`<div class="space-y-2 ml-9 text-sm" data-v-efc0fff6>`);
+        _push(`<div class="space-y-2 text-sm ml-9" data-v-d345b714>`);
         _push(ssrRenderComponent(_component_NuxtLink, {
           to: "/product_pages/products",
-          class: "block hover:bg-gray-600 p-2"
+          class: "block p-2 hover:bg-gray-600"
         }, {
           default: withCtx((_, _push2, _parent2, _scopeId) => {
             if (_push2) {
@@ -211,7 +200,7 @@ const _sfc_main$1 = {
         }, _parent));
         _push(ssrRenderComponent(_component_NuxtLink, {
           to: "/product_pages/deleted_products",
-          class: "block hover:bg-gray-600 p-2"
+          class: "block p-2 hover:bg-gray-600"
         }, {
           default: withCtx((_, _push2, _parent2, _scopeId) => {
             if (_push2) {
@@ -226,7 +215,7 @@ const _sfc_main$1 = {
         }, _parent));
         _push(ssrRenderComponent(_component_NuxtLink, {
           to: "/product_pages/deleted_products_history",
-          class: "block hover:bg-gray-600 p-2"
+          class: "block p-2 hover:bg-gray-600"
         }, {
           default: withCtx((_, _push2, _parent2, _scopeId) => {
             if (_push2) {
@@ -241,7 +230,7 @@ const _sfc_main$1 = {
         }, _parent));
         _push(ssrRenderComponent(_component_NuxtLink, {
           to: "/product_pages/entry_products",
-          class: "block hover:bg-gray-600 p-2"
+          class: "block p-2 hover:bg-gray-600"
         }, {
           default: withCtx((_, _push2, _parent2, _scopeId) => {
             if (_push2) {
@@ -256,7 +245,7 @@ const _sfc_main$1 = {
         }, _parent));
         _push(ssrRenderComponent(_component_NuxtLink, {
           to: "/product_pages/exit_products",
-          class: "block hover:bg-gray-600 p-2"
+          class: "block p-2 hover:bg-gray-600"
         }, {
           default: withCtx((_, _push2, _parent2, _scopeId) => {
             if (_push2) {
@@ -271,7 +260,7 @@ const _sfc_main$1 = {
         }, _parent));
         _push(ssrRenderComponent(_component_NuxtLink, {
           to: "/product_pages/product_stocks_report",
-          class: "block hover:bg-gray-600 p-2"
+          class: "block p-2 hover:bg-gray-600"
         }, {
           default: withCtx((_, _push2, _parent2, _scopeId) => {
             if (_push2) {
@@ -291,13 +280,13 @@ const _sfc_main$1 = {
       _push(`</div>`);
       _push(ssrRenderComponent(_component_NuxtLink, {
         to: "/transaction_pages/transactions",
-        class: "flex items-center hover:bg-gray-700 p-3"
+        class: "flex items-center p-3 hover:bg-gray-700"
       }, {
         default: withCtx((_, _push2, _parent2, _scopeId) => {
           if (_push2) {
-            _push2(`<img${ssrRenderAttr("src", _imports_5)} class="mr-3 w-6 h-6" data-v-efc0fff6${_scopeId}>`);
-            if (__props.isSidebarOpen) {
-              _push2(`<span data-v-efc0fff6${_scopeId}>Transactions</span>`);
+            _push2(`<img${ssrRenderAttr("src", _imports_5)} class="w-6 h-6 mr-3" data-v-d345b714${_scopeId}>`);
+            if (isSidebarOpen.value) {
+              _push2(`<span data-v-d345b714${_scopeId}>Transactions</span>`);
             } else {
               _push2(`<!---->`);
             }
@@ -305,9 +294,9 @@ const _sfc_main$1 = {
             return [
               createVNode("img", {
                 src: _imports_5,
-                class: "mr-3 w-6 h-6"
+                class: "w-6 h-6 mr-3"
               }),
-              __props.isSidebarOpen ? (openBlock(), createBlock("span", { key: 0 }, "Transactions")) : createCommentVNode("", true)
+              isSidebarOpen.value ? (openBlock(), createBlock("span", { key: 0 }, "Transactions")) : createCommentVNode("", true)
             ];
           }
         }),
@@ -315,13 +304,13 @@ const _sfc_main$1 = {
       }, _parent));
       _push(ssrRenderComponent(_component_NuxtLink, {
         to: "/employee_pages/employees",
-        class: "flex items-center hover:bg-gray-700 p-3"
+        class: "flex items-center p-3 hover:bg-gray-700"
       }, {
         default: withCtx((_, _push2, _parent2, _scopeId) => {
           if (_push2) {
-            _push2(`<img${ssrRenderAttr("src", _imports_6)} class="mr-3 w-6 h-6" data-v-efc0fff6${_scopeId}>`);
-            if (__props.isSidebarOpen) {
-              _push2(`<span data-v-efc0fff6${_scopeId}>Employees</span>`);
+            _push2(`<img${ssrRenderAttr("src", _imports_6)} class="w-6 h-6 mr-3" data-v-d345b714${_scopeId}>`);
+            if (isSidebarOpen.value) {
+              _push2(`<span data-v-d345b714${_scopeId}>Employees</span>`);
             } else {
               _push2(`<!---->`);
             }
@@ -329,9 +318,9 @@ const _sfc_main$1 = {
             return [
               createVNode("img", {
                 src: _imports_6,
-                class: "mr-3 w-6 h-6"
+                class: "w-6 h-6 mr-3"
               }),
-              __props.isSidebarOpen ? (openBlock(), createBlock("span", { key: 0 }, "Employees")) : createCommentVNode("", true)
+              isSidebarOpen.value ? (openBlock(), createBlock("span", { key: 0 }, "Employees")) : createCommentVNode("", true)
             ];
           }
         }),
@@ -339,13 +328,13 @@ const _sfc_main$1 = {
       }, _parent));
       _push(ssrRenderComponent(_component_NuxtLink, {
         to: "/analysis_pages/sales_count_page",
-        class: "flex items-center hover:bg-gray-700 p-3"
+        class: "flex items-center p-3 hover:bg-gray-700"
       }, {
         default: withCtx((_, _push2, _parent2, _scopeId) => {
           if (_push2) {
-            _push2(`<img${ssrRenderAttr("src", _imports_7)} class="mr-3 w-6 h-6" data-v-efc0fff6${_scopeId}>`);
-            if (__props.isSidebarOpen) {
-              _push2(`<span data-v-efc0fff6${_scopeId}>Analisis C4.5</span>`);
+            _push2(`<img${ssrRenderAttr("src", _imports_7)} class="w-6 h-6 mr-3" data-v-d345b714${_scopeId}>`);
+            if (isSidebarOpen.value) {
+              _push2(`<span data-v-d345b714${_scopeId}>Analisis C4.5</span>`);
             } else {
               _push2(`<!---->`);
             }
@@ -353,9 +342,9 @@ const _sfc_main$1 = {
             return [
               createVNode("img", {
                 src: _imports_7,
-                class: "mr-3 w-6 h-6"
+                class: "w-6 h-6 mr-3"
               }),
-              __props.isSidebarOpen ? (openBlock(), createBlock("span", { key: 0 }, "Analisis C4.5")) : createCommentVNode("", true)
+              isSidebarOpen.value ? (openBlock(), createBlock("span", { key: 0 }, "Analisis C4.5")) : createCommentVNode("", true)
             ];
           }
         }),
@@ -371,7 +360,7 @@ _sfc_main$1.setup = (props, ctx) => {
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("components/Sidebar.vue");
   return _sfc_setup$1 ? _sfc_setup$1(props, ctx) : void 0;
 };
-const __nuxt_component_1 = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["__scopeId", "data-v-efc0fff6"]]);
+const __nuxt_component_1 = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["__scopeId", "data-v-d345b714"]]);
 const _sfc_main = /* @__PURE__ */ defineComponent({
   __name: "default",
   __ssrInlineRender: true,
@@ -401,4 +390,4 @@ _sfc_main.setup = (props, ctx) => {
 };
 
 export { _sfc_main as default };
-//# sourceMappingURL=default-BY9zAO4e.mjs.map
+//# sourceMappingURL=default-DyC4-XhZ.mjs.map

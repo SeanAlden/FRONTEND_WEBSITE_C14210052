@@ -745,7 +745,7 @@ const _routes = [
     name: "category_pages-categories",
     path: "/category_pages/categories",
     meta: __nuxt_page_meta$p || {},
-    component: () => import('./categories-DwcDi8Gn.mjs')
+    component: () => import('./categories-xeRS81Hi.mjs')
   },
   {
     name: "category_pages-detail-id",
@@ -883,7 +883,7 @@ const _routes = [
     name: "sales_report_pages-sales_reports",
     path: "/sales_report_pages/sales_reports",
     meta: __nuxt_page_meta$2 || {},
-    component: () => import('./sales_reports-Bzbq2gZA.mjs')
+    component: () => import('./sales_reports-QglPlApn.mjs')
   },
   {
     name: "transaction_pages-detail-id",
@@ -1589,7 +1589,7 @@ const plugins = [
   plugin_wmlUyJB46B
 ];
 const layouts = {
-  default: defineAsyncComponent(() => import('./default-BY9zAO4e.mjs').then((m) => m.default || m))
+  default: defineAsyncComponent(() => import('./default-DyC4-XhZ.mjs').then((m) => m.default || m))
 };
 const LayoutLoader = defineComponent({
   name: "LayoutLoader",
