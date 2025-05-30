@@ -27,7 +27,7 @@ export default defineNuxtConfig({
 
   laravelSanctum: {
     // apiUrl: "http://127.0.0.1:8000",
-    apiUrl: "https://a437-139-195-169-182.ngrok-free.app",
+    apiUrl: "https://7d4a-139-195-169-182.ngrok-free.app",
     authMode: "cookie",
     // withCredentials: true,
 
@@ -53,7 +53,7 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      apiBase: 'https://a437-139-195-169-182.ngrok-free.app'
+      apiBase: 'https://7d4a-139-195-169-182.ngrok-free.app'
     }
   }
 })
