@@ -346,7 +346,7 @@ onMounted(() => {
                 <img
                   :src="
                     entry.product.photo
-                      ? `http://localhost:8000/storage/${entry.product.photo}`
+                      ? useApi(`/storage/${entry.product.photo}`)
                       : '/assets/images/avatar.png'
                   "
                   class="object-fit h-20 w-20"

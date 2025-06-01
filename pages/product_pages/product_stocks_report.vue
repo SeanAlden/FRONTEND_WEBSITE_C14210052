@@ -204,7 +204,8 @@ const fetchStockReport = async () => {
   isLoading.value = true; // Set loading to true
   try {
     const response = await axios.get(useApi("/api/product-stocks-report"));
-    const data = await response.json();
+    // const data = await response.json();
+    const data = response.data;
     if (data.success) {
       productStocks.value = data.data.map((item) => ({
         id: item.id,
