@@ -247,7 +247,7 @@ definePageMeta({
 });
 
 // Fungsi ambil semua kategori langsung di sini
-const getCategories = async () => {
+// const getCategories = async () => {
   // try {
   //   const response = await axios.get(useApi(`/api/categories`), {
   //     // method: "GET",
@@ -265,7 +265,7 @@ const getCategories = async () => {
   //   console.error("Error fetching categories:", error);
   //   return null;
   // }
-};
+// };
 
 // Fungsi hapus kategori langsung di sini
 const deleteCategory = async (id) => {
@@ -288,7 +288,7 @@ const fetchCategories = async () => {
   isLoading.value = true;
   try {
     const response = await axios.get(useApi("/api/categories"));
-    categories.value = response.data.data;
+    categories.value = response.data;
   } catch (error) {
     console.error("Error fetching categories:", error);
     // return null;
