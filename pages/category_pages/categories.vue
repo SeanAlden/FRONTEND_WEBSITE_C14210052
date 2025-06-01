@@ -291,7 +291,7 @@ const fetchCategories = async () => {
     categories.value = response.data.data;
   } catch (error) {
     console.error("Error fetching categories:", error);
-    return null;
+    // return null;
   } finally {
     isLoading.value = false;
   }
