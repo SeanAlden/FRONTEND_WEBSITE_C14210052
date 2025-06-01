@@ -15,7 +15,7 @@ const isLoading = ref(true); // State untuk loading
 const fetchProducts = async () => {
   isLoading.value = true; // Set loading to true
   try {
-    const res = await fetch(useApi(`/api/products`));
+    const res = await axios.get(useApi(`/api/products`));
     const data = await res.json();
     products.value = data.data;
   } catch (error) {
@@ -140,18 +140,18 @@ onMounted(fetchProducts);
 </script>
 
 <template>
-  <div class="container p-6 mx-auto">
-    <div class="flex items-center justify-between mb-4">
+  <div class="container mx-auto p-6">
+    <div class="mb-4 flex items-center justify-between">
       <h1 class="text-2xl font-bold">Daftar Produk</h1>
       <NuxtLink
         to="/product_pages/add_product"
-        class="inline-block p-2 text-white bg-green-500 rounded"
+        class="inline-block rounded bg-green-500 p-2 text-white"
       >
         Tambah Produk
       </NuxtLink>
     </div>
 
-    <div class="flex items-center justify-between mb-4">
+    <div class="mb-4 flex items-center justify-between">
       <div>
         <label class="mr-2">Show</label>
         <select v-model="itemsPerPage" id="itemsPerPage">
@@ -166,7 +166,7 @@ onMounted(fetchProducts);
         type="text"
         v-model="searchQuery"
         placeholder="Search"
-        class="p-2 border rounded"
+        class="rounded border p-2"
       />
     </div>
 
@@ -174,33 +174,33 @@ onMounted(fetchProducts);
       <!-- <p>Loading...</p> -->
       <!-- Ganti dengan spinner jika perlu -->
       <div
-        class="w-16 h-16 ease-linear border-8 border-t-8 border-gray-200 rounded-full loader"
+        class="loader h-16 w-16 rounded-full border-8 border-t-8 border-gray-200 ease-linear"
       ></div>
     </div>
 
     <transition name="fade">
       <div v-if="!isLoading" class="overflow-x-auto whitespace-nowrap" key="content">
         <table
-          class="min-w-full text-gray-700 bg-white border border-gray-300 rounded-lg shadow-md"
+          class="min-w-full rounded-lg border border-gray-300 bg-white text-gray-700 shadow-md"
         >
           <thead>
             <tr class="bg-gray-200">
-              <th class="p-2 border">#</th>
-              <th class="p-2 border">Foto</th>
-              <th class="p-2 border">Nama</th>
-              <th class="p-2 border">Kategori</th>
-              <th class="p-2 border">Harga</th>
-              <th class="p-2 border">Tanggal Kadaluarsa & Stok</th>
-              <th class="p-2 border">Total Stok</th>
-              <th class="p-2 border">Aksi</th>
+              <th class="border p-2">#</th>
+              <th class="border p-2">Foto</th>
+              <th class="border p-2">Nama</th>
+              <th class="border p-2">Kategori</th>
+              <th class="border p-2">Harga</th>
+              <th class="border p-2">Tanggal Kadaluarsa & Stok</th>
+              <th class="border p-2">Total Stok</th>
+              <th class="border p-2">Aksi</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="product in paginatedProducts" :key="product.id">
-              <td class="p-2 border">{{ product.code }}</td>
-              <!-- <td class="flex items-center justify-center p-2 border"> -->
+              <td class="border p-2">{{ product.code }}</td>
+              <!-- <td class="flex items-center justify-center border p-2"> -->
               <td
-                class="flex justify-center items-center p-2 border min-w-[100px] min-h-[100px]"
+                class="flex min-h-[100px] min-w-[100px] items-center justify-center border p-2"
               >
                 <img
                   :src="
@@ -208,20 +208,20 @@ onMounted(fetchProducts);
                       ? useApi(`/storage/${product.photo}`)
                       : '/assets/images/avatar.png'
                   "
-                  class="w-20 h-20 object-fit"
+                  class="object-fit h-20 w-20"
                 />
               </td>
-              <!-- <td class="flex justify-center items-center p-2 border min-w-[120px] min-h-[120px]">
+              <!-- <td class="flex min-h-[120px] min-w-[120px] items-center justify-center border p-2">
                 <img
                   :src="
                     product.photo
                       ? `http://localhost:8000/storage/${product.photo}`
                       : '/assets/images/avatar.png'
                   "
-                  class="max-w-[100px] h-auto object-cover"
+                  class="h-auto max-w-[100px] object-cover"
                 />
               </td> -->
-              <td class="p-3 border">
+              <td class="border p-3">
                 <NuxtLink
                   :to="`/product_pages/detail/${product.id}`"
                   class="text-blue-500 hover:underline"
@@ -229,9 +229,9 @@ onMounted(fetchProducts);
                   {{ product.name }}
                 </NuxtLink>
               </td>
-              <td class="p-2 border">{{ product.category?.name || "Tidak ada" }}</td>
-              <td class="p-2 border">{{ formatPrice(product.price) }}</td>
-              <td class="p-2 border">
+              <td class="border p-2">{{ product.category?.name || "Tidak ada" }}</td>
+              <td class="border p-2">{{ formatPrice(product.price) }}</td>
+              <td class="border p-2">
                 <ul>
                   <li
                     v-for="stock in product.stocks"
@@ -248,12 +248,12 @@ onMounted(fetchProducts);
                 </ul>
               </td>
               <td
-                class="p-2 font-bold border"
+                class="border p-2 font-bold"
                 :class="{ 'text-red-500': getTotalStock(product.stocks) < 7 }"
               >
                 {{ getTotalStock(product.stocks) }}
               </td>
-              <td class="p-2 border">
+              <td class="border p-2">
                 <template v-if="product.condition === 'active'">
                   <NuxtLink
                     :to="`/product_pages/edit/${product.id}`"
@@ -272,7 +272,7 @@ onMounted(fetchProducts);
                   <span class="font-bold text-red-500">Nonaktif</span>
                   <button
                     @click="toggleProductStatus(product.id, 'active')"
-                    class="p-1 ml-2 text-white bg-yellow-400 rounded"
+                    class="ml-2 rounded bg-yellow-400 p-1 text-white"
                   >
                     Batal
                   </button>
@@ -283,7 +283,7 @@ onMounted(fetchProducts);
         </table>
 
         <!-- Pagination -->
-        <div class="flex justify-between mt-4">
+        <div class="mt-4 flex justify-between">
           <div>
             Showing {{ (currentPage - 1) * itemsPerPage + 1 }} to
             {{ Math.min(currentPage * itemsPerPage, filteredProducts.length) }} of
@@ -293,7 +293,7 @@ onMounted(fetchProducts);
             <button
               @click="changePage(currentPage - 1)"
               :disabled="currentPage === 1"
-              class="px-3 py-1 bg-gray-300 border rounded disabled:opacity-50"
+              class="rounded border bg-gray-300 px-3 py-1 disabled:opacity-50"
             >
               Prev
             </button>
@@ -302,7 +302,7 @@ onMounted(fetchProducts);
               v-for="page in generatePagination"
               :key="page"
               @click="changePage(page)"
-              class="px-3 py-1 transition-all duration-200 border rounded"
+              class="rounded border px-3 py-1 transition-all duration-200"
               :class="{
                 'bg-blue-500 text-white': currentPage === page,
                 'bg-white text-blue-500 hover:bg-blue-100':
@@ -315,7 +315,7 @@ onMounted(fetchProducts);
             <button
               @click="changePage(currentPage + 1)"
               :disabled="currentPage === totalPages"
-              class="px-3 py-1 bg-gray-300 border rounded disabled:opacity-50"
+              class="rounded border bg-gray-300 px-3 py-1 disabled:opacity-50"
             >
               Next
             </button>
