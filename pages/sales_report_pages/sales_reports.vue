@@ -52,19 +52,55 @@ const formatPrice = (price) => {
 
 // Fetch data transaksi dari API Laravel
 const fetchTransactions = async () => {
+  isLoading.value = true; // Set loading to true
+
+  // try {
+  //   isLoading.value = true;
+  //   const response = await fetch(useApi("/api/transactions"), {
+  //     headers: {
+  //       Authorization: `Bearer ${token.value}`,
+  //     },
+  //   });
+  //   if (!response.ok) throw new Error("Gagal mengambil data transaksi");
+
+  //   const data = await response.json();
+  //   transactions.value = data.transactions;
+  // } catch (err) {
+  //   error.value = err.message;
+  // } finally {
+  //   isLoading.value = false;
+  // }
   try {
-    isLoading.value = true;
-    const response = await fetch(useApi("/api/transactions"), {
+    const response = await axios.get(useApi("/api/transactions"), {
       headers: {
         Authorization: `Bearer ${token.value}`,
       },
     });
-    if (!response.ok) throw new Error("Gagal mengambil data transaksi");
+    transactions.value = response.data.transactions.map((transaction) => {
+      const mergedProducts = {};
 
-    const data = await response.json();
-    transactions.value = data.transactions;
-  } catch (err) {
-    error.value = err.message;
+      transaction.details.forEach((detail) => {
+        const productId = detail.product.id;
+        if (!mergedProducts[productId]) {
+          mergedProducts[productId] = {
+            product_id: productId,
+            name: detail.product.name,
+            code: detail.product.code,
+            photo: detail.product.photo,
+            price: detail.product.price,
+            quantity: 0,
+          };
+        }
+        mergedProducts[productId].quantity += detail.quantity;
+      });
+
+      return {
+        ...transaction,
+        mergedDetails: Object.values(mergedProducts),
+      };
+    });
+  } catch (error) {
+    console.error("Gagal mengambil data transaksi:", error);
   } finally {
     isLoading.value = false;
   }
@@ -533,18 +569,18 @@ watch(itemsPerPage, () => {
 </script>
 
 <template>
-  <div class="container p-6 mx-auto bg-gray-100">
-    <h1 class="text-3xl font-bold text-center">Toko Obat Asia Raya</h1>
-    <h2 class="text-xl font-semibold text-center">Product Sales Report</h2>
+  <div class="container mx-auto bg-gray-100 p-6">
+    <h1 class="text-center text-3xl font-bold">Toko Obat Asia Raya</h1>
+    <h2 class="text-center text-xl font-semibold">Product Sales Report</h2>
     <p class="text-center text-gray-500">
       Bulan {{ months[selectedMonth - 1] }} Tahun {{ selectedYear }}
     </p>
 
     <!-- Filter -->
-    <div class="flex justify-center mt-4 space-x-4">
+    <div class="mt-4 flex justify-center space-x-4">
       <div>
         <label class="font-medium">Pilih Bulan:</label>
-        <select v-model="selectedMonth" class="px-3 py-1 border rounded">
+        <select v-model="selectedMonth" class="rounded border px-3 py-1">
           <option v-for="(month, index) in months" :key="index" :value="index + 1">
             {{ month }}
           </option>
@@ -555,24 +591,24 @@ watch(itemsPerPage, () => {
         <input
           v-model="selectedYear"
           type="number"
-          class="w-20 px-3 py-1 border rounded"
+          class="w-20 rounded border px-3 py-1"
         />
       </div>
     </div>
-    <div class="flex justify-end mt-4 space-x-4">
-      <button @click="exportToPDF" class="px-4 py-2 text-white bg-blue-500 rounded">
+    <div class="mt-4 flex justify-end space-x-4">
+      <button @click="exportToPDF" class="rounded bg-blue-500 px-4 py-2 text-white">
         Ekspor ke PDF
       </button>
-      <button @click="exportToExcel" class="px-4 py-2 text-white bg-green-500 rounded">
+      <button @click="exportToExcel" class="rounded bg-green-500 px-4 py-2 text-white">
         Ekspor ke Excel
       </button>
     </div>
 
     <!-- Search & Items per page -->
-    <div class="flex justify-between my-4">
+    <div class="my-4 flex justify-between">
       <div>
         <label class="mr-2">Show</label>
-        <select v-model="itemsPerPage" class="px-2 py-1 border rounded">
+        <select v-model="itemsPerPage" class="rounded border px-2 py-1">
           <option v-for="option in itemsPerPageOptions" :key="option" :value="option">
             {{ option }}
           </option>
@@ -583,7 +619,7 @@ watch(itemsPerPage, () => {
         type="text"
         v-model="searchQuery"
         placeholder="Search products"
-        class="px-3 py-1 border rounded"
+        class="rounded border px-3 py-1"
       />
     </div>
 
@@ -591,29 +627,29 @@ watch(itemsPerPage, () => {
       <!-- <p>Loading...</p> -->
       <!-- Ganti dengan spinner jika perlu -->
       <div
-        class="w-16 h-16 ease-linear border-8 border-t-8 border-gray-200 rounded-full loader"
+        class="loader h-16 w-16 rounded-full border-8 border-t-8 border-gray-200 ease-linear"
       ></div>
     </div>
 
     <!-- Tabel Data -->
     <transition v-if="!isLoading" name="fade">
       <div
-        class="p-4 mt-6 overflow-x-auto bg-white rounded-lg shadow-md whitespace-nowrap"
+        class="mt-6 overflow-x-auto whitespace-nowrap rounded-lg bg-white p-4 shadow-md"
       >
         <div
           id="sales-report-table"
-          class="p-4 mt-6 overflow-x-auto bg-white rounded-lg shadow-md whitespace-nowrap"
+          class="mt-6 overflow-x-auto whitespace-nowrap rounded-lg bg-white p-4 shadow-md"
         >
           <table class="w-full border-collapse">
             <thead class="bg-gray-200">
               <tr>
-                <th class="px-2 py-2 border">No</th>
-                <th class="px-2 py-2 border">Photo</th>
-                <th class="px-2 py-2 border">Name</th>
-                <th class="px-2 py-2 border">Harga</th>
-                <th class="px-2 py-2 border">Sold</th>
-                <th class="px-2 py-2 border">Kas Masuk</th>
-                <th class="px-2 py-2 border">Margin Penjualan</th>
+                <th class="border px-2 py-2">No</th>
+                <th class="border px-2 py-2">Photo</th>
+                <th class="border px-2 py-2">Name</th>
+                <th class="border px-2 py-2">Harga</th>
+                <th class="border px-2 py-2">Sold</th>
+                <th class="border px-2 py-2">Kas Masuk</th>
+                <th class="border px-2 py-2">Margin Penjualan</th>
               </tr>
             </thead>
             <tbody>
@@ -629,12 +665,12 @@ watch(itemsPerPage, () => {
                 </td>
               </tr>
               <tr v-else v-for="product in paginatedTransactions" :key="product.no">
-                <td class="px-4 py-2 border text-lg-center">
+                <td class="text-lg-center border px-4 py-2">
                   {{ (currentPage - 1) * itemsPerPage + product.no }}
                 </td>
-                <!-- <td class="flex items-center justify-center px-0 py-2 border"> -->
+                <!-- <td class="flex items-center justify-center border px-0 py-2"> -->
                 <td
-                  class="flex justify-center items-center p-2 border min-w-[100px] min-h-[100px]"
+                  class="flex min-h-[100px] min-w-[100px] items-center justify-center border p-2"
                 >
                   <img
                     :src="
@@ -642,34 +678,34 @@ watch(itemsPerPage, () => {
                         ? useApi(`/storage/${product.photo}`)
                         : '/assets/images/avatar.png'
                     "
-                    class="w-20 h-20 object-fit"
+                    class="object-fit h-20 w-20"
                   />
                 </td>
-                <td class="px-2 py-2 text-blue-600 border cursor-pointer hover:underline">
+                <td class="cursor-pointer border px-2 py-2 text-blue-600 hover:underline">
                   {{ product.name }}
                 </td>
-                <td class="px-2 py-2 text-center border">
+                <td class="border px-2 py-2 text-center">
                   {{ formatPrice(product.price) }}
                 </td>
-                <td class="px-2 py-2 text-center border">{{ product.sold }}</td>
-                <td class="px-2 py-2 text-center border">
+                <td class="border px-2 py-2 text-center">{{ product.sold }}</td>
+                <td class="border px-2 py-2 text-center">
                   {{ formatPrice(product.totalIncome) }}
                 </td>
-                <td class="px-2 py-2 text-center border">
+                <td class="border px-2 py-2 text-center">
                   {{ formatPrice(product.margin) }}
                 </td>
               </tr>
             </tbody>
             <tfoot v-if="!isLoading && !error && mergedTransactions.length > 0">
-              <tr class="font-semibold bg-gray-100">
-                <td colspan="4" class="px-2 py-2 text-right border">
+              <tr class="bg-gray-100 font-semibold">
+                <td colspan="4" class="border px-2 py-2 text-right">
                   Total Keseluruhan:
                 </td>
-                <td class="px-2 py-2 text-center border">{{ grandTotal.sold }}</td>
-                <td class="px-2 py-2 text-center border">
+                <td class="border px-2 py-2 text-center">{{ grandTotal.sold }}</td>
+                <td class="border px-2 py-2 text-center">
                   {{ formatPrice(grandTotal.totalIncome) }}
                 </td>
-                <td class="px-2 py-2 text-center border">
+                <td class="border px-2 py-2 text-center">
                   {{ formatPrice(grandTotal.margin) }}
                 </td>
               </tr>
@@ -680,7 +716,7 @@ watch(itemsPerPage, () => {
     </transition>
 
     <!-- Pagination Controls -->
-    <div class="flex justify-between mt-4">
+    <div class="mt-4 flex justify-between">
       <div>
         Showing {{ (currentPage - 1) * itemsPerPage + 1 }} to
         {{ Math.min(currentPage * itemsPerPage, mergedTransactions.length) }} of
@@ -690,7 +726,7 @@ watch(itemsPerPage, () => {
         <button
           @click="changePage(currentPage - 1)"
           :disabled="currentPage === 1"
-          class="px-3 py-1 bg-gray-300 border rounded disabled:opacity-50"
+          class="rounded border bg-gray-300 px-3 py-1 disabled:opacity-50"
         >
           Prev
         </button>
@@ -698,7 +734,7 @@ watch(itemsPerPage, () => {
           v-for="page in generatePagination"
           :key="page"
           @click="changePage(page)"
-          class="px-3 py-1 transition-all duration-200 border rounded"
+          class="rounded border px-3 py-1 transition-all duration-200"
           :class="{
             'bg-blue-500 text-white': currentPage === page,
             'bg-white text-blue-500 hover:bg-blue-100':
@@ -710,7 +746,7 @@ watch(itemsPerPage, () => {
         <button
           @click="changePage(currentPage + 1)"
           :disabled="currentPage === totalPages"
-          class="px-3 py-1 bg-gray-300 border rounded disabled:opacity-50"
+          class="rounded border bg-gray-300 px-3 py-1 disabled:opacity-50"
         >
           Next
         </button>
