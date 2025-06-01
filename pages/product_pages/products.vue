@@ -17,8 +17,8 @@ const fetchProducts = async () => {
   isLoading.value = true; // Set loading to true
   try {
     const res = await axios.get(useApi(`/api/products`));
-    const data = await res.json();
-    products.value = data.data;
+    // const data = await res.json();
+    products.value = res.data.data;
   } catch (error) {
     alert("Terjadi kesalahan: " + error.message);
   } finally {
