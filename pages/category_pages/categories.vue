@@ -1,16 +1,16 @@
 <template>
-  <div class="container p-6 mx-auto">
-    <div class="flex items-center justify-between mb-4">
+  <div class="container mx-auto p-6">
+    <div class="mb-4 flex items-center justify-between">
       <h1 class="mb-4 text-2xl font-bold">Daftar Kategori</h1>
       <NuxtLink
         to="/category_pages/add_category"
-        class="inline-block px-4 py-2 mb-4 text-white bg-blue-500 rounded"
+        class="mb-4 inline-block rounded bg-blue-500 px-4 py-2 text-white"
       >
         Tambah Kategori
       </NuxtLink>
     </div>
 
-    <div class="flex items-center justify-between mb-4">
+    <div class="mb-4 flex items-center justify-between">
       <div>
         <label class="mr-2">Show</label>
         <select v-model="itemsPerPage" id="itemsPerPage">
@@ -25,14 +25,14 @@
         type="text"
         v-model="searchQuery"
         placeholder="Search"
-        class="p-2 border rounded"
+        class="rounded border p-2"
       />
     </div>
 
     <!-- Loading Spinner -->
     <div v-if="isLoading" class="flex items-center justify-center py-10">
       <div
-        class="w-12 h-12 ease-linear border-4 border-t-4 border-gray-200 rounded-full loader"
+        class="loader h-12 w-12 rounded-full border-4 border-t-4 border-gray-200 ease-linear"
       ></div>
     </div>
 
@@ -40,11 +40,11 @@
     <transition name="fade">
       <div
         v-if="!isLoading"
-        class="overflow-x-auto transition-opacity duration-300 whitespace-nowrap"
+        class="overflow-x-auto whitespace-nowrap transition-opacity duration-300"
         :class="{ 'opacity-50 pointer-events-none': isLoading }"
       >
         <table
-          class="min-w-full text-gray-700 bg-white border-gray-300 rounded-lg shadow-md"
+          class="min-w-full rounded-lg border-gray-300 bg-white text-gray-700 shadow-md"
         >
           <thead>
             <tr class="bg-gray-200">
@@ -98,7 +98,7 @@
         </table>
 
         <!-- Pagination -->
-        <div class="flex justify-between mt-4">
+        <div class="mt-4 flex justify-between">
           <div>
             Showing {{ (currentPage - 1) * itemsPerPage + 1 }} to
             {{ Math.min(currentPage * itemsPerPage, filteredCategories.length) }} of
@@ -108,7 +108,7 @@
             <button
               @click="changePage(currentPage - 1)"
               :disabled="currentPage === 1"
-              class="px-3 py-1 bg-gray-300 border rounded disabled:opacity-50"
+              class="rounded border bg-gray-300 px-3 py-1 disabled:opacity-50"
             >
               Prev
             </button>
@@ -117,7 +117,7 @@
               v-for="page in generatePagination"
               :key="page"
               @click="changePage(page)"
-              class="px-3 py-1 transition-all duration-200 border rounded"
+              class="rounded border px-3 py-1 transition-all duration-200"
               :class="{
                 'bg-blue-500 text-white': currentPage === page,
                 'bg-white text-blue-500 hover:bg-blue-100':
@@ -130,7 +130,7 @@
             <button
               @click="changePage(currentPage + 1)"
               :disabled="currentPage === totalPages"
-              class="px-3 py-1 bg-gray-300 border rounded disabled:opacity-50"
+              class="rounded border bg-gray-300 px-3 py-1 disabled:opacity-50"
             >
               Next
             </button>
@@ -248,7 +248,7 @@ definePageMeta({
 // Fungsi ambil semua kategori langsung di sini
 const getCategories = async () => {
   try {
-    const response = await fetch(
+    const response = await axios.get(
       useApi(`/api/categories`),
       {
         method: "GET",
