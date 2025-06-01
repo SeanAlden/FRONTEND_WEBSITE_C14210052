@@ -248,7 +248,45 @@ definePageMeta({
 
 // Fungsi ambil semua kategori langsung di sini
 const getCategories = async () => {
+  // try {
+  //   const response = await axios.get(useApi(`/api/categories`), {
+  //     // method: "GET",
+  //     // headers: {
+  //     //   "Content-type": "application/json; charset=UTF-8",
+  //     // },
+  //     // body: JSON.stringify({
+  //     //   summoner: this.sumInput,
+  //     //   region: this.regInput,
+  //     // }),
+  //   });
+  //   categories.value = response.data.data;
+  //   // return await response.json();
+  // } catch (error) {
+  //   console.error("Error fetching categories:", error);
+  //   return null;
+  // }
+};
+
+// Fungsi hapus kategori langsung di sini
+const deleteCategory = async (id) => {
   try {
+    const response = await fetch(useApi(`/api/categories/${id}`), {
+      method: "DELETE",
+    });
+    return response.ok;
+  } catch (error) {
+    console.error("Error deleting category:", error);
+  }
+};
+
+const fetchCategories = async () => {
+  // isLoading.value = true;
+  // const data = await getCategories();
+  // categories.value = data || [];
+  // isLoading.value = false;
+
+  try {
+    isLoading.value = true;
     const response = await axios.get(useApi(`/api/categories`), {
       // method: "GET",
       // headers: {
@@ -265,26 +303,9 @@ const getCategories = async () => {
   } catch (error) {
     console.error("Error fetching categories:", error);
     return null;
+  } finally {
+    isLoading.value = false;
   }
-};
-
-// Fungsi hapus kategori langsung di sini
-const deleteCategory = async (id) => {
-  try {
-    const response = await fetch(useApi(`/api/categories/${id}`), {
-      method: "DELETE",
-    });
-    return response.ok;
-  } catch (error) {
-    console.error("Error deleting category:", error);
-  }
-};
-
-const fetchCategories = async () => {
-  isLoading.value = true;
-  const data = await getCategories();
-  categories.value = data || [];
-  isLoading.value = false;
 };
 
 const handleDelete = async (id) => {
