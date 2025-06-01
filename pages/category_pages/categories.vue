@@ -288,7 +288,7 @@ const fetchCategories = async () => {
   isLoading.value = true;
   try {
     const response = await axios.get(useApi("/api/categories"));
-    categories.value = response.data;
+    categories.value = response.data.data;
   } catch (error) {
     console.error("Error fetching categories:", error);
     // return null;
