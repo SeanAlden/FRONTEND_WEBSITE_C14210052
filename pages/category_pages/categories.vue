@@ -248,23 +248,23 @@ definePageMeta({
 
 // Fungsi ambil semua kategori langsung di sini
 // const getCategories = async () => {
-  // try {
-  //   const response = await axios.get(useApi(`/api/categories`), {
-  //     // method: "GET",
-  //     // headers: {
-  //     //   "Content-type": "application/json; charset=UTF-8",
-  //     // },
-  //     // body: JSON.stringify({
-  //     //   summoner: this.sumInput,
-  //     //   region: this.regInput,
-  //     // }),
-  //   });
-  //   categories.value = response.data.data;
-  //   // return await response.json();
-  // } catch (error) {
-  //   console.error("Error fetching categories:", error);
-  //   return null;
-  // }
+// try {
+//   const response = await axios.get(useApi(`/api/categories`), {
+//     // method: "GET",
+//     // headers: {
+//     //   "Content-type": "application/json; charset=UTF-8",
+//     // },
+//     // body: JSON.stringify({
+//     //   summoner: this.sumInput,
+//     //   region: this.regInput,
+//     // }),
+//   });
+//   categories.value = response.data.data;
+//   // return await response.json();
+// } catch (error) {
+//   console.error("Error fetching categories:", error);
+//   return null;
+// }
 // };
 
 // Fungsi hapus kategori langsung di sini
@@ -288,7 +288,8 @@ const fetchCategories = async () => {
   isLoading.value = true;
   try {
     const response = await axios.get(useApi("/api/categories"));
-    categories.value = response.data;
+    // categories.value = response.data;
+    categories.value = response.data?.length ? response.data : [];
   } catch (error) {
     console.error("Error fetching categories:", error);
     // return null;
