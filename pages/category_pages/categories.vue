@@ -259,9 +259,9 @@ const getCategories = async () => {
       //   region: this.regInput,
       // }),
     });
-    // categories.value = response.data.data;
+    categories.value = response.data.data;
 
-    return await response.json();
+    // return await response.json();
   } catch (error) {
     console.error("Error fetching categories:", error);
     return null;
