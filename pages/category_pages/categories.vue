@@ -249,16 +249,16 @@ definePageMeta({
 const getCategories = async () => {
   try {
     const response = await axios.get(useApi(`/api/categories`), {
-      method: "GET",
-      headers: {
-        "Content-type": "application/json; charset=UTF-8",
-      },
+      // method: "GET",
+      // headers: {
+      //   "Content-type": "application/json; charset=UTF-8",
+      // },
       // body: JSON.stringify({
       //   summoner: this.sumInput,
       //   region: this.regInput,
       // }),
     });
-    categories.value = response.data.data;
+    // categories.value = response.data.data;
 
     return await response.json();
   } catch (error) {
