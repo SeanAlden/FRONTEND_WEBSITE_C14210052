@@ -111,7 +111,7 @@ const saveExit = async () => {
 
   const method = selectedProduct.value ? "PUT" : "POST";
 
-  const response = await axios.get(url, {
+  const response = await fetch(url, {
     method,
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(formData.value),
