@@ -1,7 +1,7 @@
 <template>
-  <div class="max-w-5xl p-6 mx-auto">
-    <h1 class="flex items-center gap-2 mb-6 text-3xl font-bold text-gray-800">
-      <span class="inline-block p-2 text-blue-600 bg-blue-100 rounded-full"> 🔔 </span>
+  <div class="mx-auto max-w-5xl p-6">
+    <h1 class="mb-6 flex items-center gap-2 text-3xl font-bold text-gray-800">
+      <span class="inline-block rounded-full bg-blue-100 p-2 text-blue-600"> 🔔 </span>
       Notifikasi
     </h1>
 
@@ -15,10 +15,10 @@
       <!-- <li
         v-for="notif in notifications"
         :key="notif.id"
-        class="p-5 transition bg-white border border-gray-200 rounded-lg shadow-md hover:shadow-lg"
+        class="rounded-lg border border-gray-200 bg-white p-5 shadow-md transition hover:shadow-lg"
       >
         <p class="font-medium text-gray-900">{{ notif.message }}</p>
-        <div class="flex items-center justify-between mt-2 text-sm text-gray-500">
+        <div class="mt-2 flex items-center justify-between text-sm text-gray-500">
           <span>{{ formatDate(notif.notification_time) }}</span>
           <span :class="badgeClass(notif.notification_type)">
             {{ notif.notification_type }}
@@ -28,12 +28,12 @@
       <li
         v-for="notif in notifications"
         :key="notif.id"
-        class="p-5 transition bg-white border border-gray-200 rounded-lg shadow-md hover:shadow-lg"
+        class="rounded-lg border border-gray-200 bg-white p-5 shadow-md transition hover:shadow-lg"
       >
         <!-- <li
         v-for="(notif: Notification) in notifications"
         :key="notif.id"
-        class="p-5 transition bg-white border border-gray-200 rounded-lg shadow-md hover:shadow-lg"
+        class="rounded-lg border border-gray-200 bg-white p-5 shadow-md transition hover:shadow-lg"
       > -->
         <div class="flex items-start justify-between">
           <p class="font-medium text-gray-900">{{ notif.message }}</p>
@@ -46,7 +46,7 @@
           </button>
         </div>
 
-        <div class="flex items-center justify-between mt-2 text-sm text-gray-500">
+        <div class="mt-2 flex items-center justify-between text-sm text-gray-500">
           <span>{{ formatDate(notif.notification_time) }}</span>
           <span :class="badgeClass(notif.notification_type)">
             {{ notif.notification_type }}
@@ -59,6 +59,7 @@
 
 <script setup lang="ts">
 // import { ref, onMounted } from "vue";
+import axios from "axios";
 
 definePageMeta({
   middleware: ["auth"],
@@ -78,8 +79,9 @@ const loading = ref(true);
 
 onMounted(async () => {
   try {
-    const res = await fetch(useApi("/api/notifications"));
-    const data = await res.json();
+    const res = await axios.get(useApi("/api/notifications"));
+    // const data = await res.json();
+    const data = res.data;
     notifications.value = data;
   } catch (error) {
     console.error("Gagal memuat notifikasi:", error);
