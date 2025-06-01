@@ -231,6 +231,7 @@
 // onMounted(fetchCategories);
 
 import { ref, onMounted, computed, watch } from "vue";
+import axios from "axios";
 
 const categories = ref([]);
 const searchQuery = ref("");

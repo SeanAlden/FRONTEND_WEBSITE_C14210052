@@ -1,5 +1,6 @@
 <script setup>
 import { ref, computed, onMounted, watch } from "vue";
+import axios from "axios";
 
 definePageMeta({
   middleware: ["auth"],
