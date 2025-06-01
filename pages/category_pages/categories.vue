@@ -287,7 +287,7 @@ const fetchCategories = async () => {
 
   try {
     isLoading.value = true;
-    const response = await axios.get(useApi(`/api/categories`), {
+    const response = await axios.get(useApi("/api/categories"), {
       // method: "GET",
       // headers: {
       //   "Content-type": "application/json; charset=UTF-8",
