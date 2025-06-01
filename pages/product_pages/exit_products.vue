@@ -1,4 +1,5 @@
 <script setup>
+import axios from "axios";
 import { ref, onMounted, watch } from "vue";
 
 definePageMeta({
@@ -24,9 +25,9 @@ const isLoading = ref(true); // State untuk loading
 const fetchExits = async () => {
   isLoading.value = true; // Set loading to true
   try {
-    const response = await fetch(useApi(`/api/exit-products`));
-    const data = await response.json();
-    exitProducts.value = data.data;
+    const response = await axios.get(useApi(`/api/exit-products`));
+    // const data = await response.json();
+    exitProducts.value = response.data.data;
   } catch (error) {
     alert("Terjadi kesalahan: " + error.message);
   } finally {
@@ -36,19 +37,19 @@ const fetchExits = async () => {
 
 // Ambil daftar produk
 const fetchProducts = async () => {
-  const response = await fetch(useApi(`/api/products`));
-  const data = await response.json();
-  products.value = data.data;
+  const response = await axios.get(useApi(`/api/products`));
+  // const data = await response.json();
+  products.value = response.data.data;
 };
 
 // Ambil tanggal expired berdasarkan produk yang dipilih
 const fetchExpDates = async () => {
   if (!formData.value.product_id) return;
-  const response = await fetch(
+  const response = await axios.get(
     useApi(`/api/products/product/${formData.value.product_id}/exp-dates`)
   );
-  const data = await response.json();
-  expDates.value = data.data;
+  // const data = await response.json();
+  expDates.value = response.data.data;
 };
 
 // Watcher: update tanggal expired saat produk berubah
@@ -110,7 +111,7 @@ const saveExit = async () => {
 
   const method = selectedProduct.value ? "PUT" : "POST";
 
-  const response = await fetch(url, {
+  const response = await axios.get(url, {
     method,
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(formData.value),
@@ -218,22 +219,22 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="container p-6 mx-auto">
+  <div class="container mx-auto p-6">
     <!-- Tombol Tambah -->
-    <div class="flex items-center justify-between mb-4">
+    <div class="mb-4 flex items-center justify-between">
       <h1 class="text-2xl font-bold">Barang Keluar</h1>
       <button
         @click="openModal()"
-        class="px-4 py-2 text-white bg-blue-600 rounded shadow hover:bg-blue-700"
+        class="rounded bg-blue-600 px-4 py-2 text-white shadow hover:bg-blue-700"
       >
         + Tambah
       </button>
     </div>
 
-    <div class="flex items-center justify-between mb-4">
+    <div class="mb-4 flex items-center justify-between">
       <div>
         <label class="mr-2">Show</label>
-        <!-- <select v-model="itemsPerPage" class="p-1 border rounded">
+        <!-- <select v-model="itemsPerPage" class="rounded border p-1">
           <option value="10">10</option>
           <option value="20">20</option>
           <option value="50">50</option>
@@ -250,7 +251,7 @@ onMounted(() => {
         type="text"
         v-model="searchQuery"
         placeholder="Search"
-        class="p-2 border rounded"
+        class="rounded border p-2"
       />
     </div>
 
@@ -258,27 +259,27 @@ onMounted(() => {
       <!-- <p>Loading...</p> -->
       <!-- Ganti dengan spinner jika perlu -->
       <div
-        class="w-16 h-16 ease-linear border-8 border-t-8 border-gray-200 rounded-full loader"
+        class="loader h-16 w-16 rounded-full border-8 border-t-8 border-gray-200 ease-linear"
       ></div>
     </div>
 
     <!-- Tabel -->
     <transition name="fade">
       <div v-if="!isLoading" class="overflow-x-auto whitespace-nowrap">
-        <table class="min-w-full bg-white border border-gray-300 rounded-lg shadow-md">
-          <thead class="bg-gray-100 border-b">
+        <table class="min-w-full rounded-lg border border-gray-300 bg-white shadow-md">
+          <thead class="border-b bg-gray-100">
             <tr>
-              <th class="p-3 text-center border">#</th>
-              <th class="p-3 text-center border">Foto</th>
-              <th class="p-3 text-left border">Nama</th>
-              <th class="p-3 text-center border">Harga</th>
-              <th class="p-3 text-center border">Tanggal Expired</th>
-              <th class="p-3 text-center border">Sebelum</th>
-              <th class="p-3 text-center border">Jumlah</th>
-              <th class="p-3 text-center border">Sesudah</th>
-              <!-- <th class="p-3 text-center border">Total Harga</th> -->
-              <th class="p-3 text-center border">Waktu Pengurangan</th>
-              <th class="p-3 text-center border">Opsi</th>
+              <th class="border p-3 text-center">#</th>
+              <th class="border p-3 text-center">Foto</th>
+              <th class="border p-3 text-left">Nama</th>
+              <th class="border p-3 text-center">Harga</th>
+              <th class="border p-3 text-center">Tanggal Expired</th>
+              <th class="border p-3 text-center">Sebelum</th>
+              <th class="border p-3 text-center">Jumlah</th>
+              <th class="border p-3 text-center">Sesudah</th>
+              <!-- <th class="border p-3 text-center">Total Harga</th> -->
+              <th class="border p-3 text-center">Waktu Pengurangan</th>
+              <th class="border p-3 text-center">Opsi</th>
             </tr>
           </thead>
           <tbody>
@@ -287,11 +288,11 @@ onMounted(() => {
               :key="exit.id"
               class="border-b hover:bg-gray-50"
             >
-              <!-- <td class="p-3 border">{{ index + 1 }}</td> -->
-              <td class="p-3 border">{{ exit.product.code }}</td>
-              <!-- <td class="flex items-center justify-center p-2 border"> -->
+              <!-- <td class="border p-3">{{ index + 1 }}</td> -->
+              <td class="border p-3">{{ exit.product.code }}</td>
+              <!-- <td class="flex items-center justify-center border p-2"> -->
               <td
-                class="flex justify-center items-center p-2 border min-w-[120px] min-h-[120px]"
+                class="flex min-h-[120px] min-w-[120px] items-center justify-center border p-2"
               >
                 <img
                   :src="
@@ -299,40 +300,40 @@ onMounted(() => {
                       ? `http://localhost:8000/storage/${exit.product.photo}`
                       : '/assets/images/avatar.png'
                   "
-                  class="w-20 h-20 object-fit"
+                  class="object-fit h-20 w-20"
                 />
               </td>
-              <td class="p-3 border">{{ exit.product.name }}</td>
-              <td class="p-3 text-center border">
+              <td class="border p-3">{{ exit.product.name }}</td>
+              <td class="border p-3 text-center">
                 <!-- Rp {{ exit.product.price.toLocaleString() }} -->
                 {{ formatPrice(exit.product.price) }}
               </td>
-              <td class="p-3 text-center border">
+              <td class="border p-3 text-center">
                 {{ exit.exp_date }}
               </td>
-              <td class="p-3 font-bold text-center border">{{ exit.previous_stock }}</td>
-              <td class="p-3 font-bold text-center text-red-500 border">
+              <td class="border p-3 text-center font-bold">{{ exit.previous_stock }}</td>
+              <td class="border p-3 text-center font-bold text-red-500">
                 - {{ exit.removed_stock }}
               </td>
-              <td class="p-3 font-bold text-center border">{{ exit.current_stock }}</td>
-              <!-- <td class="p-3 text-center border"> -->
+              <td class="border p-3 text-center font-bold">{{ exit.current_stock }}</td>
+              <!-- <td class="border p-3 text-center"> -->
               <!-- Rp {{ (exit.product.price * exit.current_stock).toLocaleString() }} -->
               <!-- {{ formatPrice(exit.product.price * exit.current_stock) }} -->
               <!-- </td> -->
-              <td class="p-3 text-center border">
+              <td class="border p-3 text-center">
                 <!-- {{ new Date(exit.created_at).toLocaleString() }} -->
                 {{ formatDate(exit.created_at) }}
               </td>
-              <td class="p-3 text-center border">
+              <td class="border p-3 text-center">
                 <button
                   @click="openModal(exit)"
-                  class="px-3 py-1 text-white bg-yellow-500 rounded"
+                  class="rounded bg-yellow-500 px-3 py-1 text-white"
                 >
                   Edit
                 </button>
                 <button
                   @click="deleteExit(exit.id)"
-                  class="px-3 py-1 ml-2 text-white bg-red-500 rounded"
+                  class="ml-2 rounded bg-red-500 px-3 py-1 text-white"
                 >
                   Hapus
                 </button>
@@ -342,7 +343,7 @@ onMounted(() => {
         </table>
 
         <!-- Pagination -->
-        <div class="flex justify-between mt-4">
+        <div class="mt-4 flex justify-between">
           <div>
             Showing {{ (currentPage - 1) * itemsPerPage + 1 }} to
             {{ Math.min(currentPage * itemsPerPage, filteredExit.length) }} of
@@ -352,7 +353,7 @@ onMounted(() => {
             <button
               @click="changePage(currentPage - 1)"
               :disabled="currentPage === 1"
-              class="px-3 py-1 bg-gray-300 border rounded disabled:opacity-50"
+              class="rounded border bg-gray-300 px-3 py-1 disabled:opacity-50"
             >
               Prev
             </button>
@@ -361,7 +362,7 @@ onMounted(() => {
               v-for="page in generatePagination"
               :key="page"
               @click="changePage(page)"
-              class="px-3 py-1 transition-all duration-200 border rounded"
+              class="rounded border px-3 py-1 transition-all duration-200"
               :class="{
                 'bg-blue-500 text-white': currentPage === page,
                 'bg-white text-blue-500 hover:bg-blue-100':
@@ -374,7 +375,7 @@ onMounted(() => {
             <button
               @click="changePage(currentPage + 1)"
               :disabled="currentPage === totalPages"
-              class="px-3 py-1 bg-gray-300 border rounded disabled:opacity-50"
+              class="rounded border bg-gray-300 px-3 py-1 disabled:opacity-50"
             >
               Next
             </button>
@@ -388,12 +389,12 @@ onMounted(() => {
       v-if="showModal"
       class="fixed inset-0 flex items-center justify-center bg-gray-600 bg-opacity-50"
     >
-      <div class="w-1/3 p-6 bg-white rounded shadow-lg">
+      <div class="w-1/3 rounded bg-white p-6 shadow-lg">
         <h2 class="mb-4 text-xl font-bold">Pilih Barang Keluar</h2>
 
         <!-- Dropdown Produk -->
-        <label class="block mb-2 text-gray-700">Pilih Produk:</label>
-        <select v-model="formData.product_id" class="w-full p-2 mb-4 border">
+        <label class="mb-2 block text-gray-700">Pilih Produk:</label>
+        <select v-model="formData.product_id" class="mb-4 w-full border p-2">
           <option v-for="product in products" :key="product.id" :value="product.id">
             {{ product.name }} ({{ product.code }}) - Rp
             {{ product.price.toLocaleString() }}
@@ -401,28 +402,28 @@ onMounted(() => {
         </select>
 
         <!-- Dropdown Expired Date -->
-        <label class="block mb-2 text-gray-700">Tanggal Expired:</label>
-        <select v-model="formData.exp_date" class="w-full p-2 mb-4 border">
+        <label class="mb-2 block text-gray-700">Tanggal Expired:</label>
+        <select v-model="formData.exp_date" class="mb-4 w-full border p-2">
           <option v-for="exp in expDates" :key="exp" :value="exp">{{ exp }}</option>
         </select>
 
         <!-- Input Jumlah -->
-        <label class="block mb-2 text-gray-700">Jumlah Stok:</label>
+        <label class="mb-2 block text-gray-700">Jumlah Stok:</label>
         <input
           type="number"
           v-model="formData.removed_stock"
-          class="w-full p-2 mb-4 border"
+          class="mb-4 w-full border p-2"
           min="1"
         />
 
         <div class="flex justify-end">
           <button
             @click="closeModal"
-            class="px-4 py-2 mr-2 text-white bg-gray-400 rounded"
+            class="mr-2 rounded bg-gray-400 px-4 py-2 text-white"
           >
             Batal
           </button>
-          <button @click="saveExit" class="px-4 py-2 text-white bg-blue-600 rounded">
+          <button @click="saveExit" class="rounded bg-blue-600 px-4 py-2 text-white">
             Simpan
           </button>
         </div>

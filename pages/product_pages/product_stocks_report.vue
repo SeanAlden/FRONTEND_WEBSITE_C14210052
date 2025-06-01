@@ -1,15 +1,15 @@
 <template>
-  <div class="container p-6 mx-auto">
-    <h1 class="mb-6 text-2xl font-bold text-center">Laporan Barang Masuk-Keluar</h1>
+  <div class="container mx-auto p-6">
+    <h1 class="mb-6 text-center text-2xl font-bold">Laporan Barang Masuk-Keluar</h1>
 
     <!-- FILTER SECTION -->
-    <div class="flex flex-wrap items-center justify-center gap-4 mb-6">
+    <div class="mb-6 flex flex-wrap items-center justify-center gap-4">
       <div>
         <label class="font-semibold">Filter Tanggal:</label>
         <input
           type="date"
           v-model="selectedDate"
-          class="px-4 py-2 border rounded-md"
+          class="rounded-md border px-4 py-2"
           @change="applyFilters"
         />
       </div>
@@ -19,21 +19,21 @@
         <input
           type="month"
           v-model="selectedMonthYear"
-          class="px-4 py-2 border rounded-md"
+          class="rounded-md border px-4 py-2"
           @change="applyFilters"
         />
       </div>
 
-      <button @click="resetFilters" class="px-4 py-2 text-white bg-gray-500 rounded-md">
+      <button @click="resetFilters" class="rounded-md bg-gray-500 px-4 py-2 text-white">
         Reset Filter
       </button>
     </div>
 
     <!-- SEARCH SECTION -->
-    <div class="flex items-center justify-between mb-4">
+    <div class="mb-4 flex items-center justify-between">
       <div>
         <label class="mr-2">Show</label>
-        <!-- <select v-model="itemsPerPage" class="p-1 border rounded">
+        <!-- <select v-model="itemsPerPage" class="rounded border p-1">
           <option value="10">10</option>
           <option value="20">20</option>
           <option value="50">50</option>
@@ -50,7 +50,7 @@
           type="text"
           v-model="searchQuery"
           placeholder="Search"
-          class="p-2 border rounded"
+          class="rounded border p-2"
         />
       </div>
     </div>
@@ -59,14 +59,14 @@
       <!-- <p>Loading...</p> -->
       <!-- Ganti dengan spinner jika perlu -->
       <div
-        class="w-16 h-16 ease-linear border-8 border-t-8 border-gray-200 rounded-full loader"
+        class="loader h-16 w-16 rounded-full border-8 border-t-8 border-gray-200 ease-linear"
       ></div>
     </div>
 
     <transition name="fade">
       <div
         v-if="!isLoading"
-        class="overflow-x-auto bg-white rounded-lg shadow-md whitespace-nowrap"
+        class="overflow-x-auto whitespace-nowrap rounded-lg bg-white shadow-md"
       >
         <div
           v-for="(group, productName) in groupedStocks"
@@ -75,39 +75,39 @@
         >
           <h2 class="text-lg font-bold">{{ productName }}</h2>
           <table class="min-w-full border border-gray-300">
-            <thead class="text-gray-700 bg-gray-200">
+            <thead class="bg-gray-200 text-gray-700">
               <tr>
-                <th class="px-4 py-2 border">Kode</th>
-                <th class="px-4 py-2 border">Foto</th>
-                <th class="px-4 py-2 border">Harga</th>
-                <th class="px-4 py-2 border">Tanggal Expired</th>
-                <th class="px-4 py-2 border">Sebelum</th>
-                <th class="px-4 py-2 border">Jumlah</th>
-                <th class="px-4 py-2 border">Sesudah</th>
-                <th class="px-4 py-2 border">Waktu Masuk / Keluar</th>
-                <th class="px-4 py-2 border">Kondisi</th>
+                <th class="border px-4 py-2">Kode</th>
+                <th class="border px-4 py-2">Foto</th>
+                <th class="border px-4 py-2">Harga</th>
+                <th class="border px-4 py-2">Tanggal Expired</th>
+                <th class="border px-4 py-2">Sebelum</th>
+                <th class="border px-4 py-2">Jumlah</th>
+                <th class="border px-4 py-2">Sesudah</th>
+                <th class="border px-4 py-2">Waktu Masuk / Keluar</th>
+                <th class="border px-4 py-2">Kondisi</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="(item, index) in group" :key="index" class="hover:bg-gray-100">
-                <td class="px-4 py-2 border" v-if="index === 0">{{ item.code }}</td>
-                <td class="px-4 py-2 border" v-if="index !== 0"></td>
-                <td class="px-4 py-2 border">
+                <td class="border px-4 py-2" v-if="index === 0">{{ item.code }}</td>
+                <td class="border px-4 py-2" v-if="index !== 0"></td>
+                <td class="border px-4 py-2">
                   <img
                     :src="item.photo"
                     alt="Foto Produk"
-                    class="object-cover w-12 h-12 rounded"
+                    class="h-12 w-12 rounded object-cover"
                   />
                 </td>
-                <td class="px-4 py-2 text-center border">
+                <td class="border px-4 py-2 text-center">
                   {{ formatPrice(item.price) }}
                 </td>
-                <td class="px-4 py-2 text-center border">{{ item.exp_date }}</td>
-                <td class="px-4 py-2 font-bold text-center border">
+                <td class="border px-4 py-2 text-center">{{ item.exp_date }}</td>
+                <td class="border px-4 py-2 text-center font-bold">
                   {{ item.previous_stock }}
                 </td>
-                <!-- <td class="px-4 py-2 font-bold text-center border">{{ item.quantity }}</td> -->
-                <td class="px-4 py-2 font-bold text-center border">
+                <!-- <td class="border px-4 py-2 text-center font-bold">{{ item.quantity }}</td> -->
+                <td class="border px-4 py-2 text-center font-bold">
                   <span
                     :class="
                       item.condition === 'Masuk' ? 'text-green-600' : 'text-red-600'
@@ -117,13 +117,13 @@
                   </span>
                 </td>
 
-                <td class="px-4 py-2 font-bold text-center border">
+                <td class="border px-4 py-2 text-center font-bold">
                   {{ item.current_stock }}
                 </td>
-                <td class="px-4 py-2 text-center border">
+                <td class="border px-4 py-2 text-center">
                   {{ formatDate(item.timestamp) }}
                 </td>
-                <td class="px-4 py-2 text-center border">
+                <td class="border px-4 py-2 text-center">
                   <span
                     :class="
                       item.condition === 'Masuk'
@@ -142,7 +142,7 @@
     </transition>
 
     <!-- Pagination -->
-    <div class="flex justify-between mt-4">
+    <div class="mt-4 flex justify-between">
       <div>
         Showing {{ (currentPage - 1) * itemsPerPage + 1 }} to
         {{ Math.min(currentPage * itemsPerPage, filteredStocks.length) }} of
@@ -152,7 +152,7 @@
         <button
           @click="changePage(currentPage - 1)"
           :disabled="currentPage === 1"
-          class="px-3 py-1 bg-gray-300 border rounded disabled:opacity-50"
+          class="rounded border bg-gray-300 px-3 py-1 disabled:opacity-50"
         >
           Prev
         </button>
@@ -161,7 +161,7 @@
           v-for="page in generatePagination"
           :key="page"
           @click="changePage(page)"
-          class="px-3 py-1 transition-all duration-200 border rounded"
+          class="rounded border px-3 py-1 transition-all duration-200"
           :class="{
             'bg-blue-500 text-white': currentPage === page,
             'bg-white text-blue-500 hover:bg-blue-100':
@@ -174,7 +174,7 @@
         <button
           @click="changePage(currentPage + 1)"
           :disabled="currentPage === totalPages"
-          class="px-3 py-1 bg-gray-300 border rounded disabled:opacity-50"
+          class="rounded border bg-gray-300 px-3 py-1 disabled:opacity-50"
         >
           Next
         </button>
@@ -184,6 +184,7 @@
 </template>
 
 <script setup>
+import axios from "axios";
 import { ref, computed, onMounted } from "vue";
 
 definePageMeta({
@@ -202,9 +203,9 @@ const isLoading = ref(true); // State untuk loading
 const fetchStockReport = async () => {
   isLoading.value = true; // Set loading to true
   try {
-    const response = await fetch(useApi("/api/product-stocks-report"));
-    const data = await response.json();
-    if (data.success) {
+    const response = await axios.get(useApi("/api/product-stocks-report"));
+    // const data = await response.json();
+    if (response.data.success) {
       productStocks.value = data.data.map((item) => ({
         id: item.id,
         name: item.name,
