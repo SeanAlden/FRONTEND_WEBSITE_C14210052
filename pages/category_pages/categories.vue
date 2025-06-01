@@ -285,21 +285,10 @@ const fetchCategories = async () => {
   // categories.value = data || [];
   // isLoading.value = false;
 
+  isLoading.value = true;
   try {
-    isLoading.value = true;
-    const response = await axios.get(useApi("/api/categories"), {
-      // method: "GET",
-      // headers: {
-      //   "Content-type": "application/json; charset=UTF-8",
-      // },
-      // body: JSON.stringify({
-      //   summoner: this.sumInput,
-      //   region: this.regInput,
-      // }),
-    });
+    const response = await axios.get(useApi("/api/categories"));
     categories.value = response.data.data;
-
-    // return await response.json();
   } catch (error) {
     console.error("Error fetching categories:", error);
     return null;
