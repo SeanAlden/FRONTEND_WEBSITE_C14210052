@@ -7,7 +7,7 @@ export default defineNuxtConfig({
 
   devServer: {
     // host: "127.0.0.1",
-    host: "https://e838-149-113-43-241.ngrok-free.app",
+    host: "https://asiaraya.my.id",
   },
 
   // vite: {
@@ -27,7 +27,7 @@ export default defineNuxtConfig({
 
   laravelSanctum: {
     // apiUrl: "http://127.0.0.1:8000",
-    apiUrl: "https://e838-149-113-43-241.ngrok-free.app",
+    apiUrl: "https://asiaraya.my.id",
     authMode: "cookie",
     // withCredentials: true,
 
@@ -53,7 +53,7 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      apiBase: 'https://e838-149-113-43-241.ngrok-free.app'
+      apiBase: 'https://asiaraya.my.id'
       // apiBase: 'http://127.0.0.1:8000'
     }
   }
