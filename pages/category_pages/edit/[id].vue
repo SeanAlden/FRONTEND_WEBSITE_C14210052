@@ -107,6 +107,7 @@
 
 import { ref, onMounted, nextTick, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
+import axios from "axios"; // ✅ Import axios
 
 definePageMeta({
   middleware: ["auth"],
@@ -126,26 +127,47 @@ const codeInputRef = ref(null);
 const descTextarea = ref(null);
 
 // Fungsi getCategoryById dipindah dari useApi.js
+// const getCategoryById = async (id) => {
+//   try {
+//     const response = await fetch(useApi(`/api/categories/${id}`));
+//     if (!response.ok) throw new Error("Gagal mengambil data kategori");
+//     return await response.json();
+//   } catch (error) {
+//     console.error(`Error fetching category with ID ${id}:`, error);
+//     return null;
+//   }
+// };
+
+// Fungsi updateCategory dipindah dari useApi.js
+// const updateCategory = async (id, data) => {
+//   try {
+//     const response = await fetch(useApi(`/api/categories/${id}`), {
+//       method: "PUT",
+//       headers: { "Content-Type": "application/json" },
+//       body: JSON.stringify(data),
+//     });
+//     return await response.json();
+//   } catch (error) {
+//     console.error("Error updating category:", error);
+//   }
+// };
+
+// ✅ Ganti fetch dengan axios.get
 const getCategoryById = async (id) => {
   try {
-    const response = await fetch(useApi(`/api/categories/${id}`));
-    if (!response.ok) throw new Error("Gagal mengambil data kategori");
-    return await response.json();
+    const response = await axios.get(useApi(`/api/categories/${id}`));
+    return response.data;
   } catch (error) {
     console.error(`Error fetching category with ID ${id}:`, error);
     return null;
   }
 };
 
-// Fungsi updateCategory dipindah dari useApi.js
+// ✅ Ganti fetch dengan axios.put
 const updateCategory = async (id, data) => {
   try {
-    const response = await fetch(useApi(`/api/categories/${id}`), {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    });
-    return await response.json();
+    const response = await axios.put(useApi(`/api/categories/${id}`), data);
+    return response.data;
   } catch (error) {
     console.error("Error updating category:", error);
   }
