@@ -25,24 +25,62 @@ const product = reactive({
 });
 
 // Fetch kategori terlebih dahulu
+// const fetchCategories = async () => {
+//   try {
+//     const res = await fetch(useApi("/api/categories"));
+//     if (!res.ok) throw new Error("Gagal mengambil data kategori");
+//     const data = await res.json();
+//     categories.value = data;
+//   } catch (error) {
+//     console.error("Error fetching categories:", error);
+//   }
+// };
+
+// ✅ Fetch kategori pakai axios
 const fetchCategories = async () => {
   try {
-    const res = await fetch(useApi("/api/categories"));
-    if (!res.ok) throw new Error("Gagal mengambil data kategori");
-    const data = await res.json();
-    categories.value = data;
+    const res = await axios.get(useApi("/api/categories"));
+    categories.value = res.data;
   } catch (error) {
     console.error("Error fetching categories:", error);
   }
 };
 
 // Fetch produk berdasarkan ID
+// const fetchProduct = async () => {
+//   try {
+//     const res = await fetch(useApi(`/api/products/${route.params.id}`));
+//     if (!res.ok) throw new Error("Gagal mengambil data produk");
+
+//     const data = await res.json();
+//     Object.assign(product, {
+//       name: data.data.name,
+//       code: data.data.code,
+//       category_id: data.data.category_id,
+//       price: data.data.price,
+//       description: data.data.description,
+//     });
+
+//     // Simpan stok berdasarkan tanggal expired
+//     expStockList.value = data.data.stocks || [];
+
+//     // Set URL gambar jika ada foto
+//     productImage.value = data.data.photo
+//       ? useApi(`/storage/${data.data.photo}`)
+//       : null;
+
+//     await nextTick();
+//   } catch (error) {
+//     console.error("Error fetching product:", error);
+//   }
+// };
+
+// ✅ Fetch produk berdasarkan ID pakai axios
 const fetchProduct = async () => {
   try {
-    const res = await fetch(useApi(`/api/products/${route.params.id}`));
-    if (!res.ok) throw new Error("Gagal mengambil data produk");
+    const res = await axios.get(useApi(`/api/products/${route.params.id}`));
+    const data = res.data;
 
-    const data = await res.json();
     Object.assign(product, {
       name: data.data.name,
       code: data.data.code,
@@ -51,10 +89,8 @@ const fetchProduct = async () => {
       description: data.data.description,
     });
 
-    // Simpan stok berdasarkan tanggal expired
     expStockList.value = data.data.stocks || [];
 
-    // Set URL gambar jika ada foto
     productImage.value = data.data.photo
       ? useApi(`/storage/${data.data.photo}`)
       : null;
@@ -131,8 +167,70 @@ const adjustHeight = (element) => {
 //   }
 // };
 
+// const updateProduct = async () => {
+//   errorMessage.value = ""; // Reset error
+
+//   try {
+//     const formData = new FormData();
+//     formData.append("name", product.name);
+//     formData.append("code", product.code);
+//     formData.append("category_id", String(product.category_id));
+//     formData.append("price", product.price);
+//     formData.append("description", product.description);
+
+//     if (product.photo instanceof File) {
+//       formData.append("photo", product.photo);
+//     }
+
+//     // Tambahkan stok per tanggal expired ke FormData
+//     expStockList.value.forEach((item, index) => {
+//       formData.append(`stocks[${index}][exp_date]`, item.exp_date);
+//       formData.append(`stocks[${index}][stock]`, item.stock);
+//     });
+
+//     const res =
+//       // await fetch(`http://127.0.0.1:8000/api/products/${route.params.id}`, {
+//       //   method: "POST", // Ubah menjadi PUT jika API backend sudah menggunakan PUT/PATCH
+//       //   body: formData,
+//       // headers: {
+//       //     // Accept: "application/json",
+//       //     'Content-Type': "multipart/form-data",
+//       //   },
+//       // });
+
+//       await axios.post(
+//         useApi(`/api/products/${route.params.id}`),
+//         formData,
+//         {
+//           headers: { "Content-Type": "multipart/form-data" },
+//         }
+//       );
+
+//     // const data = await res.json();
+//     console.log("Response Data:", res.data);
+
+//     // if (!res.ok) {
+//     //   throw new Error(data.message || "Gagal memperbarui produk");
+//     // }
+
+//     if (!res.data || res.data.success === false) {
+//       throw new Error(res.data?.message || "Gagal memperbarui produk");
+//     }
+
+//     router.push("/product_pages/products");
+//   } catch (error) {
+//     errorMessage.value = error.message;
+
+//     // Hapus errorMessage setelah 3 detik
+//     setTimeout(() => {
+//       errorMessage.value = "";
+//     }, 3000);
+//   }
+// };
+
+// ✅ Update produk pakai axios
 const updateProduct = async () => {
-  errorMessage.value = ""; // Reset error
+  errorMessage.value = "";
 
   try {
     const formData = new FormData();
@@ -146,36 +244,18 @@ const updateProduct = async () => {
       formData.append("photo", product.photo);
     }
 
-    // Tambahkan stok per tanggal expired ke FormData
     expStockList.value.forEach((item, index) => {
       formData.append(`stocks[${index}][exp_date]`, item.exp_date);
       formData.append(`stocks[${index}][stock]`, item.stock);
     });
 
-    const res =
-      // await fetch(`http://127.0.0.1:8000/api/products/${route.params.id}`, {
-      //   method: "POST", // Ubah menjadi PUT jika API backend sudah menggunakan PUT/PATCH
-      //   body: formData,
-      // headers: {
-      //     // Accept: "application/json",
-      //     'Content-Type': "multipart/form-data",
-      //   },
-      // });
-
-      await axios.post(
-        useApi(`/api/products/${route.params.id}`),
-        formData,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-        }
-      );
-
-    // const data = await res.json();
-    console.log("Response Data:", res.data);
-
-    // if (!res.ok) {
-    //   throw new Error(data.message || "Gagal memperbarui produk");
-    // }
+    const res = await axios.post(
+      useApi(`/api/products/${route.params.id}`),
+      formData,
+      {
+        headers: { "Content-Type": "multipart/form-data" },
+      }
+    );
 
     if (!res.data || res.data.success === false) {
       throw new Error(res.data?.message || "Gagal memperbarui produk");
@@ -184,8 +264,6 @@ const updateProduct = async () => {
     router.push("/product_pages/products");
   } catch (error) {
     errorMessage.value = error.message;
-
-    // Hapus errorMessage setelah 3 detik
     setTimeout(() => {
       errorMessage.value = "";
     }, 3000);
