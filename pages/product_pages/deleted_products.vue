@@ -51,23 +51,43 @@ const fetchProducts = async () => {
 //   }
 // };
 
+// const toggleProductStatus = async (id, status) => {
+//   const confirmMessage =
+//     status === "nonactive" ? "Hapus produk ini?" : "Aktifkan kembali produk ini?";
+//   if (!confirm(confirmMessage)) return;
+
+//   try {
+//     const data = await apiFetch(`updateCondition/products/${id}`, "PUT", {
+//       condition: status,
+//     });
+
+//     if (data.success) {
+//       fetchProducts(); // misalnya fungsi untuk refresh data
+//     } else {
+//       alert(data.message);
+//     }
+//   } catch (error) {
+//     alert("Terjadi kesalahan: " + error.message);
+//   }
+// };
+
 const toggleProductStatus = async (id, status) => {
   const confirmMessage =
     status === "nonactive" ? "Hapus produk ini?" : "Aktifkan kembali produk ini?";
   if (!confirm(confirmMessage)) return;
 
   try {
-    const data = await apiFetch(`updateCondition/products/${id}`, "PUT", {
+    const res = await axios.put(useApi(`/api/updateCondition/products/${id}`), {
       condition: status,
     });
 
-    if (data.success) {
-      fetchProducts(); // misalnya fungsi untuk refresh data
+    if (res.data?.success) {
+      fetchProducts(); // Refresh data
     } else {
-      alert(data.message);
+      alert(res.data?.message || "Gagal memperbarui status produk.");
     }
   } catch (error) {
-    alert("Terjadi kesalahan: " + error.message);
+    alert("Terjadi kesalahan: " + (error.response?.data?.message || error.message));
   }
 };
 
