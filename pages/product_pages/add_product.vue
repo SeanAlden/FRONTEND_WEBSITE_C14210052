@@ -26,16 +26,35 @@ const codeError = ref(""); // Untuk menyimpan pesan error kode produk
 const errorMessage = ref("");
 
 // Ambil kategori & produk yang ada saat halaman dimuat
+// const fetchCategories = async () => {
+//   const res = await fetch(useApi(`/api/categories`));
+//   const data = await res.json();
+//   categories.value = data;
+// };
+
+// const fetchExistingProducts = async () => {
+//   const res = await fetch(useApi(`/api/products`));
+//   const data = await res.json();
+//   existingProductCodes.value = data.map((product) => product.code); // Simpan kode produk yang sudah ada
+// };
+
+// Ambil kategori & produk yang ada saat halaman dimuat
 const fetchCategories = async () => {
-  const res = await fetch(useApi(`/api/categories`));
-  const data = await res.json();
-  categories.value = data;
+  try {
+    const res = await axios.get(useApi(`/api/categories`));
+    categories.value = res.data;
+  } catch (error) {
+    console.error("Gagal mengambil data kategori:", error);
+  }
 };
 
 const fetchExistingProducts = async () => {
-  const res = await fetch(useApi(`/api/products`));
-  const data = await res.json();
-  existingProductCodes.value = data.map((product) => product.code); // Simpan kode produk yang sudah ada
+  try {
+    const res = await axios.get(useApi(`/api/products`));
+    existingProductCodes.value = res.data.map((product) => product.code);
+  } catch (error) {
+    console.error("Gagal mengambil data produk:", error);
+  }
 };
 
 // Menangani upload foto
