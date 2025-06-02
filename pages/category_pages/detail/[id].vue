@@ -35,6 +35,7 @@
 import { ref, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 // import useApi from "@/composables/useApi";
+import axios from "axios";
 
 definePageMeta({
   middleware: ["auth"],
