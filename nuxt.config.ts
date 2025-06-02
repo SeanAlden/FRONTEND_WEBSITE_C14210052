@@ -7,7 +7,7 @@ export default defineNuxtConfig({
 
   devServer: {
     // host: "127.0.0.1",
-    host: "https://cd93-203-189-122-12.ngrok-free.app",
+    host: "https://5c58-149-113-43-241.ngrok-free.app",
   },
 
   // vite: {
@@ -27,7 +27,7 @@ export default defineNuxtConfig({
 
   laravelSanctum: {
     // apiUrl: "http://127.0.0.1:8000",
-    apiUrl: "https://cd93-203-189-122-12.ngrok-free.app",
+    apiUrl: "https://5c58-149-113-43-241.ngrok-free.app",
     authMode: "cookie",
     // withCredentials: true,
 
@@ -53,7 +53,7 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      apiBase: 'https://cd93-203-189-122-12.ngrok-free.app'
+      apiBase: 'https://5c58-149-113-43-241.ngrok-free.app'
       // apiBase: 'http://127.0.0.1:8000'
     }
   }
