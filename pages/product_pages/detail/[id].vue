@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
+import axios from "axios"; // ✅ Import axios
 
 const route = useRoute();
 const product = ref(null);
@@ -11,14 +12,26 @@ definePageMeta({
   middleware: ["auth"],
 });
 
+// const fetchProductDetail = async () => {
+//   try {
+//     const res = await fetch(useApi(`/api/products/${route.params.id}`));
+//     if (!res.ok) throw new Error("Gagal mengambil data produk");
+//     const data = await res.json();
+//     product.value = data.data;
+//   } catch (err) {
+//     error.value = err.message;
+//   } finally {
+//     isLoading.value = false;
+//   }
+// };
+
+// ✅ Ganti fetch dengan axios.get
 const fetchProductDetail = async () => {
   try {
-    const res = await fetch(useApi(`/api/products/${route.params.id}`));
-    if (!res.ok) throw new Error("Gagal mengambil data produk");
-    const data = await res.json();
-    product.value = data.data;
+    const res = await axios.get(useApi(`/api/products/${route.params.id}`));
+    product.value = res.data.data;
   } catch (err) {
-    error.value = err.message;
+    error.value = err.response?.data?.message || err.message;
   } finally {
     isLoading.value = false;
   }
