@@ -77,7 +77,7 @@ const toggleProductStatus = async (id, status) => {
   if (!confirm(confirmMessage)) return;
 
   try {
-    const res = await axios.put(useApi(`/api/updateCondition/products/${id}`), {
+    const res = await axios.put(useApi(`/api/products/updateCondition/${id}`), {
       condition: status,
     });
 
