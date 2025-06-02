@@ -50,9 +50,9 @@ const isLoading = ref(true);
 // Fungsi getCategoryById dipindah dari useApi.js
 const getCategoryById = async (id) => {
   try {
-    const response = await fetch(useApi(`/api/categories/${id}`));
+    const response = await axios.get(useApi(`/api/categories/${id}`));
     if (!response.ok) throw new Error("Gagal mengambil data kategori");
-    return await response.json();
+    // return await response.json();
   } catch (error) {
     console.error(`Error fetching category with ID ${id}:`, error);
     return null;
