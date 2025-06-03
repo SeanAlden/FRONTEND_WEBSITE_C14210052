@@ -594,6 +594,10 @@ const exportToExcel = () => {
   XLSX.writeFile(workbook, fileName);
 };
 
+const onImageError = (event) => {
+  event.target.src = fallbackImage;
+};
+
 // Watcher untuk itemsPerPage
 watch(itemsPerPage, () => {
   currentPage.value = 1;
