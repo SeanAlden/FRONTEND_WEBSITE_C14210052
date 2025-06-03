@@ -710,6 +710,7 @@ watch(itemsPerPage, () => {
                         ? useApi(`/storage/${product.photo}`)
                         : '/assets/images/avatar.png'
                     "
+                    @error="onImageError"
                     class="object-fit h-20 w-20"
                   />
                 </td>
