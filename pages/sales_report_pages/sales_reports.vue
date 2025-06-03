@@ -241,18 +241,50 @@ const filteredTransactions = computed(() => {
 //     }));
 // });
 
+// const mergedTransactions = computed(() => {
+//   const productMap = new Map();
+//   filteredTransactions.value.forEach((transaction) => {
+//     transaction.details.forEach((detail) => {
+//       // Gunakan data dari transaction_details
+//       const key = `${detail.product_name}-${detail.product_price}`;
+//       if (!productMap.has(key)) {
+//         productMap.set(key, {
+//           no: 0,
+//           photo: detail.product.photo || "/assets/images/avatar.png", // Ambil dari transaction_details
+//           name: detail.product_name, // Ambil dari transaction_details
+//           price: detail.product_price, // Ambil dari transaction_details
+//           sold: 0,
+//           totalIncome: 0,
+//           margin: 0,
+//         });
+//       }
+//       const existingProduct = productMap.get(key);
+//       const quantity = detail.quantity;
+//       const totalPrice = detail.product_price * quantity; // Hitung dengan harga historis
+//       existingProduct.sold += quantity;
+//       existingProduct.totalIncome += totalPrice;
+//       existingProduct.margin += totalPrice * 0.25;
+//     });
+//   });
+//   return Array.from(productMap.values())
+//     .sort((a, b) => b.sold - a.sold)
+//     .map((product, index) => ({
+//       ...product,
+//       no: index + 1,
+//     }));
+// });
+
 const mergedTransactions = computed(() => {
   const productMap = new Map();
   filteredTransactions.value.forEach((transaction) => {
     transaction.details.forEach((detail) => {
-      // Gunakan data dari transaction_details
       const key = `${detail.product_name}-${detail.product_price}`;
       if (!productMap.has(key)) {
         productMap.set(key, {
           no: 0,
-          photo: detail.product.photo || "/assets/images/avatar.png", // Ambil dari transaction_details
-          name: detail.product_name, // Ambil dari transaction_details
-          price: detail.product_price, // Ambil dari transaction_details
+          photo: detail.product.photo || "/assets/images/avatar.png",
+          name: detail.product_name,
+          price: detail.product_price,
           sold: 0,
           totalIncome: 0,
           margin: 0,
@@ -260,8 +292,8 @@ const mergedTransactions = computed(() => {
       }
       const existingProduct = productMap.get(key);
       const quantity = detail.quantity;
-      const totalPrice = detail.product_price * quantity; // Hitung dengan harga historis
-      existingProduct.sold += quantity;
+      const totalPrice = detail.product_price * quantity;
+      existingProduct.sold += parseInt(quantity, 10); // Konversi ke integer
       existingProduct.totalIncome += totalPrice;
       existingProduct.margin += totalPrice * 0.25;
     });
