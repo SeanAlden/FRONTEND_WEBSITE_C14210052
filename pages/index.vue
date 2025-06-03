@@ -302,6 +302,7 @@ export default {
       fetchData,
       formatPrice,
       user, // ✅ kembalikan jika ingin ditampilkan di template
+      onImageError,
     };
   },
 };
