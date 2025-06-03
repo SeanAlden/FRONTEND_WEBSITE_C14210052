@@ -1,5 +1,5 @@
 <template>
-  <div class="container p-6 mx-auto">
+  <div class="container mx-auto p-6">
     <h1 class="mb-4 text-2xl font-bold">Edit Karyawan</h1>
 
     <form @submit.prevent="updateEmployee" class="space-y-4">
@@ -7,13 +7,14 @@
         <label class="block text-gray-600">Foto</label>
         <img
           :src="
-            employee_photo
-              ? useApi(`/storage/${employee_photo}`)
-              : '/assets/images/photo_default.png'
+            employee.employee_photo
+              ? useApi(`/storage/${employee.employee_photo}`)
+              : fallbackImage
           "
-          class="w-20 h-20 object-fit"
+          @error="onImageError"
+          class="object-fit h-20 w-20"
         />
-        <input type="file" @change="onFileChange" class="w-full p-2 border rounded" />
+        <input type="file" @change="onFileChange" class="w-full rounded border p-2" />
       </div>
 
       <div>
@@ -21,7 +22,7 @@
         <!-- <textarea
           v-model="employee_name"
           placeholder="Nama Karyawan"
-          class="w-full p-2 overflow-hidden border rounded resize-none"
+          class="w-full resize-none overflow-hidden rounded border p-2"
           rows="3"
           ref="nameInputRef"
           @input="nameAutoResize"
@@ -30,7 +31,7 @@
         <textarea
           v-model="employee_name"
           placeholder="Nama Karyawan"
-          class="w-full p-2 overflow-hidden border rounded resize-none"
+          class="w-full resize-none overflow-hidden rounded border p-2"
           rows="3"
           ref="nameTextarea"
           @input="nameAutoResize"
@@ -44,7 +45,7 @@
           v-model="code"
           type="text"
           placeholder="Kode Karyawan"
-          class="w-full p-2 border rounded"
+          class="w-full rounded border p-2"
           required
         />
       </div>
@@ -55,7 +56,7 @@
           v-model="employee_position"
           type="text"
           placeholder="Jabatan / Posisi"
-          class="w-full p-2 border rounded"
+          class="w-full rounded border p-2"
           required
         />
       </div>
@@ -65,7 +66,7 @@
         <input
           v-model="employee_birth"
           type="date"
-          class="w-full p-2 border rounded"
+          class="w-full rounded border p-2"
           required
         />
       </div>
@@ -76,7 +77,7 @@
           v-model="employee_contact"
           type="text"
           placeholder="Nomor Telepon"
-          class="w-full p-2 border rounded"
+          class="w-full rounded border p-2"
           required
         />
       </div>
@@ -86,7 +87,7 @@
         <!-- <textarea
           v-model="employee_description"
           placeholder="Deskripsi Karyawan"
-          class="w-full p-2 overflow-hidden border rounded resize-none"
+          class="w-full resize-none overflow-hidden rounded border p-2"
           rows="3"
           ref="descInputRef"
           @input="descAutoResize"
@@ -95,7 +96,7 @@
         <textarea
           v-model="employee_description"
           placeholder="Deskripsi Karyawan"
-          class="w-full p-2 overflow-hidden border rounded resize-none"
+          class="w-full resize-none overflow-hidden rounded border p-2"
           rows="3"
           ref="descTextarea"
           @input="descAutoResize"
@@ -107,14 +108,14 @@
         <button
           @click="goBack"
           type="button"
-          class="px-4 py-2 mr-2 text-white bg-gray-500 rounded hover:bg-gray-600"
+          class="mr-2 rounded bg-gray-500 px-4 py-2 text-white hover:bg-gray-600"
         >
           Kembali
         </button>
 
         <button
           type="submit"
-          class="px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600"
+          class="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
         >
           Simpan Perubahan
         </button>
@@ -142,6 +143,8 @@ const employee_description = ref("");
 const nameTextarea = ref(null); // Referensi untuk nametextarea
 const codeTextarea = ref(null); // Referensi untuk codetextarea
 const descTextarea = ref(null); // Referensi untuk desctextarea
+
+const fallbackImage = "/assets/images/photo_default.png";
 
 definePageMeta({
   middleware: ["auth"],
@@ -213,6 +216,10 @@ const nameAutoResize = () => {
     nameTextarea.value.style.height = "auto"; // Reset tinggi sebelum menyesuaikan
     nameTextarea.value.style.height = nameTextarea.value.scrollHeight + "px"; // Sesuaikan dengan konten
   }
+};
+
+const onImageError = (event) => {
+  event.target.src = fallbackImage;
 };
 
 // onMounted(fetchEmployee);

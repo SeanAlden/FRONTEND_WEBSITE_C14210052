@@ -352,7 +352,7 @@ onMounted(() => {
                 <!-- <img :src="entry.product.image" alt="Product Image" class="mx-auto h-12 w-12 rounded object-cover" /> -->
                 <img
                   :src="
-                    product.photo ? useApi(`/storage/${product.photo}`) : fallbackImage
+                    entry.product.photo ? useApi(`/storage/${entry.product.photo}`) : fallbackImage
                   "
                   @error="onImageError"
                   class="object-fit h-20 w-20"

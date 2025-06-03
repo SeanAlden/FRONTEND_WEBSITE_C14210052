@@ -8,6 +8,8 @@ const product = ref(null);
 const isLoading = ref(true);
 const error = ref(null);
 
+const fallbackImage = "/assets/images/avatar.png";
+
 definePageMeta({
   middleware: ["auth"],
 });
@@ -45,6 +47,10 @@ const formatPrice = (price) => {
   }).format(price);
 };
 
+const onImageError = (event) => {
+  event.target.src = fallbackImage;
+};
+
 onMounted(fetchProductDetail);
 </script>
 
@@ -52,7 +58,7 @@ onMounted(fetchProductDetail);
   <div class="p-6">
     <NuxtLink
       to="/product_pages/products"
-      class="inline-block px-4 py-2 mb-4 text-white bg-blue-500 rounded"
+      class="mb-4 inline-block rounded bg-blue-500 px-4 py-2 text-white"
     >
       Back
     </NuxtLink>
@@ -61,14 +67,13 @@ onMounted(fetchProductDetail);
     <h1 class="mb-4 text-2xl font-bold">Detail Produk</h1>
     <div v-if="isLoading" class="text-center">Memuat...</div>
     <div v-else-if="error" class="text-red-500">{{ error }}</div>
-    <div v-else-if="product" class="p-4 border rounded shadow">
+    <div v-else-if="product" class="rounded border p-4 shadow">
       <img
         :src="
-          product.photo
-            ? useApi(`/storage/${product.photo}`)
-            : '/assets/images/avatar.png'
+          product.photo ? useApi(`/storage/${product.photo}`) : fallbackImage
         "
-        class="w-48 h-full mb-4l object-fit"
+        @error="onImageError"
+        class="mb-4l object-fit h-full w-48"
       />
       <br />
       <h2 class="text-xl font-semibold">{{ product.name }}</h2>
@@ -84,17 +89,17 @@ onMounted(fetchProductDetail);
 
       <!-- Tabel Stok berdasarkan tanggal kadaluarsa -->
       <h3 class="mt-4 text-lg font-semibold">Stok per Tanggal Kadaluarsa</h3>
-      <table class="w-full mt-2 border">
+      <table class="mt-2 w-full border">
         <thead>
           <tr class="bg-gray-200">
-            <th class="p-2 border">Tanggal Kadaluarsa</th>
-            <th class="p-2 border">Jumlah Stok</th>
+            <th class="border p-2">Tanggal Kadaluarsa</th>
+            <th class="border p-2">Jumlah Stok</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="stock in product.stocks" :key="stock.exp_date">
-            <td class="p-2 text-center border">{{ stock.exp_date }}</td>
-            <td class="p-2 text-center border">{{ stock.stock }}</td>
+            <td class="border p-2 text-center">{{ stock.exp_date }}</td>
+            <td class="border p-2 text-center">{{ stock.stock }}</td>
           </tr>
         </tbody>
       </table>

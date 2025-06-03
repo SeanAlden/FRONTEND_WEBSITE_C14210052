@@ -1,25 +1,25 @@
 <template>
-  <div class="container p-6 mx-auto">
+  <div class="container mx-auto p-6">
     <h1 class="mb-4 text-2xl font-bold">Daftar Karyawan Diterima</h1>
-    <div class="flex items-center justify-start mb-4">
+    <div class="mb-4 flex items-center justify-start">
       <router-link
         to="/employee_pages/add_employee"
-        class="inline-block px-4 py-2 mb-4 mr-4 text-white bg-blue-500 rounded"
+        class="mb-4 mr-4 inline-block rounded bg-blue-500 px-4 py-2 text-white"
       >
         Tambah Karyawan
       </router-link>
       <router-link
         to="/employee_pages/registered_employees"
-        class="inline-block px-4 py-2 mb-4 text-white bg-blue-500 rounded"
+        class="mb-4 inline-block rounded bg-blue-500 px-4 py-2 text-white"
       >
         Daftar Akun Karyawan
       </router-link>
     </div>
 
-    <div class="flex items-center justify-between mb-4">
+    <div class="mb-4 flex items-center justify-between">
       <!-- <div>
           <label class="mr-2">Tampilkan</label>
-          <select v-model="itemsPerPage" class="p-1 border rounded">
+          <select v-model="itemsPerPage" class="rounded border p-1">
             <option value="10">10</option>
             <option value="20">20</option>
             <option value="50">50</option>
@@ -29,7 +29,7 @@
 
       <div>
         <label class="mr-2">Show</label>
-        <!-- <select v-model="itemsPerPage" class="p-1 border rounded">
+        <!-- <select v-model="itemsPerPage" class="rounded border p-1">
           <option value="10">10</option>
           <option value="20">20</option>
           <option value="50">50</option>
@@ -46,7 +46,7 @@
         type="text"
         v-model="searchQuery"
         placeholder="Search"
-        class="p-2 border rounded"
+        class="rounded border p-2"
       />
     </div>
 
@@ -54,56 +54,55 @@
       <!-- <p>Loading...</p> -->
       <!-- Ganti dengan spinner jika perlu -->
       <div
-        class="w-16 h-16 ease-linear border-8 border-t-8 border-gray-200 rounded-full loader"
+        class="loader h-16 w-16 rounded-full border-8 border-t-8 border-gray-200 ease-linear"
       ></div>
     </div>
 
     <transition name="fade">
       <div v-if="!isLoading" class="overflow-x-auto whitespace-nowrap">
-        <table class="w-full bg-white border-collapse border-gray-500">
+        <table class="w-full border-collapse border-gray-500 bg-white">
           <thead>
             <tr class="bg-gray-200">
-              <th class="p-2 border">#</th>
-              <th class="p-0 px-0 border">Foto</th>
-              <th class="p-2 border">Nama</th>
-              <th class="p-2 border">Posisi</th>
-              <th class="p-2 border">Kontak</th>
-              <th class="p-2 border">Aksi</th>
+              <th class="border p-2">#</th>
+              <th class="border p-0 px-0">Foto</th>
+              <th class="border p-2">Nama</th>
+              <th class="border p-2">Posisi</th>
+              <th class="border p-2">Kontak</th>
+              <th class="border p-2">Aksi</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="employee in paginatedProducts" :key="employee.id">
-              <td class="p-2 border">{{ employee.code }}</td>
-              <!-- <td class="flex items-center justify-center p-2 px-0 border"> -->
+              <td class="border p-2">{{ employee.code }}</td>
+              <!-- <td class="flex items-center justify-center border p-2 px-0"> -->
               <td
-                class="flex justify-center items-center p-2 border min-w-[100px] min-h-[100px]"
+                class="flex min-h-[100px] min-w-[100px] items-center justify-center border p-2"
               >
                 <img
                   :src="
-                    employee.employee_photo
-                      ? useApi(`/storage/${employee.employee_photo}`)
-                      : '/assets/images/photo_default.png'
-                  "
-                  class="w-20 h-20 object-fit"
+                      employee.employee_photo ? useApi(`/storage/${employee.employee_photo}`) : fallbackImage
+                    "
+                    @error="onImageError"
+                  class="object-fit h-20 w-20"
                 />
               </td>
               <td
-                class="p-2 text-blue-500 underline border cursor-pointer"
+                class="cursor-pointer border p-2 text-blue-500 underline"
                 @click="goToDetail(employee.id)"
               >
                 {{ employee.employee_name }}
               </td>
-              <td class="p-2 border">{{ employee.employee_position }}</td>
-              <td class="p-2 border">{{ employee.employee_contact }}</td>
-              <td class="p-2 border">
+              <td class="border p-2">{{ employee.employee_position }}</td>
+              <td class="border p-2">{{ employee.employee_contact }}</td>
+              <td class="border p-2">
                 <router-link
                   :to="`/employee_pages/edit/${employee.id}`"
-                  class="px-2 py-1 mr-2 text-white bg-yellow-500 rounded"
+                  class="mr-2 rounded bg-yellow-500 px-2 py-1 text-white"
                   >Edit</router-link
                 >
                 <button
                   @click="deleteEmployee(employee.id)"
-                  class="px-2 py-1 text-white bg-red-500 rounded"
+                  class="rounded bg-red-500 px-2 py-1 text-white"
                 >
                   Hapus
                 </button>
@@ -112,7 +111,7 @@
           </tbody>
         </table>
         <!-- Pagination -->
-        <div class="flex justify-between mt-4">
+        <div class="mt-4 flex justify-between">
           <div>
             Showing {{ (currentPage - 1) * itemsPerPage + 1 }} to
             {{ Math.min(currentPage * itemsPerPage, filteredProducts.length) }} of
@@ -122,7 +121,7 @@
             <button
               @click="changePage(currentPage - 1)"
               :disabled="currentPage === 1"
-              class="px-3 py-1 bg-gray-300 border rounded disabled:opacity-50"
+              class="rounded border bg-gray-300 px-3 py-1 disabled:opacity-50"
             >
               Prev
             </button>
@@ -131,7 +130,7 @@
               v-for="page in generatePagination"
               :key="page"
               @click="changePage(page)"
-              class="px-3 py-1 transition-all duration-200 border rounded"
+              class="rounded border px-3 py-1 transition-all duration-200"
               :class="{
                 'bg-blue-500 text-white': currentPage === page,
                 'bg-white text-blue-500 hover:bg-blue-100':
@@ -144,7 +143,7 @@
             <button
               @click="changePage(currentPage + 1)"
               :disabled="currentPage === totalPages"
-              class="px-3 py-1 bg-gray-300 border rounded disabled:opacity-50"
+              class="rounded border bg-gray-300 px-3 py-1 disabled:opacity-50"
             >
               Next
             </button>
@@ -171,6 +170,8 @@ const itemsPerPageOptions = [5, 10, 20, 50];
 const itemsPerPage = ref(5);
 const currentPage = ref(1);
 const isLoading = ref(true); // State untuk loading
+
+const fallbackImage = "/assets/images/photo_default.png";
 
 const fetchEmployees = async () => {
   isLoading.value = true; // Set loading to true
@@ -244,6 +245,10 @@ const changePage = (page) => {
   if (page >= 1 && page <= totalPages.value && page !== "...") {
     currentPage.value = page;
   }
+};
+
+const onImageError = (event) => {
+  event.target.src = fallbackImage;
 };
 
 watch(itemsPerPage, () => {

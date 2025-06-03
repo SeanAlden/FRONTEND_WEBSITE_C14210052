@@ -302,7 +302,7 @@ onMounted(() => {
               >
                 <img
                   :src="
-                    product.photo ? useApi(`/storage/${product.photo}`) : fallbackImage
+                    exit.product.photo ? useApi(`/storage/${exit.product.photo}`) : fallbackImage
                   "
                   @error="onImageError"
                   class="object-fit h-20 w-20"

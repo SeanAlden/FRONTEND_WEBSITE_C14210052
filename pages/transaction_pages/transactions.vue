@@ -29,6 +29,8 @@ const expandedRow = ref(null);
 const isLoading = ref(true); // State untuk loading
 const token = useCookie("my_auth_token");
 
+const fallbackImage = "/assets/images/avatar.png";
+
 // Fungsi untuk mengekspor ke PDF
 // const exportToPDF = () => {
 //   const doc = new jsPDF();
@@ -384,37 +386,41 @@ const changePage = (page) => {
   }
 };
 
+const onImageError = (event) => {
+  event.target.src = fallbackImage;
+};
+
 watch(itemsPerPage, () => {
   currentPage.value = 1;
 });
 </script>
 
 <template>
-  <div class="container p-6 mx-auto">
+  <div class="container mx-auto p-6">
     <h1 class="mb-4 text-2xl font-bold text-gray-800">Data Transaksi</h1>
-    <div class="flex justify-end mb-4">
-      <button @click="exportToPDF" class="px-4 py-2 mr-2 text-white bg-blue-500 rounded">
+    <div class="mb-4 flex justify-end">
+      <button @click="exportToPDF" class="mr-2 rounded bg-blue-500 px-4 py-2 text-white">
         Ekspor ke PDF
       </button>
-      <button @click="exportToExcel" class="px-4 py-2 text-white bg-green-500 rounded">
+      <button @click="exportToExcel" class="rounded bg-green-500 px-4 py-2 text-white">
         Ekspor ke Excel
       </button>
     </div>
 
-    <!-- <div class="flex flex-wrap gap-4 mb-4"> -->
+    <!-- <div class="mb-4 flex flex-wrap gap-4"> -->
     <!-- Reset Filter -->
-    <!-- <button @click="resetFilters" class="px-4 py-2 text-white bg-gray-500 rounded-md"> -->
+    <!-- <button @click="resetFilters" class="rounded-md bg-gray-500 px-4 py-2 text-white"> -->
     <!-- Reset Filter -->
     <!-- </button> -->
     <!-- </div> -->
 
     <!-- Filter Form -->
-    <div class="flex flex-col gap-4 mb-4 lg:flex-row lg:justify-between lg:items-end">
+    <div class="mb-4 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
       <!-- Items Per Page -->
       <div class="flex flex-col">
         <div class="flex items-center">
           <label class="mr-2">Show</label>
-          <!-- <select v-model="itemsPerPage" class="p-1 border rounded">
+          <!-- <select v-model="itemsPerPage" class="rounded border p-1">
             <option value="10">10</option>
             <option value="20">20</option>
             <option value="50">50</option>
@@ -435,7 +441,7 @@ watch(itemsPerPage, () => {
           <input
             type="date"
             v-model="filterDate"
-            class="p-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            class="mt-1 rounded-md border border-gray-300 p-2 shadow-sm focus:border-blue-500 focus:ring-blue-500"
           />
         </div>
 
@@ -446,7 +452,7 @@ watch(itemsPerPage, () => {
           <input
             type="month"
             v-model="filterMonthYear"
-            class="p-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            class="mt-1 rounded-md border border-gray-300 p-2 shadow-sm focus:border-blue-500 focus:ring-blue-500"
           />
         </div>
       </div> -->
@@ -458,7 +464,7 @@ watch(itemsPerPage, () => {
           <input
             type="date"
             v-model="filterStartDate"
-            class="p-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            class="mt-1 rounded-md border border-gray-300 p-2 shadow-sm focus:border-blue-500 focus:ring-blue-500"
           />
         </div>
 
@@ -467,7 +473,7 @@ watch(itemsPerPage, () => {
           <input
             type="date"
             v-model="filterEndDate"
-            class="p-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            class="mt-1 rounded-md border border-gray-300 p-2 shadow-sm focus:border-blue-500 focus:ring-blue-500"
           />
         </div>
 
@@ -478,7 +484,7 @@ watch(itemsPerPage, () => {
           <input
             type="month"
             v-model="filterMonthYear"
-            class="p-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            class="mt-1 rounded-md border border-gray-300 p-2 shadow-sm focus:border-blue-500 focus:ring-blue-500"
           />
         </div>
       </div>
@@ -490,7 +496,7 @@ watch(itemsPerPage, () => {
           type="text"
           v-model="searchQuery"
           placeholder="Search"
-          class="p-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500"
+          class="mt-1 rounded-md border border-gray-300 p-2 shadow-sm focus:border-blue-500 focus:ring-blue-500"
         />
       </div>
     </div>
@@ -499,7 +505,7 @@ watch(itemsPerPage, () => {
       <!-- <p>Loading...</p> -->
       <!-- Ganti dengan spinner jika perlu -->
       <div
-        class="w-16 h-16 ease-linear border-8 border-t-8 border-gray-200 rounded-full loader"
+        class="loader h-16 w-16 rounded-full border-8 border-t-8 border-gray-200 ease-linear"
       ></div>
     </div>
 
@@ -507,48 +513,48 @@ watch(itemsPerPage, () => {
     <transition name="fade">
       <div
         v-if="!isLoading"
-        class="overflow-x-auto bg-white rounded-lg shadow-md whitespace-nowrap"
+        class="overflow-x-auto whitespace-nowrap rounded-lg bg-white shadow-md"
       >
-        <!-- <table class="min-w-full bg-white border border-gray-500"> -->
-        <table class="min-w-full bg-white border border-collapse border-black">
-          <thead class="text-white bg-gray-800">
+        <!-- <table class="min-w-full border border-gray-500 bg-white"> -->
+        <table class="min-w-full border-collapse border border-black bg-white">
+          <thead class="bg-gray-800 text-white">
             <tr>
-              <th class="px-4 py-3 text-left border border-black">Kode Transaksi</th>
-              <!-- <th class="px-4 py-3 text-left border border-black">Kode Produk</th> -->
-              <th class="px-4 py-3 text-left border border-black">Foto</th>
-              <th class="px-4 py-3 text-left border border-black">Nama</th>
-              <!-- <th class="px-4 py-3 text-left border border-black">Harga</th>
-            <th class="px-4 py-3 text-left border border-black">Kuantitas</th>
-            <th class="px-4 py-3 text-left border border-black">Total Harga</th> -->
-              <th class="px-4 py-3 text-left border border-black">Total Transaksi</th>
-              <th class="px-4 py-3 text-left border border-black">Waktu</th>
-              <th class="px-4 py-3 text-left border border-black">Status</th>
+              <th class="border border-black px-4 py-3 text-left">Kode Transaksi</th>
+              <!-- <th class="border border-black px-4 py-3 text-left">Kode Produk</th> -->
+              <th class="border border-black px-4 py-3 text-left">Foto</th>
+              <th class="border border-black px-4 py-3 text-left">Nama</th>
+              <!-- <th class="border border-black px-4 py-3 text-left">Harga</th>
+            <th class="border border-black px-4 py-3 text-left">Kuantitas</th>
+            <th class="border border-black px-4 py-3 text-left">Total Harga</th> -->
+              <th class="border border-black px-4 py-3 text-left">Total Transaksi</th>
+              <th class="border border-black px-4 py-3 text-left">Waktu</th>
+              <th class="border border-black px-4 py-3 text-left">Status</th>
             </tr>
           </thead>
           <!-- <tbody class="bg-white">
           <tr
             v-for="transaction in paginatedTransactions"
             :key="transaction.id"
-            class="transition duration-200 cursor-pointer hover:bg-gray-200"
+            class="cursor-pointer transition duration-200 hover:bg-gray-200"
             @click="goToTransactionDetail(transaction.id)"
           >
-            <td class="px-4 py-3 border border-black">
+            <td class="border border-black px-4 py-3">
               {{ transaction.transaction_code }}
             </td>
-            <td class="px-4 py-3 border border-black">
+            <td class="border border-black px-4 py-3">
               <img
                 :src="
                   'http://localhost:8000/storage/' + transaction.mergedDetails[0].photo
                 "
                 alt="Foto Produk"
-                class="w-12 h-12 rounded-md"
+                class="h-12 w-12 rounded-md"
               />
             </td>
-            <td class="px-4 py-3 border border-black">
+            <td class="border border-black px-4 py-3">
               {{ transaction.mergedDetails[0].name }}
               <div
                 v-if="transaction.mergedDetails.length > 1"
-                class="text-xs text-blue-500 cursor-pointer hover:underline"
+                class="cursor-pointer text-xs text-blue-500 hover:underline"
               >
                 <div>
                   Klik untuk lihat +{{ transaction.mergedDetails.length - 1 }} produk
@@ -557,13 +563,13 @@ watch(itemsPerPage, () => {
               </div>
             </td>
 
-            <td class="px-4 py-3 border border-black">
+            <td class="border border-black px-4 py-3">
               {{ formatPrice(transaction.total_payment) }}
             </td>
-            <td class="px-4 py-3 border border-black">
+            <td class="border border-black px-4 py-3">
               {{ formatDate(transaction.transaction_date) }}
             </td>
-            <td class="px-4 py-3 border border-black">
+            <td class="border border-black px-4 py-3">
               <span :class="['font-bold', getStatusClass(transaction.status)]">
                 {{ transaction.status }}
               </span>
@@ -574,27 +580,28 @@ watch(itemsPerPage, () => {
           <tbody class="bg-white">
             <tr v-for="transaction in paginatedTransactions" :key="transaction.id">
               <!-- Kolom TIDAK diklik -->
-              <td class="px-4 py-3 border border-black">
+              <td class="border border-black px-4 py-3">
                 {{ transaction.transaction_code }}
               </td>
 
               <!-- Kolom foto produk -->
               <td
-                class="px-4 py-3 transition duration-200 border border-black cursor-pointer hover:bg-gray-200"
+                class="cursor-pointer border border-black px-4 py-3 transition duration-200 hover:bg-gray-200"
                 @click="goToTransactionDetail(transaction.id)"
               >
                 <img
                   :src="
-                    useApi('/storage/') + transaction.mergedDetails[0].photo
-                  "
+                      transaction.mergedDetails[0].photo ? useApi(`/storage/${transaction.mergedDetails[0].photo}`) : fallbackImage
+                    "
+                    @error="onImageError"
                   alt="Foto Produk"
-                  class="w-12 h-12 rounded-md"
+                  class="h-12 w-12 rounded-md"
                 />
               </td>
 
               <!-- Kolom nama produk -->
               <td
-                class="px-4 py-3 transition duration-200 border border-black cursor-pointer hover:bg-gray-200"
+                class="cursor-pointer border border-black px-4 py-3 transition duration-200 hover:bg-gray-200"
                 @click="goToTransactionDetail(transaction.id)"
               >
                 {{ transaction.mergedDetails[0].name }}
@@ -609,7 +616,7 @@ watch(itemsPerPage, () => {
 
               <!-- Kolom total pembayaran -->
               <td
-                class="px-4 py-3 transition duration-200 border border-black cursor-pointer hover:bg-gray-200"
+                class="cursor-pointer border border-black px-4 py-3 transition duration-200 hover:bg-gray-200"
                 @click="goToTransactionDetail(transaction.id)"
               >
                 {{ formatPrice(transaction.total_payment) }}
@@ -617,7 +624,7 @@ watch(itemsPerPage, () => {
 
               <!-- Kolom tanggal transaksi -->
               <td
-                class="px-4 py-3 transition duration-200 border border-black cursor-pointer hover:bg-gray-200"
+                class="cursor-pointer border border-black px-4 py-3 transition duration-200 hover:bg-gray-200"
                 @click="goToTransactionDetail(transaction.id)"
               >
                 {{ formatDate(transaction.transaction_date) }}
@@ -625,7 +632,7 @@ watch(itemsPerPage, () => {
 
               <!-- Kolom status -->
               <td
-                class="px-4 py-3 transition duration-200 border border-black cursor-pointer hover:bg-gray-200"
+                class="cursor-pointer border border-black px-4 py-3 transition duration-200 hover:bg-gray-200"
                 @click="goToTransactionDetail(transaction.id)"
               >
                 <span :class="['font-bold', getStatusClass(transaction.status)]">
@@ -639,7 +646,7 @@ watch(itemsPerPage, () => {
     </transition>
 
     <!-- Pagination -->
-    <div class="flex justify-between mt-4">
+    <div class="mt-4 flex justify-between">
       <div>
         Showing {{ (currentPage - 1) * itemsPerPage + 1 }} to
         {{ Math.min(currentPage * itemsPerPage, filteredTransactions.length) }} of
@@ -649,7 +656,7 @@ watch(itemsPerPage, () => {
         <button
           @click="changePage(currentPage - 1)"
           :disabled="currentPage === 1"
-          class="px-3 py-1 bg-gray-300 border rounded disabled:opacity-50"
+          class="rounded border bg-gray-300 px-3 py-1 disabled:opacity-50"
         >
           Prev
         </button>
@@ -658,7 +665,7 @@ watch(itemsPerPage, () => {
           v-for="page in generatePagination"
           :key="page"
           @click="changePage(page)"
-          class="px-3 py-1 transition-all duration-200 border rounded"
+          class="rounded border px-3 py-1 transition-all duration-200"
           :class="{
             'bg-blue-500 text-white': currentPage === page,
             'bg-white text-blue-500 hover:bg-blue-100':
@@ -671,7 +678,7 @@ watch(itemsPerPage, () => {
         <button
           @click="changePage(currentPage + 1)"
           :disabled="currentPage === totalPages"
-          class="px-3 py-1 bg-gray-300 border rounded disabled:opacity-50"
+          class="rounded border bg-gray-300 px-3 py-1 disabled:opacity-50"
         >
           Next
         </button>
