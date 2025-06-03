@@ -94,7 +94,10 @@
                 <td class="border px-4 py-2" v-if="index !== 0"></td>
                 <td class="border px-4 py-2">
                   <img
-                    :src="item.photo"
+                    :src="
+                    item.photo ? useApi(`/storage/${item.photo}`) : fallbackImage
+                  "
+                  @error="onImageError"
                     alt="Foto Produk"
                     class="h-12 w-12 rounded object-cover"
                   />
@@ -199,6 +202,8 @@ const currentPage = ref(1);
 const itemsPerPageOptions = [5, 10, 20, 50];
 const itemsPerPage = ref(5);
 const isLoading = ref(true); // State untuk loading
+
+const fallbackImage = "/assets/images/avatar.png";
 
 // const fetchStockReport = async () => {
 //   isLoading.value = true; // Set loading to true
@@ -362,6 +367,10 @@ const resetFilters = () => {
   selectedMonthYear.value = "";
   searchQuery.value = "";
   currentPage.value = 1;
+};
+
+const onImageError = (event) => {
+  event.target.src = fallbackImage;
 };
 
 watch(itemsPerPage, () => {

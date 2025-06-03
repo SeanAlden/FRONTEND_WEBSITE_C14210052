@@ -20,6 +20,9 @@ const itemsPerPageOptions = [5, 10, 20, 50];
 const itemsPerPage = ref(5);
 const currentPage = ref(1);
 const isLoading = ref(true); // State untuk loading
+
+const fallbackImage = "/assets/images/avatar.png";
+
 // const totalProductStock = ref(0);
 // const totalExpStock = ref(0);
 
@@ -254,6 +257,10 @@ const formatPrice = (price) => {
   }).format(price);
 };
 
+const onImageError = (event) => {
+  event.target.src = fallbackImage;
+};
+
 watch(itemsPerPage, () => {
   currentPage.value = 1;
   fetchEntries();
@@ -345,10 +352,9 @@ onMounted(() => {
                 <!-- <img :src="entry.product.image" alt="Product Image" class="mx-auto h-12 w-12 rounded object-cover" /> -->
                 <img
                   :src="
-                    entry.product.photo
-                      ? useApi(`/storage/${entry.product.photo}`)
-                      : '/assets/images/avatar.png'
+                    product.photo ? useApi(`/storage/${product.photo}`) : fallbackImage
                   "
+                  @error="onImageError"
                   class="object-fit h-20 w-20"
                 />
               </td>

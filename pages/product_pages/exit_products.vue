@@ -21,6 +21,8 @@ const itemsPerPage = ref(5);
 const currentPage = ref(1);
 const isLoading = ref(true); // State untuk loading
 
+const fallbackImage = "/assets/images/avatar.png";
+
 // Ambil data barang keluar
 const fetchExits = async () => {
   isLoading.value = true; // Set loading to true
@@ -211,6 +213,10 @@ const formatPrice = (price) => {
   }).format(price);
 };
 
+const onImageError = (event) => {
+  event.target.src = fallbackImage;
+};
+
 // Load data saat komponen dipasang
 onMounted(() => {
   fetchExits();
@@ -296,10 +302,9 @@ onMounted(() => {
               >
                 <img
                   :src="
-                    exit.product.photo
-                      ? useApi(`/storage/${exit.product.photo}`)
-                      : '/assets/images/avatar.png'
+                    product.photo ? useApi(`/storage/${product.photo}`) : fallbackImage
                   "
+                  @error="onImageError"
                   class="object-fit h-20 w-20"
                 />
               </td>

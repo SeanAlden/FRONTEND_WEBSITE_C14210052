@@ -13,6 +13,8 @@ const itemsPerPage = ref(5);
 const currentPage = ref(1);
 const isLoading = ref(true);
 
+const fallbackImage = "/assets/images/avatar.png";
+
 const fetchProducts = async () => {
   isLoading.value = true; // Set loading to true
   try {
@@ -116,7 +118,6 @@ const getTotalStock = (stocks) => {
   return stocks.reduce((total, stock) => total + parseInt(stock.stock, 10), 0);
 };
 
-
 // const filteredProducts = computed(() => {
 //   return products.value.filter((product) =>
 //     product.name.toLowerCase().includes(searchQuery.value.toLowerCase())
@@ -178,6 +179,10 @@ const changePage = (page) => {
 const formatDate = (dateString) => {
   const date = new Date(dateString);
   return date.toLocaleString("id-ID", { dateStyle: "medium", timeStyle: "short" });
+};
+
+const onImageError = (event) => {
+  event.target.src = fallbackImage;
 };
 
 watch(itemsPerPage, () => {
@@ -316,10 +321,9 @@ onMounted(fetchProducts);
               >
                 <img
                   :src="
-                    product.photo
-                      ? useApi(`/storage/${product.photo}`)
-                      : '/assets/images/avatar.png'
+                    product.photo ? useApi(`/storage/${product.photo}`) : fallbackImage
                   "
+                  @error="onImageError"
                   class="object-fit h-20 w-20"
                 />
               </td>
@@ -343,7 +347,8 @@ onMounted(fetchProducts);
                       'p-2 rounded-md': true,
                     }"
                   >
-                    <strong>{{ stock.exp_date }}</strong> - Stok: {{ parseInt(stock.stock, 10) }}
+                    <strong>{{ stock.exp_date }}</strong> - Stok:
+                    {{ parseInt(stock.stock, 10) }}
                   </li>
                 </ul>
               </td>

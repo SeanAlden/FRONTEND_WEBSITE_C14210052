@@ -13,6 +13,8 @@ const itemsPerPage = ref(5);
 const currentPage = ref(1);
 const isLoading = ref(true); // State untuk loading
 
+const fallbackImage = "/assets/images/avatar.png";
+
 const fetchProducts = async () => {
   isLoading.value = true; // Set loading to true
   try {
@@ -136,6 +138,10 @@ const changePage = (page) => {
   }
 };
 
+const onImageError = (event) => {
+  event.target.src = fallbackImage;
+};
+
 watch(itemsPerPage, () => {
   currentPage.value = 1;
   fetchProducts();
@@ -209,10 +215,9 @@ onMounted(fetchProducts);
               >
                 <img
                   :src="
-                    product.photo
-                      ? useApi(`/storage/${product.photo}`)
-                      : '/assets/images/avatar.png'
-                  "
+                      product.photo ? useApi(`/storage/${product.photo}`) : fallbackImage
+                    "
+                    @error="onImageError"
                   class="object-fit h-20 w-20"
                 />
               </td>
