@@ -69,8 +69,12 @@ const isExpiredOrToday = (expDate) => {
   return expirationDate <= today;
 };
 
+// const getTotalStock = (stocks) => {
+//   return stocks.reduce((total, stock) => total + stock.stock, 0);
+// };
+
 const getTotalStock = (stocks) => {
-  return stocks.reduce((total, stock) => total + stock.stock, 0);
+  return stocks.reduce((total, stock) => total + parseInt(stock.stock, 10), 0);
 };
 
 const filteredProducts = computed(() => {
@@ -234,7 +238,7 @@ onMounted(fetchProducts);
               <td class="border p-2">{{ formatPrice(product.price) }}</td>
               <td class="border p-2">
                 <ul>
-                  <li
+                  <!-- <li
                     v-for="stock in product.stocks"
                     :key="stock.id"
                     :class="{
@@ -245,6 +249,19 @@ onMounted(fetchProducts);
                     }"
                   >
                     <strong>{{ stock.exp_date }}</strong> - Stok: {{ stock.stock }}
+                  </li> -->
+                  <li
+                    v-for="stock in product.stocks"
+                    :key="stock.id"
+                    :class="{
+                      'bg-red-500 text-white': isExpiredOrToday(stock.exp_date),
+                      'bg-yellow-200': isExpiringSoon(stock.exp_date),
+                      'p-2 rounded-md': true,
+                      'text-red-500': parseInt(stock.stock, 10) < 7,
+                    }"
+                  >
+                    <strong>{{ stock.exp_date }}</strong> - Stok:
+                    {{ parseInt(stock.stock, 10) }}
                   </li>
                 </ul>
               </td>
