@@ -42,6 +42,8 @@ const currentPage = ref(1);
 const searchQuery = ref("");
 const token = useCookie("my_auth_token");
 
+const fallbackImage = "/assets/images/avatar.png";
+
 const formatPrice = (price) => {
   return new Intl.NumberFormat("id-ID", {
     style: "currency",
