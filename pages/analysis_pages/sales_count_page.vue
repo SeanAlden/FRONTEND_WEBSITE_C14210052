@@ -98,12 +98,29 @@ definePageMeta({
   middleware: ["auth"],
 });
 
+// const fetchData = async () => {
+//   try {
+//     const response = await axios.get(
+//       useApi("/api/analysis/getTransactions")
+//     );
+//     transactions.value = response.data.transactions;
+//   } catch (err) {
+//     error.value = "Gagal mengambil data, coba lagi nanti";
+//   } finally {
+//     isLoading.value = false;
+//   }
+// };
+
 const fetchData = async () => {
   try {
-    const response = await axios.get(
-      useApi("/api/analysis/getTransactions")
-    );
-    transactions.value = response.data.transactions;
+    const response = await axios.get(useApi("/api/analysis/getTransactions"));
+    transactions.value = response.data.transactions.map((transaction) => {
+      // Pastikan untuk mengonversi quantity ke integer
+      transaction.details.forEach((detail) => {
+        detail.quantity = parseInt(detail.quantity, 10); // Konversi ke integer
+      });
+      return transaction;
+    });
   } catch (err) {
     error.value = "Gagal mengambil data, coba lagi nanti";
   } finally {
@@ -179,15 +196,17 @@ onMounted(fetchData);
 </script>
 
 <template>
-  <div class="container p-6 mx-auto">
+  <div class="container mx-auto p-6">
     <h1 class="mb-4 text-2xl font-bold">
       Proses Analisis - Bobot Waktu & Penjualan Berbobot
     </h1>
-    <p class="mb-4">Melakukan perhitungan penjualan mentah dahulu sebelum menghitung bobot waktu</p>
+    <p class="mb-4">
+      Melakukan perhitungan penjualan mentah dahulu sebelum menghitung bobot waktu
+    </p>
 
     <div class="mt-4">
       <button
-        class="px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-700"
+        class="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-700"
         @click="$router.push('/analysis_pages/time_count_page')"
       >
         Time Count
@@ -198,17 +217,17 @@ onMounted(fetchData);
       <!-- <p>Loading...</p> -->
       <!-- Ganti dengan spinner jika perlu -->
       <div
-        class="w-16 h-16 ease-linear border-8 border-t-8 border-gray-200 rounded-full loader"
+        class="loader h-16 w-16 rounded-full border-8 border-t-8 border-gray-200 ease-linear"
       ></div>
     </div>
     <transition name="fade">
       <!-- <div v-if="isLoading" class="text-center">Memuat data...</div> -->
       <!-- <div v-else-if="error" class="text-red-500">{{ error }}</div> -->
       <div v-if="!isLoading" class="overflow-x-auto whitespace-nowrap">
-        <div class="flex items-center justify-between mb-4">
+        <div class="mb-4 flex items-center justify-between">
           <div>
             <label class="mr-2">Show</label>
-            <!-- <select v-model="itemsPerPage" class="p-1 border rounded">
+            <!-- <select v-model="itemsPerPage" class="rounded border p-1">
             <option value="10">10</option>
             <option value="20">20</option>
             <option value="50">50</option>
@@ -225,19 +244,19 @@ onMounted(fetchData);
             type="text"
             v-model="searchQuery"
             placeholder="Search"
-            class="p-2 border rounded"
+            class="rounded border p-2"
           />
         </div>
 
         <div class="overflow-x-auto whitespace-nowrap">
-          <table class="w-full bg-white border border-collapse border-gray-300">
+          <table class="w-full border-collapse border border-gray-300 bg-white">
             <thead>
               <tr class="bg-gray-200">
-                <th class="p-2 border">Transaction Code</th>
-                <th class="p-2 border">Gross Amount</th>
-                <th class="p-2 border">Date</th>
-                <th class="p-2 border">Product Quantities</th>
-                <th class="p-2 border">Raw Sales</th>
+                <th class="border p-2">Transaction Code</th>
+                <th class="border p-2">Gross Amount</th>
+                <th class="border p-2">Date</th>
+                <th class="border p-2">Product Quantities</th>
+                <th class="border p-2">Raw Sales</th>
               </tr>
             </thead>
             <tbody>
@@ -246,21 +265,21 @@ onMounted(fetchData);
                 :key="transaction.id"
                 class="border"
               >
-                <td class="p-2 text-center border">{{ transaction.transaction_code }}</td>
-                <td class="p-2 text-center border">
+                <td class="border p-2 text-center">{{ transaction.transaction_code }}</td>
+                <td class="border p-2 text-center">
                   {{ formatPrice(transaction.gross_amount) }}
                 </td>
-                <td class="p-2 text-center border">
+                <td class="border p-2 text-center">
                   {{ new Date(transaction.transaction_date).toLocaleDateString() }}
                 </td>
-                <td class="p-2 border">
+                <td class="border p-2">
                   <ul>
                     <li v-for="detail in transaction.details" :key="detail.id">
                       {{ detail.product.name }} ({{ detail.quantity }})
                     </li>
                   </ul>
                 </td>
-                <td class="p-2 text-center border">
+                <td class="border p-2 text-center">
                   {{
                     transaction.details.reduce((sum, detail) => sum + detail.quantity, 0)
                   }}
@@ -270,7 +289,7 @@ onMounted(fetchData);
           </table>
         </div>
         <!-- Pagination -->
-        <div class="flex justify-between mt-4">
+        <div class="mt-4 flex justify-between">
           <div>
             Showing {{ (currentPage - 1) * itemsPerPage + 1 }} to
             {{ Math.min(currentPage * itemsPerPage, filteredProducts.length) }} of
@@ -280,7 +299,7 @@ onMounted(fetchData);
             <button
               @click="changePage(currentPage - 1)"
               :disabled="currentPage === 1"
-              class="px-3 py-1 bg-gray-300 border rounded disabled:opacity-50"
+              class="rounded border bg-gray-300 px-3 py-1 disabled:opacity-50"
             >
               Prev
             </button>
@@ -289,7 +308,7 @@ onMounted(fetchData);
               v-for="page in generatePagination"
               :key="page"
               @click="changePage(page)"
-              class="px-3 py-1 transition-all duration-200 border rounded"
+              class="rounded border px-3 py-1 transition-all duration-200"
               :class="{
                 'bg-blue-500 text-white': currentPage === page,
                 'bg-white text-blue-500 hover:bg-blue-100':
@@ -302,7 +321,7 @@ onMounted(fetchData);
             <button
               @click="changePage(currentPage + 1)"
               :disabled="currentPage === totalPages"
-              class="px-3 py-1 bg-gray-300 border rounded disabled:opacity-50"
+              class="rounded border bg-gray-300 px-3 py-1 disabled:opacity-50"
             >
               Next
             </button>

@@ -108,9 +108,14 @@ const isExpiringSoon = (expDate) => {
   return daysRemaining <= 90 && daysRemaining > 0;
 };
 
+// const getTotalStock = (stocks) => {
+//   return stocks.reduce((total, stock) => total + stock.stock, 0);
+// };
+
 const getTotalStock = (stocks) => {
-  return stocks.reduce((total, stock) => total + stock.stock, 0);
+  return stocks.reduce((total, stock) => total + parseInt(stock.stock, 10), 0);
 };
+
 
 // const filteredProducts = computed(() => {
 //   return products.value.filter((product) =>
@@ -338,7 +343,7 @@ onMounted(fetchProducts);
                       'p-2 rounded-md': true,
                     }"
                   >
-                    <strong>{{ stock.exp_date }}</strong> - Stok: {{ stock.stock }}
+                    <strong>{{ stock.exp_date }}</strong> - Stok: {{ parseInt(stock.stock, 10) }}
                   </li>
                 </ul>
               </td>

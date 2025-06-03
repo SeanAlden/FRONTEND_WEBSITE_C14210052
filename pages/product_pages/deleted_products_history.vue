@@ -13,18 +13,38 @@ const itemsPerPage = ref(5);
 const currentPage = ref(1);
 const isLoading = ref(true);
 
+// const fetchProducts = async () => {
+//   isLoading.value = true; // Set loading to true
+//   try {
+//     const res = await axios.get(useApi(`/api/nonactive-history`));
+//     // const data = await res.json();
+//     products.value = res.data.data;
+//   } catch (error) {
+//     alert("Terjadi kesalahan: " + error.message);
+//   } finally {
+//     // finally {
+//     //   isLoading.value = false; // Set loading to false after fetching
+//     // }
+//     setTimeout(() => {
+//       isLoading.value = false;
+//     }, 200); // delay sedikit agar animasi terlihat smooth
+//   }
+// };
+
 const fetchProducts = async () => {
   isLoading.value = true; // Set loading to true
   try {
     const res = await axios.get(useApi(`/api/nonactive-history`));
-    // const data = await res.json();
-    products.value = res.data.data;
+    products.value = res.data.data.map((item) => {
+      // Pastikan untuk mengonversi product_stock ke integer
+      item.details.forEach(detail => {
+        detail.product_stock = parseInt(detail.product_stock, 10); // Konversi ke integer
+      });
+      return item;
+    });
   } catch (error) {
     alert("Terjadi kesalahan: " + error.message);
   } finally {
-    // finally {
-    //   isLoading.value = false; // Set loading to false after fetching
-    // }
     setTimeout(() => {
       isLoading.value = false;
     }, 200); // delay sedikit agar animasi terlihat smooth
