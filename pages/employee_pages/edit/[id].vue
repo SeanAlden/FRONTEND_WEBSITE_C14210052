@@ -6,11 +6,7 @@
       <div>
         <label class="block text-gray-600">Foto</label>
         <img
-          :src="
-            employee.employee_photo
-              ? useApi(`/storage/${employee.employee_photo}`)
-              : fallbackImage
-          "
+          :src="employee_photo ? useApi(`/storage/${employee_photo}`) : fallbackImage"
           @error="onImageError"
           class="object-fit h-20 w-20"
         />
