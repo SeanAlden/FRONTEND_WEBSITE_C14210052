@@ -200,11 +200,40 @@ const itemsPerPageOptions = [5, 10, 20, 50];
 const itemsPerPage = ref(5);
 const isLoading = ref(true); // State untuk loading
 
+// const fetchStockReport = async () => {
+//   isLoading.value = true; // Set loading to true
+//   try {
+//     const response = await axios.get(useApi("/api/product-stocks-report"));
+//     // const data = await response.json();
+//     const data = response.data;
+//     if (data.success) {
+//       productStocks.value = data.data.map((item) => ({
+//         id: item.id,
+//         name: item.name,
+//         code: item.code,
+//         photo: item.photo
+//           ? useApi(`/storage/${item.photo}`)
+//           : '/assets/images/avatar.png',
+//         price: item.price,
+//         exp_date: item.exp_date,
+//         previous_stock: item.previous_stock,
+//         quantity: item.quantity,
+//         current_stock: item.current_stock,
+//         timestamp: item.timestamp,
+//         condition: item.current_stock > item.previous_stock ? "Masuk" : "Keluar",
+//       }));
+//     }
+//   } catch (error) {
+//     console.error("Error fetching stock report:", error);
+//   } finally {
+//     isLoading.value = false;
+//   }
+// };
+
 const fetchStockReport = async () => {
   isLoading.value = true; // Set loading to true
   try {
     const response = await axios.get(useApi("/api/product-stocks-report"));
-    // const data = await response.json();
     const data = response.data;
     if (data.success) {
       productStocks.value = data.data.map((item) => ({
@@ -213,14 +242,17 @@ const fetchStockReport = async () => {
         code: item.code,
         photo: item.photo
           ? useApi(`/storage/${item.photo}`)
-          : '/assets/images/avatar.png',
+          : "/assets/images/avatar.png",
         price: item.price,
         exp_date: item.exp_date,
-        previous_stock: item.previous_stock,
-        quantity: item.quantity,
-        current_stock: item.current_stock,
+        previous_stock: parseInt(item.previous_stock, 10), // Konversi ke integer
+        quantity: parseInt(item.quantity, 10), // Konversi ke integer
+        current_stock: parseInt(item.current_stock, 10), // Konversi ke integer
         timestamp: item.timestamp,
-        condition: item.current_stock > item.previous_stock ? "Masuk" : "Keluar",
+        condition:
+          parseInt(item.current_stock, 10) > parseInt(item.previous_stock, 10)
+            ? "Masuk"
+            : "Keluar",
       }));
     }
   } catch (error) {
