@@ -93,9 +93,17 @@
                 <td class="px-4 py-2 border" v-if="index === 0">{{ item.code }}</td>
                 <td class="px-4 py-2 border" v-if="index !== 0"></td>
                 <td class="px-4 py-2 border">
-                  <img
+                  <!-- <img
                     :src="
                     item.photo ? useApi(`/public/storage/${item.photo}`) : fallbackImage
+                  "
+                  @error="onImageError"
+                    alt="Foto Produk"
+                    class="object-cover w-12 h-12 rounded"
+                  /> -->
+									<img
+                    :src="
+                    item.photo ? item.photo : fallbackImage
                   "
                   @error="onImageError"
                     alt="Foto Produk"
