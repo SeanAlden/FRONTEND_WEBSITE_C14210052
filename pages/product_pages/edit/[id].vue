@@ -93,7 +93,7 @@ const fetchProduct = async () => {
 
     expStockList.value = data.data.stocks || [];
 
-    productImage.value = data.data.photo ? useApi(`/storage/${data.data.photo}`) : null;
+    productImage.value = data.data.photo ? useApi(`/public/storage/${data.data.photo}`) : null;
 
     await nextTick();
   } catch (error) {
