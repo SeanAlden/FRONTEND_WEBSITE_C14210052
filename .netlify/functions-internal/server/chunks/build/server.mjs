@@ -703,7 +703,7 @@ const _routes = [
     name: "analysis_pages-accuracy_page",
     path: "/analysis_pages/accuracy_page",
     meta: __nuxt_page_meta$w || {},
-    component: () => import('./accuracy_page-Dm2LlNUG.mjs')
+    component: () => import('./accuracy_page-D0mCAZMF.mjs')
   },
   {
     name: "analysis_pages-decision_tree_page",
@@ -721,7 +721,7 @@ const _routes = [
     name: "analysis_pages-sales_count_page",
     path: "/analysis_pages/sales_count_page",
     meta: __nuxt_page_meta$t || {},
-    component: () => import('./sales_count_page-BI9bhLbR.mjs')
+    component: () => import('./sales_count_page-BRHhUKfS.mjs')
   },
   {
     name: "analysis_pages-time_count_page",
@@ -745,13 +745,13 @@ const _routes = [
     name: "category_pages-categories",
     path: "/category_pages/categories",
     meta: __nuxt_page_meta$p || {},
-    component: () => import('./categories-xeRS81Hi.mjs')
+    component: () => import('./categories-CHD8K6lM.mjs')
   },
   {
     name: "category_pages-detail-id",
     path: "/category_pages/detail/:id()",
     meta: __nuxt_page_meta$o || {},
-    component: () => import('./_id_-DToXWI2U.mjs')
+    component: () => import('./_id_-p4w2LEO_.mjs')
   },
   {
     name: "category_pages-edit-id",
@@ -769,31 +769,31 @@ const _routes = [
     name: "employee_pages-detail-id",
     path: "/employee_pages/detail/:id()",
     meta: __nuxt_page_meta$l || {},
-    component: () => import('./_id_-CnhTqfib.mjs')
+    component: () => import('./_id_-Cbs4RgYQ.mjs')
   },
   {
     name: "employee_pages-edit-id",
     path: "/employee_pages/edit/:id()",
     meta: __nuxt_page_meta$k || {},
-    component: () => import('./_id_-Dj1ITzpy.mjs')
+    component: () => import('./_id_-CQ1xvcgd.mjs')
   },
   {
     name: "employee_pages-employees",
     path: "/employee_pages/employees",
     meta: __nuxt_page_meta$j || {},
-    component: () => import('./employees-CeW0Wsbr.mjs')
+    component: () => import('./employees-XuKzJ78M.mjs')
   },
   {
     name: "employee_pages-registered_employees",
     path: "/employee_pages/registered_employees",
     meta: __nuxt_page_meta$i || {},
-    component: () => import('./registered_employees-Cw1rZ9iW.mjs')
+    component: () => import('./registered_employees-m1Qw4Rsp.mjs')
   },
   {
     name: "index",
     path: "/",
     meta: __nuxt_page_meta$h || {},
-    component: () => import('./index-BHRz442M.mjs')
+    component: () => import('./index-MWCRV0Oz.mjs')
   },
   {
     name: "login",
@@ -805,7 +805,7 @@ const _routes = [
     name: "notifications",
     path: "/notifications",
     meta: __nuxt_page_meta$f || {},
-    component: () => import('./notifications-BtGt0sOy.mjs')
+    component: () => import('./notifications-iAabCwFY.mjs')
   },
   {
     name: "product_pages-add_product",
@@ -817,61 +817,61 @@ const _routes = [
     name: "product_pages-deleted_products_history",
     path: "/product_pages/deleted_products_history",
     meta: __nuxt_page_meta$d || {},
-    component: () => import('./deleted_products_history-D_1YHFKa.mjs')
+    component: () => import('./deleted_products_history-DP6XLsHU.mjs')
   },
   {
     name: "product_pages-deleted_products",
     path: "/product_pages/deleted_products",
     meta: __nuxt_page_meta$c || {},
-    component: () => import('./deleted_products-DR5aCk4G.mjs')
+    component: () => import('./deleted_products-BNh2NrD_.mjs')
   },
   {
     name: "product_pages-detail-id",
     path: "/product_pages/detail/:id()",
     meta: __nuxt_page_meta$b || {},
-    component: () => import('./_id_-B0QtH2Tx.mjs')
+    component: () => import('./_id_-O0JyvcDa.mjs')
   },
   {
     name: "product_pages-edit-id",
     path: "/product_pages/edit/:id()",
     meta: __nuxt_page_meta$a || {},
-    component: () => import('./_id_-B28gcnkD.mjs')
+    component: () => import('./_id_-BWYR2be-.mjs')
   },
   {
     name: "product_pages-entry_products",
     path: "/product_pages/entry_products",
     meta: __nuxt_page_meta$9 || {},
-    component: () => import('./entry_products-88Y8KoMa.mjs')
+    component: () => import('./entry_products-DWXNuiHu.mjs')
   },
   {
     name: "product_pages-exit_products",
     path: "/product_pages/exit_products",
     meta: __nuxt_page_meta$8 || {},
-    component: () => import('./exit_products-aLNvhwMS.mjs')
+    component: () => import('./exit_products-CFaGeWz4.mjs')
   },
   {
     name: "product_pages-product_stocks_report",
     path: "/product_pages/product_stocks_report",
     meta: __nuxt_page_meta$7 || {},
-    component: () => import('./product_stocks_report-gj7LdBj6.mjs')
+    component: () => import('./product_stocks_report-C7KkRhyu.mjs')
   },
   {
     name: "product_pages-products",
     path: "/product_pages/products",
     meta: __nuxt_page_meta$6 || {},
-    component: () => import('./products-B-xiesJE.mjs')
+    component: () => import('./products-DQYMkGW_.mjs')
   },
   {
     name: "profile_pages-edit_password_page",
     path: "/profile_pages/edit_password_page",
     meta: __nuxt_page_meta$5 || {},
-    component: () => import('./edit_password_page-hSPMZRhy.mjs')
+    component: () => import('./edit_password_page-DUNyNkt3.mjs')
   },
   {
     name: "profile_pages-edit_profile_page",
     path: "/profile_pages/edit_profile_page",
     meta: __nuxt_page_meta$4 || {},
-    component: () => import('./edit_profile_page-DZPNjn1y.mjs')
+    component: () => import('./edit_profile_page-BvwLnj1j.mjs')
   },
   {
     name: "register",
@@ -883,19 +883,19 @@ const _routes = [
     name: "sales_report_pages-sales_reports",
     path: "/sales_report_pages/sales_reports",
     meta: __nuxt_page_meta$2 || {},
-    component: () => import('./sales_reports-QglPlApn.mjs')
+    component: () => import('./sales_reports-Ca2sLItW.mjs')
   },
   {
     name: "transaction_pages-detail-id",
     path: "/transaction_pages/detail/:id()",
     meta: __nuxt_page_meta$1 || {},
-    component: () => import('./_id_-YeYcfg3m.mjs')
+    component: () => import('./_id_-BG9nMvHN.mjs')
   },
   {
     name: "transaction_pages-transactions",
     path: "/transaction_pages/transactions",
     meta: __nuxt_page_meta || {},
-    component: () => import('./transactions-CixVmoL1.mjs')
+    component: () => import('./transactions-DwZPoCxs.mjs')
   }
 ];
 const _wrapInTransition = (props, children) => {
@@ -1589,7 +1589,7 @@ const plugins = [
   plugin_wmlUyJB46B
 ];
 const layouts = {
-  default: defineAsyncComponent(() => import('./default-DyC4-XhZ.mjs').then((m) => m.default || m))
+  default: defineAsyncComponent(() => import('./default-X2V6l1u4.mjs').then((m) => m.default || m))
 };
 const LayoutLoader = defineComponent({
   name: "LayoutLoader",
