@@ -370,15 +370,15 @@ onMounted(async () => {
       <!-- Foto Produk -->
       <label>Foto Produk:</label>
       <div v-if="productImage" class="mb-2">
-        <img
+        <!-- <img
           :src="productImage"
           alt="Foto Produk"
           class="object-cover w-40 h-40 border rounded"
-        />
-        <!-- <img
+        /> -->
+        <img
           :src="product.photo ? useApi(`/public/storage/${product.photo}`) : fallbackImage"
           @error="onImageError"
-        /> -->
+        />
       </div>
       <input type="file" @change="handleFileUpload" class="w-full p-2 border" />
 
