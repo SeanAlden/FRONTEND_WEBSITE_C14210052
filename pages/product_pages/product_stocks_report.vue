@@ -246,7 +246,7 @@ const fetchStockReport = async () => {
         name: item.name,
         code: item.code,
         photo: item.photo
-          ? useApi(`/public/storage/product_photos/${item.photo}`)
+          ? useApi(`/public/storage/${item.photo}`)
           : "/assets/images/avatar.png",
         price: item.price,
         exp_date: item.exp_date,
