@@ -134,13 +134,13 @@ onMounted(fetchProducts);
 </script>
 
 <template>
-  <div class="container mx-auto p-6">
+  <div class="container p-6 mx-auto">
     <h1 class="mb-4 text-2xl font-bold">Riwayat Produk Dinonaktifkan</h1>
 
-    <div class="mb-4 flex items-center justify-between">
+    <div class="flex items-center justify-between mb-4">
       <div>
         <label class="mr-2">Show</label>
-        <!-- <select v-model="itemsPerPage" class="rounded border p-1">
+        <!-- <select v-model="itemsPerPage" class="p-1 border rounded">
           <option value="10">10</option>
           <option value="20">20</option>
           <option value="50">50</option>
@@ -157,7 +157,7 @@ onMounted(fetchProducts);
         type="text"
         v-model="searchQuery"
         placeholder="Search"
-        class="rounded border p-2"
+        class="p-2 border rounded"
       />
     </div>
 
@@ -165,26 +165,26 @@ onMounted(fetchProducts);
       <!-- <p>Loading...</p> -->
       <!-- Ganti dengan spinner jika perlu -->
       <div
-        class="loader h-16 w-16 rounded-full border-8 border-t-8 border-gray-200 ease-linear"
+        class="w-16 h-16 ease-linear border-8 border-t-8 border-gray-200 rounded-full loader"
       ></div>
     </div>
 
     <transition name="fade">
       <div v-if="!isLoading" class="overflow-x-auto whitespace-nowrap">
         <table
-          class="min-w-full rounded-lg border border-gray-300 bg-white text-gray-700 shadow-md"
+          class="min-w-full text-gray-700 bg-white border border-gray-300 rounded-lg shadow-md"
         >
           <thead>
             <tr class="bg-gray-200">
-              <!-- <th class="border p-2">#</th> -->
-              <th class="border p-2">Kode</th>
-              <th class="border p-2">Foto</th>
-              <th class="border p-2">Nama</th>
-              <th class="border p-2">Kategori</th>
-              <th class="border p-2">Harga</th>
-              <th class="border p-2">Tanggal Kadaluarsa & Stok</th>
-              <th class="border p-2">Total Stok</th>
-              <th class="border p-2">Waktu Nonaktif</th>
+              <!-- <th class="p-2 border">#</th> -->
+              <th class="p-2 border">Kode</th>
+              <th class="p-2 border">Foto</th>
+              <th class="p-2 border">Nama</th>
+              <th class="p-2 border">Kategori</th>
+              <th class="p-2 border">Harga</th>
+              <th class="p-2 border">Tanggal Kadaluarsa & Stok</th>
+              <th class="p-2 border">Total Stok</th>
+              <th class="p-2 border">Waktu Nonaktif</th>
             </tr>
           </thead>
           <tbody>
@@ -198,21 +198,21 @@ onMounted(fetchProducts);
               :key="item.id"
               :class="{ 'bg-red-100': item.condition === 'nonactive' }"
             >
-              <!-- <td class="border p-2">{{ index + 1 }}</td> -->
-              <td class="border p-2">{{ item.product.code }}</td>
-              <!-- <td class="flex items-center justify-center border p-2"> -->
+              <!-- <td class="p-2 border">{{ index + 1 }}</td> -->
+              <td class="p-2 border">{{ item.product.code }}</td>
+              <!-- <td class="flex items-center justify-center p-2 border"> -->
               <td
                 class="flex min-h-[100px] min-w-[100px] items-center justify-center border p-2"
               >
                 <img
                   :src="
-                    item.product.photo ? useApi(`/storage/${item.product.photo}`) : fallbackImage
+                    item.product.photo ? useApi(`/public/storage/${item.product.photo}`) : fallbackImage
                   "
                   @error="onImageError"
-                  class="object-fit h-20 w-20"
+                  class="w-20 h-20 object-fit"
                 />
               </td>
-              <td class="border p-2">
+              <td class="p-2 border">
                 <NuxtLink
                   :to="`/product_pages/detail/${item.product.id}`"
                   class="text-blue-500 hover:underline"
@@ -220,12 +220,12 @@ onMounted(fetchProducts);
                   {{ item.product.name }}
                 </NuxtLink>
               </td>
-              <td class="border p-2">{{ item.product.category.name || "Tidak ada" }}</td>
-              <td class="border p-2">{{ formatPrice(item.product.price) }}</td>
-              <!-- <td class="border p-2">
+              <td class="p-2 border">{{ item.product.category.name || "Tidak ada" }}</td>
+              <td class="p-2 border">{{ formatPrice(item.product.price) }}</td>
+              <!-- <td class="p-2 border">
 						<strong>{{ item.details.product_exp_date }}</strong> - Stok: {{ item.details.product_stock }}
 						</td> -->
-              <td class="border p-2">
+              <td class="p-2 border">
                 <div
                   v-for="(detail, i) in item.details"
                   :key="i"
@@ -237,14 +237,14 @@ onMounted(fetchProducts);
                   {{ detail.product_stock }}
                 </div>
               </td>
-              <td class="border p-2">{{ getTotalStock(item) }}</td>
-              <td class="border p-2">{{ formatDate(item.changed_at) }}</td>
+              <td class="p-2 border">{{ getTotalStock(item) }}</td>
+              <td class="p-2 border">{{ formatDate(item.changed_at) }}</td>
             </tr>
           </tbody>
         </table>
 
         <!-- Pagination -->
-        <div class="mt-4 flex justify-between">
+        <div class="flex justify-between mt-4">
           <div>
             Showing {{ (currentPage - 1) * itemsPerPage + 1 }} to
             {{ Math.min(currentPage * itemsPerPage, filteredProducts.length) }} of
@@ -254,7 +254,7 @@ onMounted(fetchProducts);
             <button
               @click="changePage(currentPage - 1)"
               :disabled="currentPage === 1"
-              class="rounded border bg-gray-300 px-3 py-1 disabled:opacity-50"
+              class="px-3 py-1 bg-gray-300 border rounded disabled:opacity-50"
             >
               Prev
             </button>
@@ -275,7 +275,7 @@ onMounted(fetchProducts);
             <button
               @click="changePage(currentPage + 1)"
               :disabled="currentPage === totalPages"
-              class="rounded border bg-gray-300 px-3 py-1 disabled:opacity-50"
+              class="px-3 py-1 bg-gray-300 border rounded disabled:opacity-50"
             >
               Next
             </button>

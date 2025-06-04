@@ -1,19 +1,19 @@
 <template>
-  <div class="max-w-8xl max-h-8xl flex h-full w-full rounded-lg bg-white p-6 shadow-lg">
+  <div class="flex w-full h-full p-6 bg-white rounded-lg shadow-lg max-w-8xl max-h-8xl">
     <!-- Bagian Kiri (Profile Info) -->
-    <div class="w-1/2 border-r p-6">
+    <div class="w-1/2 p-6 border-r">
       <h2 class="mb-4 text-2xl font-bold">Set Your Profile</h2>
-      <div class="rounded-lg bg-gray-100 p-6">
-        <div class="mb-4 flex items-center">
-          <!-- <img :src="profileImage" class="h-20 w-20 rounded-full" /> -->
+      <div class="p-6 bg-gray-100 rounded-lg">
+        <div class="flex items-center mb-4">
+          <!-- <img :src="profileImage" class="w-20 h-20 rounded-full" /> -->
           <img
             :src="
               user.profile_image
-                ? useApi(`/storage/profile_images/${user.profile_image}`)
+                ? useApi(`/public/storage/profile_images/${user.profile_image}`)
                 : fallbackImage
             "
             @error="onImageError"
-            class="h-20 w-20 rounded-full"
+            class="w-20 h-20 rounded-full"
           />
           <h3 class="ml-4 text-xl font-bold">{{ user.name }}</h3>
         </div>
@@ -38,54 +38,54 @@
       <h2 class="mb-4 text-xl font-bold">UPDATE ADMIN PROFILE</h2>
       <form @submit.prevent="updateProfile">
         <!-- Username -->
-        <label class="mb-2 block text-sm font-bold text-gray-700">Username</label>
+        <label class="block mb-2 text-sm font-bold text-gray-700">Username</label>
         <input
           type="text"
-          class="w-full rounded border p-2"
+          class="w-full p-2 border rounded"
           :class="{ 'bg-gray-100 cursor-not-allowed': !isEditing }"
           v-model="user.name"
           :disabled="!isEditing"
         />
 
         <!-- Email -->
-        <label class="mb-2 mt-4 block text-sm font-bold text-gray-700"
+        <label class="block mt-4 mb-2 text-sm font-bold text-gray-700"
           >Email address</label
         >
         <input
           type="email"
-          class="w-full rounded border p-2"
+          class="w-full p-2 border rounded"
           :class="{ 'bg-gray-100 cursor-not-allowed': !isEditing }"
           v-model="user.email"
           :disabled="!isEditing"
         />
 
         <!-- File Upload -->
-        <label class="mb-2 mt-4 block text-sm font-bold text-gray-700">File upload</label>
+        <label class="block mt-4 mb-2 text-sm font-bold text-gray-700">File upload</label>
         <div class="flex items-center space-x-3">
-          <!-- <img :src="profileImage" class="h-10 w-10 rounded-full" /> -->
+          <!-- <img :src="profileImage" class="w-10 h-10 rounded-full" /> -->
 					<img
             :src="
               user.profile_image
-                ? useApi(`/storage/profile_images/${user.profile_image}`)
+                ? useApi(`/public/storage/profile_images/${user.profile_image}`)
                 : fallbackImage
             "
             @error="onImageError"
-            class="h-10 w-10 rounded-full"
+            class="w-10 h-10 rounded-full"
           />
           <input
             type="file"
-            class="w-full rounded border p-2"
+            class="w-full p-2 border rounded"
             @change="handleFileUpload"
           />
         </div>
 
         <!-- Tombol Edit & Save -->
-        <div class="mt-4 flex space-x-3">
+        <div class="flex mt-4 space-x-3">
           <!-- Tombol Edit -->
           <button
             type="button"
             @click="toggleEdit"
-            class="w-1/2 rounded py-2 text-white"
+            class="w-1/2 py-2 text-white rounded"
             :class="
               isEditing
                 ? 'bg-gray-600 hover:bg-gray-700'
@@ -98,7 +98,7 @@
           <!-- Tombol Save Changes -->
           <button
             type="submit"
-            class="w-1/2 rounded py-2 text-white"
+            class="w-1/2 py-2 text-white rounded"
             :class="
               isEditing
                 ? 'bg-blue-600 hover:bg-blue-700'
@@ -234,7 +234,7 @@ const fetchUser = async () => {
     });
     user.value = res.data;
     profileImage.value = user.value.profile_image
-      ? useApi(`/storage/profile_images/${user.value.profile_image}`)
+      ? useApi(`/public/storage/profile_images/${user.value.profile_image}`)
       : "/assets/images/photo_default.png";
   } catch (error) {
     console.error("Gagal mengambil data user:", error);
@@ -274,7 +274,7 @@ const uploadProfileImage = async () => {
     );
     // Update gambar jika berhasil
     user.value.profile_image = res.data.profile_image;
-    profileImage.value = useApi(`/storage/profile_images/${res.data.profile_image}`);
+    profileImage.value = useApi(`/public/storage/profile_images/${res.data.profile_image}`);
   } catch (error) {
     console.error("Gagal mengupload gambar:", error);
     alert("Gagal mengupload gambar profil.");

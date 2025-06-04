@@ -194,28 +194,28 @@ onMounted(fetchProducts);
 </script>
 
 <template>
-  <div class="container mx-auto p-6">
+  <div class="container p-6 mx-auto">
     <h1 class="mb-4 text-2xl font-bold">Daftar Produk Dinonaktifkan</h1>
 
-    <!-- <div class="mb-4 flex justify-between">
-      <button class="rounded bg-blue-500 px-4 py-2 text-white">Tambah Produk</button>
+    <!-- <div class="flex justify-between mb-4">
+      <button class="px-4 py-2 text-white bg-blue-500 rounded">Tambah Produk</button>
     </div> -->
 
     <!-- <NuxtLink
       to="/product_pages/add_product"
-      class="mb-4 inline-block rounded bg-green-500 p-2 text-white"
+      class="inline-block p-2 mb-4 text-white bg-green-500 rounded"
     >
       Tambah Produk
     </NuxtLink> -->
 
     <!-- <div
-      class="w-full overflow-x-auto whitespace-nowrap rounded-lg border bg-white p-4 shadow-md"
+      class="w-full p-4 overflow-x-auto bg-white border rounded-lg shadow-md whitespace-nowrap"
     > -->
-    <!-- <div class="overflow-x-auto rounded-lg bg-white shadow-md"> -->
-    <div class="mb-4 flex items-center justify-between">
+    <!-- <div class="overflow-x-auto bg-white rounded-lg shadow-md"> -->
+    <div class="flex items-center justify-between mb-4">
       <div>
         <label class="mr-2">Show</label>
-        <!-- <select v-model="itemsPerPage" class="rounded border p-1">
+        <!-- <select v-model="itemsPerPage" class="p-1 border rounded">
           <option value="10">10</option>
           <option value="20">20</option>
           <option value="50">50</option>
@@ -232,35 +232,35 @@ onMounted(fetchProducts);
         type="text"
         v-model="searchQuery"
         placeholder="Search"
-        class="rounded border p-2"
+        class="p-2 border rounded"
       />
     </div>
 
-    <!-- <table class="w-full border-collapse border">
+    <!-- <table class="w-full border border-collapse">
       <thead>
         <tr class="bg-gray-200">
-          <th class="border p-2">Kode</th>
-          <th class="border p-2">Foto</th>
-          <th class="border p-2">Nama</th>
-          <th class="border p-2">Kategori</th>
-          <th class="border p-2">Harga</th>
-          <th class="border p-2">Aksi</th>
+          <th class="p-2 border">Kode</th>
+          <th class="p-2 border">Foto</th>
+          <th class="p-2 border">Nama</th>
+          <th class="p-2 border">Kategori</th>
+          <th class="p-2 border">Harga</th>
+          <th class="p-2 border">Aksi</th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="product in paginatedProducts" :key="product.id">
-          <td class="border p-2">{{ product.code }}</td>
-          <td class="border p-2">
+          <td class="p-2 border">{{ product.code }}</td>
+          <td class="p-2 border">
             <img
               :src="
                 product.photo
                   ? `http://localhost:8000/storage/${product.photo}`
                   : '/assets/images/avatar.png'
               "
-              class="h-20 w-20 object-cover"
+              class="object-cover w-20 h-20"
             />
           </td>
-          <td class="border p-3">	
+          <td class="p-3 border">	
             <NuxtLink
               :to="`/product_pages/detail/${product.id}`"
               class="text-blue-500 hover:underline"
@@ -268,12 +268,12 @@ onMounted(fetchProducts);
               {{ product.name }}
             </NuxtLink>
           </td>
-          <td class="border p-2">{{ product.category?.name || "Tidak ada" }}</td>
-          <td class="border p-2">Rp {{ product.price }}</td>
-          <td class="border p-2">
+          <td class="p-2 border">{{ product.category?.name || "Tidak ada" }}</td>
+          <td class="p-2 border">Rp {{ product.price }}</td>
+          <td class="p-2 border">
             <button
               @click="changePage(1)"
-              class="rounded bg-red-500 px-3 py-1 text-white"
+              class="px-3 py-1 text-white bg-red-500 rounded"
             >
               Edit
             </button>
@@ -286,26 +286,26 @@ onMounted(fetchProducts);
       <!-- <p>Loading...</p> -->
       <!-- Ganti dengan spinner jika perlu -->
       <div
-        class="loader h-16 w-16 rounded-full border-8 border-t-8 border-gray-200 ease-linear"
+        class="w-16 h-16 ease-linear border-8 border-t-8 border-gray-200 rounded-full loader"
       ></div>
     </div>
 
     <transition name="fade">
       <div v-if="!isLoading" class="overflow-x-auto whitespace-nowrap">
         <table
-          class="min-w-full rounded-lg border border-gray-300 bg-white text-gray-700 shadow-md"
+          class="min-w-full text-gray-700 bg-white border border-gray-300 rounded-lg shadow-md"
         >
           <!-- <table class="w-full text-gray-700"> -->
           <thead>
             <tr class="bg-gray-200">
-              <th class="border p-2">#</th>
-              <th class="border p-2">Foto</th>
-              <th class="border p-2">Nama</th>
-              <th class="border p-2">Kategori</th>
-              <th class="border p-2">Harga</th>
-              <th class="border p-2">Tanggal Kadaluarsa & Stok</th>
-              <th class="border p-2">Total Stok</th>
-              <th class="border p-2">Aksi</th>
+              <th class="p-2 border">#</th>
+              <th class="p-2 border">Foto</th>
+              <th class="p-2 border">Nama</th>
+              <th class="p-2 border">Kategori</th>
+              <th class="p-2 border">Harga</th>
+              <th class="p-2 border">Tanggal Kadaluarsa & Stok</th>
+              <th class="p-2 border">Total Stok</th>
+              <th class="p-2 border">Aksi</th>
             </tr>
           </thead>
           <tbody>
@@ -314,20 +314,20 @@ onMounted(fetchProducts);
               :key="product.id"
               :class="{ 'bg-red-200': product.condition === 'nonactive' }"
             >
-              <td class="border p-2">{{ product.code }}</td>
-              <!-- <td class="flex items-center justify-center border p-2"> -->
+              <td class="p-2 border">{{ product.code }}</td>
+              <!-- <td class="flex items-center justify-center p-2 border"> -->
               <td
                 class="flex min-h-[100px] min-w-[100px] items-center justify-center border p-2"
               >
                 <img
                   :src="
-                    product.photo ? useApi(`/storage/${product.photo}`) : fallbackImage
+                    product.photo ? useApi(`/public/storage/${product.photo}`) : fallbackImage
                   "
                   @error="onImageError"
-                  class="object-fit h-20 w-20"
+                  class="w-20 h-20 object-fit"
                 />
               </td>
-              <td class="border p-3">
+              <td class="p-3 border">
                 <NuxtLink
                   :to="`/product_pages/detail/${product.id}`"
                   class="text-blue-500 hover:underline"
@@ -335,10 +335,10 @@ onMounted(fetchProducts);
                   {{ product.name }}
                 </NuxtLink>
               </td>
-              <td class="border p-2">{{ product.category?.name || "Tidak ada" }}</td>
-              <!-- <td class="border p-2">Rp {{ product.price }}</td> -->
-              <td class="border p-2">{{ formatPrice(product.price) }}</td>
-              <td class="border p-2">
+              <td class="p-2 border">{{ product.category?.name || "Tidak ada" }}</td>
+              <!-- <td class="p-2 border">Rp {{ product.price }}</td> -->
+              <td class="p-2 border">{{ formatPrice(product.price) }}</td>
+              <td class="p-2 border">
                 <ul>
                   <li
                     v-for="stock in product.stocks"
@@ -352,10 +352,10 @@ onMounted(fetchProducts);
                   </li>
                 </ul>
               </td>
-              <td class="border p-2 font-bold">
+              <td class="p-2 font-bold border">
                 {{ getTotalStock(product.stocks) }}
               </td>
-              <td class="border p-2">
+              <td class="p-2 border">
                 <!-- <template v-if="product.condition === 'active'">
                 <NuxtLink
                   :to="`/product_pages/edit/${product.id}`"
@@ -374,7 +374,7 @@ onMounted(fetchProducts);
                 <span class="font-bold text-red-500">Nonaktif</span>
                 <button
                   @click="toggleProductStatus(product.id, 'active')"
-                  class="ml-2 rounded bg-yellow-400 p-1 text-white"
+                  class="p-1 ml-2 text-white bg-yellow-400 rounded"
                 >
                   Batal
                 </button>
@@ -383,7 +383,7 @@ onMounted(fetchProducts);
                   <!-- <span class="font-bold text-red-500">Nonaktif</span> -->
                   <button
                     @click="toggleProductStatus(product.id, 'active')"
-                    class="ml-2 rounded bg-blue-500 p-1 text-white"
+                    class="p-1 ml-2 text-white bg-blue-500 rounded"
                   >
                     Aktifkan
                   </button>
@@ -394,7 +394,7 @@ onMounted(fetchProducts);
         </table>
 
         <!-- Pagination -->
-        <div class="mt-4 flex justify-between">
+        <div class="flex justify-between mt-4">
           <div>
             Showing {{ (currentPage - 1) * itemsPerPage + 1 }} to
             {{ Math.min(currentPage * itemsPerPage, filteredProducts.length) }} from
@@ -404,7 +404,7 @@ onMounted(fetchProducts);
             <button
               @click="changePage(currentPage - 1)"
               :disabled="currentPage === 1"
-              class="rounded border bg-gray-300 px-3 py-1 disabled:opacity-50"
+              class="px-3 py-1 bg-gray-300 border rounded disabled:opacity-50"
             >
               Prev
             </button>
@@ -413,7 +413,7 @@ onMounted(fetchProducts);
               v-for="page in generatePagination"
               :key="page"
               @click="changePage(page)"
-              class="rounded border px-3 py-1 transition-all duration-200"
+              class="px-3 py-1 transition-all duration-200 border rounded"
               :class="{
                 'bg-blue-500 text-white': currentPage === page,
                 'bg-white text-blue-500 hover:bg-blue-100':
@@ -426,7 +426,7 @@ onMounted(fetchProducts);
             <button
               @click="changePage(currentPage + 1)"
               :disabled="currentPage === totalPages"
-              class="rounded border bg-gray-300 px-3 py-1 disabled:opacity-50"
+              class="px-3 py-1 bg-gray-300 border rounded disabled:opacity-50"
             >
               Next
             </button>

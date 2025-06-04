@@ -1,19 +1,19 @@
 <template>
-  <div class="max-w-8xl max-h-8xl flex h-full w-full rounded-lg bg-white p-6 shadow-lg">
+  <div class="flex w-full h-full p-6 bg-white rounded-lg shadow-lg max-w-8xl max-h-8xl">
     <!-- Bagian Kiri (Password Info) -->
-    <div class="w-1/2 border-r p-6">
+    <div class="w-1/2 p-6 border-r">
       <h2 class="mb-4 text-2xl font-bold">Set Your Password</h2>
-      <div class="rounded-lg bg-gray-100 p-6">
-        <div class="mb-4 flex items-center">
-          <!-- <img :src="profileImage" class="h-20 w-20 rounded-full" /> -->
+      <div class="p-6 bg-gray-100 rounded-lg">
+        <div class="flex items-center mb-4">
+          <!-- <img :src="profileImage" class="w-20 h-20 rounded-full" /> -->
           <img
             :src="
               user.profile_image
-                ? useApi(`/storage/profile_images/${user.profile_image}`)
+                ? useApi(`/public/storage/profile_images/${user.profile_image}`)
                 : fallbackImage
             "
             @error="onImageError"
-            class="h-20 w-20 rounded-full"
+            class="w-20 h-20 rounded-full"
           />
           <h3 class="ml-4 text-xl font-bold">{{ user.name }}</h3>
         </div>
@@ -38,46 +38,46 @@
       <h2 class="mb-4 text-xl font-bold">CHANGE PASSWORD</h2>
       <form @submit.prevent="updatePassword">
         <!-- Old Password -->
-        <label class="mb-2 block text-sm font-bold text-gray-700">Old Password</label>
+        <label class="block mb-2 text-sm font-bold text-gray-700">Old Password</label>
         <input
           type="password"
-          class="w-full rounded border p-2"
+          class="w-full p-2 border rounded"
           :class="{ 'bg-gray-100 cursor-not-allowed': !isEditing }"
           v-model="password.oldPassword"
           :disabled="!isEditing"
         />
 
         <!-- New Password -->
-        <label class="mb-2 mt-4 block text-sm font-bold text-gray-700"
+        <label class="block mt-4 mb-2 text-sm font-bold text-gray-700"
           >New Password</label
         >
         <input
           type="password"
-          class="w-full rounded border p-2"
+          class="w-full p-2 border rounded"
           :class="{ 'bg-gray-100 cursor-not-allowed': !isEditing }"
           v-model="password.newPassword"
           :disabled="!isEditing"
         />
 
         <!-- Confirm New Password -->
-        <label class="mb-2 mt-4 block text-sm font-bold text-gray-700"
+        <label class="block mt-4 mb-2 text-sm font-bold text-gray-700"
           >Confirm New Password</label
         >
         <input
           type="password"
-          class="w-full rounded border p-2"
+          class="w-full p-2 border rounded"
           :class="{ 'bg-gray-100 cursor-not-allowed': !isEditing }"
           v-model="password.confirmNewPassword"
           :disabled="!isEditing"
         />
 
         <!-- Tombol Edit & Save -->
-        <div class="mt-4 flex space-x-3">
+        <div class="flex mt-4 space-x-3">
           <!-- Tombol Edit -->
           <button
             type="button"
             @click="toggleEdit"
-            class="w-1/2 rounded py-2 text-white"
+            class="w-1/2 py-2 text-white rounded"
             :class="
               isEditing
                 ? 'bg-gray-600 hover:bg-gray-700'
@@ -90,7 +90,7 @@
           <!-- Tombol Save Changes -->
           <button
             type="submit"
-            class="w-1/2 rounded py-2 text-white"
+            class="w-1/2 py-2 text-white rounded"
             :class="
               isEditing
                 ? 'bg-blue-600 hover:bg-blue-700'
@@ -143,7 +143,7 @@ const fetchUser = async () => {
     });
     user.value = res.data;
     profileImage.value = user.value.profile_image
-      ? useApi(`/storage/profile_images/${user.value.profile_image}`)
+      ? useApi(`/public/storage/profile_images/${user.value.profile_image}`)
       : "/assets/images/photo_default.png";
   } catch (error) {
     console.error("Gagal mengambil data user:", error);

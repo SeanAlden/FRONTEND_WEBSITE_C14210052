@@ -1,17 +1,17 @@
 <template>
-  <div class="container mx-auto p-6">
-    <h1 class="mb-4 text-center text-2xl font-bold">Detail Karyawan</h1>
-    <div v-if="employee" class="rounded-lg bg-white p-6 shadow-md">
+  <div class="container p-6 mx-auto">
+    <h1 class="mb-4 text-2xl font-bold text-center">Detail Karyawan</h1>
+    <div v-if="employee" class="p-6 bg-white rounded-lg shadow-md">
       <div class="flex flex-col items-center text-center md:flex-col md:text-left">
         <!-- Foto berada di atas -->
         <img
           :src="
             employee.employee_photo
-              ? useApi(`/storage/${employee.employee_photo}`)
+              ? useApi(`/public/storage/${employee.employee_photo}`)
               : fallbackImage
           "
           @error="onImageError"
-          class="mb-4 h-40 w-40 rounded-lg object-cover"
+          class="object-cover w-40 h-40 mb-4 rounded-lg"
         />
         <!-- Detail informasi -->
         <div class="w-full">
@@ -28,10 +28,10 @@
           </p>
         </div>
       </div>
-      <div class="mt-4 flex justify-center">
+      <div class="flex justify-center mt-4">
         <router-link
           to="/employee_pages/employees"
-          class="rounded bg-gray-600 px-4 py-2 text-white"
+          class="px-4 py-2 text-white bg-gray-600 rounded"
         >
           Kembali
         </router-link>

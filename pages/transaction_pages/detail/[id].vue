@@ -249,7 +249,7 @@ const exportToPDF = () => {
 // Fungsi untuk mengekspor ke Excel
 const exportToExcel = () => {
   const data = products.value.map((product) => ({
-    Foto: product.product_photo ? useApi(`/storage/${product.product_photo}`) : "-",
+    Foto: product.product_photo ? useApi(`/public/storage/${product.product_photo}`) : "-",
     "Nama Produk": product.product_name,
     "Kode Produk": product.product_code,
     Harga: formatPrice(product.product_price),
@@ -361,10 +361,10 @@ const latestStatus = () => {
 </script>
 
 <template>
-  <div class="mx-auto max-w-6xl p-6">
+  <div class="max-w-6xl p-6 mx-auto">
     <button
       @click="goBack"
-      class="mb-6 flex items-center rounded-lg bg-blue-500 px-6 py-2 text-white hover:bg-blue-600"
+      class="flex items-center px-6 py-2 mb-6 text-white bg-blue-500 rounded-lg hover:bg-blue-600"
     >
       Kembali
     </button>
@@ -375,20 +375,20 @@ const latestStatus = () => {
       <h1 class="mb-8 text-3xl font-bold">
         Detail Transaksi ({{ transaction.transaction_code }})
       </h1>
-      <div class="mb-4 flex justify-end">
+      <div class="flex justify-end mb-4">
         <button
           @click="exportToPDF"
-          class="mr-2 rounded bg-blue-500 px-4 py-2 text-white"
+          class="px-4 py-2 mr-2 text-white bg-blue-500 rounded"
         >
           Ekspor ke PDF
         </button>
-        <button @click="exportToExcel" class="rounded bg-green-500 px-4 py-2 text-white">
+        <button @click="exportToExcel" class="px-4 py-2 text-white bg-green-500 rounded">
           Ekspor ke Excel
         </button>
       </div>
 
       <!-- Informasi Transaksi -->
-      <div class="mb-10 rounded-lg bg-white p-6 shadow-md">
+      <div class="p-6 mb-10 bg-white rounded-lg shadow-md">
         <div class="gap-4">
           <div><strong>Kode Transaksi:</strong> {{ transaction.transaction_code }}</div>
           <div>
@@ -400,8 +400,8 @@ const latestStatus = () => {
       </div>
 
       <!-- Riwayat Status -->
-      <div class="mb-10 rounded-lg bg-white p-6 shadow-md">
-        <div class="mb-4 flex items-center justify-between">
+      <div class="p-6 mb-10 bg-white rounded-lg shadow-md">
+        <div class="flex items-center justify-between mb-4">
           <!-- <h2 class="text-2xl font-semibold">
               Riwayat Status: <span class="text-blue-500">{{ latestStatus() }}</span>
           </h2> -->
@@ -411,7 +411,7 @@ const latestStatus = () => {
           </h2>
           <button
             @click="showStatusModal = true"
-            class="rounded-lg bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
+            class="px-4 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600"
           >
             Lihat Detail
           </button>
@@ -421,21 +421,21 @@ const latestStatus = () => {
 
       <!-- Produk dalam Transaksi -->
       <h5 class="mb-8 text-3xl font-bold">Produk</h5>
-      <div class="mb-10 rounded-lg bg-white p-6 shadow-md">
+      <div class="p-6 mb-10 bg-white rounded-lg shadow-md">
         <div v-if="products.length">
           <div class="overflow-x-auto">
-            <table class="min-w-full border text-left">
+            <table class="min-w-full text-left border">
               <thead class="bg-gray-100">
                 <tr>
-                  <th class="border px-4 py-3">Foto</th>
-                  <th class="border px-4 py-3">Nama Produk</th>
-                  <th class="border px-4 py-3">Kode Produk</th>
-                  <th class="border px-4 py-3">Harga</th>
-                  <th class="border px-4 py-3">Expired Date</th>
-                  <th class="border px-4 py-3">Jumlah</th>
-                  <th class="border px-4 py-3">Stock Sebelum</th>
-                  <th class="border px-4 py-3">Stock Setelah</th>
-                  <th class="border px-4 py-3">Total</th>
+                  <th class="px-4 py-3 border">Foto</th>
+                  <th class="px-4 py-3 border">Nama Produk</th>
+                  <th class="px-4 py-3 border">Kode Produk</th>
+                  <th class="px-4 py-3 border">Harga</th>
+                  <th class="px-4 py-3 border">Expired Date</th>
+                  <th class="px-4 py-3 border">Jumlah</th>
+                  <th class="px-4 py-3 border">Stock Sebelum</th>
+                  <th class="px-4 py-3 border">Stock Setelah</th>
+                  <th class="px-4 py-3 border">Total</th>
                 </tr>
               </thead>
               <tbody>
@@ -449,34 +449,34 @@ const latestStatus = () => {
                   :key="product.id"
                   class="hover:bg-gray-50"
                 >
-                  <td class="border px-4 py-3">
+                  <td class="px-4 py-3 border">
                     <img
                       :src="
                         product.product_photo
-                          ? useApi(`/storage/${product.product_photo}`)
+                          ? useApi(`/public/storage/${product.product_photo}`)
                           : fallbackImage
                       "
                       @error="onImageError"
                       alt="Foto Produk"
-                      class="h-16 w-16 rounded object-cover"
+                      class="object-cover w-16 h-16 rounded"
                     />
                     <!-- <img
                       v-if="product.product_photo"
                       :src="useApi(`/storage/${product.product_photo}`)"
-                      class="h-16 w-16 rounded object-cover"
+                      class="object-cover w-16 h-16 rounded"
                     /> -->
                     <!-- <span v-else>-</span> -->
                   </td>
-                  <td class="border px-4 py-3">{{ product.product_name }}</td>
-                  <td class="border px-4 py-3">{{ product.product_code }}</td>
-                  <td class="border px-4 py-3">
+                  <td class="px-4 py-3 border">{{ product.product_name }}</td>
+                  <td class="px-4 py-3 border">{{ product.product_code }}</td>
+                  <td class="px-4 py-3 border">
                     {{ formatPrice(product.product_price) }}
                   </td>
-                  <td class="border px-4 py-3">{{ product.exp_date }}</td>
-                  <td class="border px-4 py-3">{{ product.quantity }}</td>
-                  <td class="border px-4 py-3">{{ product.stock_before }}</td>
-                  <td class="border px-4 py-3">{{ product.stock_after }}</td>
-                  <td class="border px-4 py-3">
+                  <td class="px-4 py-3 border">{{ product.exp_date }}</td>
+                  <td class="px-4 py-3 border">{{ product.quantity }}</td>
+                  <td class="px-4 py-3 border">{{ product.stock_before }}</td>
+                  <td class="px-4 py-3 border">{{ product.stock_after }}</td>
+                  <td class="px-4 py-3 border">
                     {{ formatPrice(product.quantity * product.product_price) }}
                   </td>
                 </tr>
@@ -490,8 +490,8 @@ const latestStatus = () => {
       </div>
 
       <h3 class="mb-8 text-3xl font-bold">Metode Pengiriman</h3>
-      <div class="mb-10 rounded-lg bg-white p-6 shadow-md">
-        <div class="mb-4 flex items-center justify-between">
+      <div class="p-6 mb-10 bg-white rounded-lg shadow-md">
+        <div class="flex items-center justify-between mb-4">
           <h2 class="text-2xl font-semibold">
             {{ transaction.shipping_method }}
           </h2>
@@ -500,7 +500,7 @@ const latestStatus = () => {
       </div>
 
       <h3 class="mb-8 text-3xl font-bold">Rincian Belanja</h3>
-      <div class="mb-10 rounded-lg bg-white p-6 shadow-md">
+      <div class="p-6 mb-10 bg-white rounded-lg shadow-md">
         <div class="gap-4">
           <div><strong>Metode Pembayaran:</strong> {{ transaction.payment_method }}</div>
           <br />
@@ -517,12 +517,12 @@ const latestStatus = () => {
 
       <!-- Modal Timeline -->
       <!-- <div v-if="showStatusModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
-        <div class="relative w-full max-w-2xl rounded-lg bg-white p-6 shadow-lg">
-          <button @click="showStatusModal = false" class="absolute right-4 top-4 text-2xl text-gray-500 hover:text-black">&times;</button>
+        <div class="relative w-full max-w-2xl p-6 bg-white rounded-lg shadow-lg">
+          <button @click="showStatusModal = false" class="absolute text-2xl text-gray-500 right-4 top-4 hover:text-black">&times;</button>
           <h3 class="mb-6 text-xl font-semibold">Timeline Riwayat Status</h3>
-          <div class="relative border-l-2 border-blue-500 pl-6">
+          <div class="relative pl-6 border-l-2 border-blue-500">
             <div v-for="(history, index) in statusHistories" :key="index" class="mb-8">
-              <div class="absolute -left-2 top-1 h-4 w-4 rounded-full bg-blue-500"></div>
+              <div class="absolute w-4 h-4 bg-blue-500 rounded-full -left-2 top-1"></div>
               <p class="text-lg font-semibold">{{ history.status }}</p>
               <p class="text-sm text-gray-500">{{ formatDate(history.changed_at) }}</p>
             </div>
@@ -543,7 +543,7 @@ const latestStatus = () => {
         >
           <button
             @click="showStatusModal = false"
-            class="absolute right-4 top-4 text-2xl text-gray-500 hover:text-black"
+            class="absolute text-2xl text-gray-500 right-4 top-4 hover:text-black"
           >
             &times;
           </button>
@@ -553,7 +553,7 @@ const latestStatus = () => {
           <!-- Kotak Status Terakhir (Sticky) -->
           <div
             v-if="statusHistories.length"
-            class="sticky top-0 z-10 mb-8 rounded-lg bg-blue-100 px-4 py-3 text-blue-800"
+            class="sticky top-0 z-10 px-4 py-3 mb-8 text-blue-800 bg-blue-100 rounded-lg"
           >
             <p class="text-sm">Status Terakhir:</p>
             <!-- <p class="text-lg font-bold">
@@ -580,10 +580,10 @@ const latestStatus = () => {
             <div
               v-for="(history, index) in [...statusHistories].reverse()"
               :key="index"
-              class="relative mb-10 pl-8"
+              class="relative pl-8 mb-10"
             >
               <!-- Lingkaran -->
-              <div class="absolute -left-0 top-0 h-4 w-4 rounded-full bg-blue-500"></div>
+              <div class="absolute top-0 w-4 h-4 bg-blue-500 rounded-full -left-0"></div>
 
               <!-- Konten Status -->
               <p class="text-lg font-semibold">{{ history.status }}</p>
