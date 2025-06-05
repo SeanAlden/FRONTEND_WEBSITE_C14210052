@@ -122,7 +122,7 @@ const user = ref({
 
 // Data password
 const password = ref({
-  oldPassword: "S34nAld3n.",
+  oldPassword: "",
   newPassword: "",
   confirmNewPassword: "",
 });

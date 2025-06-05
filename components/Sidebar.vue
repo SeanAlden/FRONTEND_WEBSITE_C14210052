@@ -20,12 +20,18 @@
           <span v-if="isSidebarOpen">Dashboard</span>
         </NuxtLink>
 
-        <NuxtLink to="/sales_report_pages/sales_reports" class="flex items-center p-3 hover:bg-gray-700">
+        <NuxtLink
+          to="/sales_report_pages/sales_reports"
+          class="flex items-center p-3 hover:bg-gray-700"
+        >
           <img src="/assets/icons/report.png" class="w-6 h-6 mr-3" />
           <span v-if="isSidebarOpen">Sales Reports</span>
         </NuxtLink>
 
-        <NuxtLink to="/category_pages/categories" class="flex items-center p-3 hover:bg-gray-700">
+        <NuxtLink
+          to="/category_pages/categories"
+          class="flex items-center p-3 hover:bg-gray-700"
+        >
           <img src="/assets/icons/category.png" class="w-6 h-6 mr-3" />
           <span v-if="isSidebarOpen">Categories</span>
         </NuxtLink>
@@ -41,34 +47,69 @@
             </div>
             <img
               v-if="isSidebarOpen"
-              :src="isProductsOpen ? '/assets/icons/chevron_up.png' : '/assets/icons/chevron_down.png'"
+              :src="
+                isProductsOpen
+                  ? '/assets/icons/chevron_up.png'
+                  : '/assets/icons/chevron_down.png'
+              "
               class="w-4 h-4 transition-transform duration-300"
             />
           </div>
 
           <transition name="slide-fade">
             <div v-if="isProductsOpen" class="space-y-2 text-sm ml-9">
-              <NuxtLink to="/product_pages/products" class="block p-2 hover:bg-gray-600">Product List</NuxtLink>
-              <NuxtLink to="/product_pages/deleted_products" class="block p-2 hover:bg-gray-600">Deleted Products</NuxtLink>
-              <NuxtLink to="/product_pages/deleted_products_history" class="block p-2 hover:bg-gray-600">Deleted Products History</NuxtLink>
-              <NuxtLink to="/product_pages/entry_products" class="block p-2 hover:bg-gray-600">Entry Products</NuxtLink>
-              <NuxtLink to="/product_pages/exit_products" class="block p-2 hover:bg-gray-600">Exit Products</NuxtLink>
-              <NuxtLink to="/product_pages/product_stocks_report" class="block p-2 hover:bg-gray-600">Product Stocks Report</NuxtLink>
+              <NuxtLink to="/product_pages/products" class="block p-2 hover:bg-gray-600"
+                >Product List</NuxtLink
+              >
+              <NuxtLink
+                to="/product_pages/deleted_products"
+                class="block p-2 hover:bg-gray-600"
+                >Deleted Products</NuxtLink
+              >
+              <NuxtLink
+                to="/product_pages/deleted_products_history"
+                class="block p-2 hover:bg-gray-600"
+                >Deleted Products History</NuxtLink
+              >
+              <NuxtLink
+                to="/product_pages/entry_products"
+                class="block p-2 hover:bg-gray-600"
+                >Entry Products</NuxtLink
+              >
+              <NuxtLink
+                to="/product_pages/exit_products"
+                class="block p-2 hover:bg-gray-600"
+                >Exit Products</NuxtLink
+              >
+              <NuxtLink
+                to="/product_pages/product_stocks_report"
+                class="block p-2 hover:bg-gray-600"
+                >Product Stocks Report</NuxtLink
+              >
             </div>
           </transition>
         </div>
 
-        <NuxtLink to="/transaction_pages/transactions" class="flex items-center p-3 hover:bg-gray-700">
+        <NuxtLink
+          to="/transaction_pages/transactions"
+          class="flex items-center p-3 hover:bg-gray-700"
+        >
           <img src="/assets/icons/transactions.png" class="w-6 h-6 mr-3" />
           <span v-if="isSidebarOpen">Transactions</span>
         </NuxtLink>
 
-        <NuxtLink to="/employee_pages/employees" class="flex items-center p-3 hover:bg-gray-700">
+        <NuxtLink
+          to="/employee_pages/employees"
+          class="flex items-center p-3 hover:bg-gray-700"
+        >
           <img src="/assets/icons/employee.png" class="w-6 h-6 mr-3" />
           <span v-if="isSidebarOpen">Employees</span>
         </NuxtLink>
 
-        <NuxtLink to="/analysis_pages/sales_count_page" class="flex items-center p-3 hover:bg-gray-700">
+        <NuxtLink
+          to="/analysis_pages/sales_count_page"
+          class="flex items-center p-3 hover:bg-gray-700"
+        >
           <img src="/assets/icons/analysis.png" class="w-6 h-6 mr-3" />
           <span v-if="isSidebarOpen">Analisis C4.5</span>
         </NuxtLink>
@@ -78,43 +119,60 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from "vue";
+// import { ref, onMounted, onUnmounted } from "vue";
 
-const isSidebarOpen = ref(true);
+// const isSidebarOpen = ref(true);
+// const isProductsOpen = ref(false);
+
+// const toggleSidebar = () => {
+//   isSidebarOpen.value = !isSidebarOpen.value;
+//   if (!isSidebarOpen.value) isProductsOpen.value = false;
+// };
+
+// const toggleProductsDropdown = () => {
+//   if (!isSidebarOpen.value) {
+//     isSidebarOpen.value = true;
+//     isProductsOpen.value = true;
+//   } else {
+//     isProductsOpen.value = !isProductsOpen.value;
+//   }
+// };
+
+// // Auto-collapse on small screen
+// const handleResize = () => {
+//   if (window.innerWidth < 768) {
+//     isSidebarOpen.value = false;
+//     isProductsOpen.value = false;
+//   } else {
+//     isSidebarOpen.value = true;
+//   }
+// };
+
+// onMounted(() => {
+//   handleResize();
+//   window.addEventListener("resize", handleResize);
+// });
+
+// onUnmounted(() => {
+//   window.removeEventListener("resize", handleResize);
+// });
+
+import { defineProps, defineEmits, ref } from "vue";
+const props = defineProps({ isSidebarOpen: Boolean });
+const emit = defineEmits(["toggle-sidebar"]);
 const isProductsOpen = ref(false);
-
 const toggleSidebar = () => {
-  isSidebarOpen.value = !isSidebarOpen.value;
-  if (!isSidebarOpen.value) isProductsOpen.value = false;
+  emit("toggle-sidebar");
+  if (!props.isSidebarOpen) isProductsOpen.value = false;
 };
-
 const toggleProductsDropdown = () => {
-  if (!isSidebarOpen.value) {
-    isSidebarOpen.value = true;
+  if (!props.isSidebarOpen) {
+    emit("toggle-sidebar");
     isProductsOpen.value = true;
   } else {
     isProductsOpen.value = !isProductsOpen.value;
   }
 };
-
-// Auto-collapse on small screen
-const handleResize = () => {
-  if (window.innerWidth < 768) {
-    isSidebarOpen.value = false;
-    isProductsOpen.value = false;
-  } else {
-    isSidebarOpen.value = true;
-  }
-};
-
-onMounted(() => {
-  handleResize();
-  window.addEventListener("resize", handleResize);
-});
-
-onUnmounted(() => {
-  window.removeEventListener("resize", handleResize);
-});
 </script>
 
 <style scoped>
