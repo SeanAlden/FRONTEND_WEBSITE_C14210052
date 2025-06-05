@@ -14,6 +14,7 @@
             @error="onImageError"
             class="w-20 h-20 rounded-full"
           />
+
           <h3 class="ml-4 text-xl font-bold">{{ user.name }}</h3>
         </div>
         <div class="text-left">
@@ -47,7 +48,9 @@
         />
 
         <!-- Email -->
-        <label class="block mt-4 mb-2 text-sm font-bold text-gray-700">Email address</label>
+        <label class="block mt-4 mb-2 text-sm font-bold text-gray-700"
+          >Email address</label
+        >
         <input
           type="email"
           class="w-full p-2 border rounded"
@@ -59,7 +62,7 @@
         <!-- File Upload -->
         <label class="block mt-4 mb-2 text-sm font-bold text-gray-700">File upload</label>
         <div class="flex items-center space-x-3">
-          <img
+          <!-- <img
             :src="
               user.profile_image
                 ? useApi(`/public/storage/profile_images/${user.profile_image}`)
@@ -67,11 +70,28 @@
             "
             @error="onImageError"
             class="w-10 h-10 rounded-full"
+          /> -->
+          <img
+            :src="
+              selectedFile
+                ? profileImage
+                : user.profile_image
+                ? useApi(`/public/storage/profile_images/${user.profile_image}`)
+                : fallbackImage
+            "
+            @error="onImageError"
+            class="w-10 h-10 rounded-full"
           />
+          <!-- <input
+            type="file"
+            class="w-full p-2 border rounded"
+            @change="handleFileUpload"
+          /> -->
           <input
             type="file"
             class="w-full p-2 border rounded"
             @change="handleFileUpload"
+            :disabled="!isEditing"
           />
         </div>
 
@@ -193,7 +213,9 @@ const uploadProfileImage = async () => {
     );
 
     user.value.profile_image = res.data.profile_image;
-    profileImage.value = useApi(`/public/storage/profile_images/${res.data.profile_image}`);
+    profileImage.value = useApi(
+      `/public/storage/profile_images/${res.data.profile_image}`
+    );
   } catch (error) {
     console.error("Gagal mengupload gambar:", error);
     alert("Gagal mengupload gambar profil.");
