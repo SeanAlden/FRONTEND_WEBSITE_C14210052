@@ -171,6 +171,39 @@ onMounted(fetchTransactions);
 // });
 
 // Modifikasi di computed filteredTransactions
+// const filteredTransactions = computed(() => {
+//   return transactions.value.filter((transaction) => {
+//     // Parse tanggal dari API - format diasumsikan YYYY-MM-DD
+//     const [year, month, day] = transaction.transaction_date.split("-");
+//     const date = new Date(
+//       parseInt(year),
+//       parseInt(month) - 1, // Bulan dikurangi 1 karena JS Date month 0-based
+//       parseInt(day)
+//     );
+
+//     // Filter berdasarkan bulan & tahun
+//     if (
+//       date.getMonth() + 1 !== selectedMonth.value ||
+//       date.getFullYear() !== selectedYear.value
+//     ) {
+//       return false;
+//     }
+
+//     // Filter pencarian tetap sama
+//     const query = searchQuery.value.toLowerCase();
+
+//     // const productNames = transaction.details
+//     //   .map((detail) => detail.product.name)
+//     //   .join(" ");
+
+//     const productNames = transaction.details
+//       .map((detail) => detail.product_name) // Ambil langsung dari transaction_details
+//       .join(" ");
+
+//     return productNames.toLowerCase().includes(query);
+//   });
+// });
+
 const filteredTransactions = computed(() => {
   return transactions.value.filter((transaction) => {
     // Parse tanggal dari API - format diasumsikan YYYY-MM-DD
@@ -189,18 +222,27 @@ const filteredTransactions = computed(() => {
       return false;
     }
 
-    // Filter pencarian tetap sama
+    // Filter pencarian
     const query = searchQuery.value.toLowerCase();
 
-    // const productNames = transaction.details
-    //   .map((detail) => detail.product.name)
-    //   .join(" ");
+    // Cek apakah ada produk yang cocok dengan query
+    const matchesProduct = transaction.details.some((detail) => {
+      const productName = detail.product_name.toLowerCase();
+      const productPrice = detail.product_price.toString(); // Konversi ke string untuk pencarian
+      const productSold = detail.quantity.toString(); // Konversi ke string untuk pencarian
+      const totalIncome = (detail.product_price * detail.quantity).toString(); // Hitung total income dan konversi ke string
+      const margin = (totalIncome * 0.25).toString(); // Hitung margin dan konversi ke string
 
-    const productNames = transaction.details
-      .map((detail) => detail.product_name) // Ambil langsung dari transaction_details
-      .join(" ");
+      return (
+        productName.includes(query) ||
+        productPrice.includes(query) ||
+        productSold.includes(query) ||
+        totalIncome.includes(query) ||
+        margin.includes(query)
+      );
+    });
 
-    return productNames.toLowerCase().includes(query);
+    return matchesProduct;
   });
 });
 
