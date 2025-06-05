@@ -5,7 +5,6 @@
       <h2 class="mb-4 text-2xl font-bold">Set Your Profile</h2>
       <div class="p-6 bg-gray-100 rounded-lg">
         <div class="flex items-center mb-4">
-          <!-- <img :src="profileImage" class="w-20 h-20 rounded-full" /> -->
           <img
             :src="
               user.profile_image
@@ -43,27 +42,24 @@
           type="text"
           class="w-full p-2 border rounded"
           :class="{ 'bg-gray-100 cursor-not-allowed': !isEditing }"
-          v-model="user.name"
+          v-model="editUser.name"
           :disabled="!isEditing"
         />
 
         <!-- Email -->
-        <label class="block mt-4 mb-2 text-sm font-bold text-gray-700"
-          >Email address</label
-        >
+        <label class="block mt-4 mb-2 text-sm font-bold text-gray-700">Email address</label>
         <input
           type="email"
           class="w-full p-2 border rounded"
           :class="{ 'bg-gray-100 cursor-not-allowed': !isEditing }"
-          v-model="user.email"
+          v-model="editUser.email"
           :disabled="!isEditing"
         />
 
         <!-- File Upload -->
         <label class="block mt-4 mb-2 text-sm font-bold text-gray-700">File upload</label>
         <div class="flex items-center space-x-3">
-          <!-- <img :src="profileImage" class="w-10 h-10 rounded-full" /> -->
-					<img
+          <img
             :src="
               user.profile_image
                 ? useApi(`/public/storage/profile_images/${user.profile_image}`)
@@ -81,7 +77,6 @@
 
         <!-- Tombol Edit & Save -->
         <div class="flex mt-4 space-x-3">
-          <!-- Tombol Edit -->
           <button
             type="button"
             @click="toggleEdit"
@@ -95,7 +90,6 @@
             {{ isEditing ? "Cancel" : "Edit" }}
           </button>
 
-          <!-- Tombol Save Changes -->
           <button
             type="submit"
             class="w-1/2 py-2 text-white rounded"
@@ -115,96 +109,6 @@
 </template>
 
 <script setup>
-// import { ref, onMounted } from "vue";
-// import axios from "axios";
-
-// const user = ref({
-//   name: "",
-//   email: "",
-// });
-// const profileImage = ref("/assets/images/photo_default.png"); // default
-// const isEditing = ref(false);
-// const token = useCookie("my_auth_token");
-
-// // Ambil data user dari Laravel API saat komponen di-mount
-// const fetchUser = async () => {
-//   try {
-//     const res = await axios.get("http://127.0.0.1:8000/api/user", {
-//       headers: {
-//         Authorization: `Bearer ${token.value}`,
-//       },
-//     });
-//     user.value = res.data;
-//     console.log("User:", user.value);
-//   } catch (error) {
-//     console.error("Gagal mengambil data user:", error);
-//     if (error.response?.status === 401) {
-//       alert("Sesi Anda telah habis. Silakan login ulang.");
-//       window.location.href = "/login";
-//     }
-//   }
-// };
-
-// // Handle file upload lokal
-// const handleFileUpload = (event) => {
-//   const file = event.target.files[0];
-//   if (file) {
-//     profileImage.value = URL.createObjectURL(file);
-//     // NOTE: Di sini hanya preview lokal, untuk upload ke server perlu implementasi tambahan.
-//   }
-// };
-
-// const toggleEdit = () => {
-//   isEditing.value = !isEditing.value;
-// };
-
-// // Dummy update function
-// // const updateProfile = () => {
-// //   alert("Profile updated successfully!");
-// //   isEditing.value = false;
-// // };
-
-// const updateProfile = async () => {
-//   try {
-//     const res = await axios.put(
-//       "http://127.0.0.1:8000/api/auth/user/update",
-//       {
-//         name: user.value.name,
-//         email: user.value.email,
-//       },
-//       {
-//         headers: {
-//           Authorization: `Bearer ${token.value}`,
-//         },
-//       }
-//     );
-
-//     // Update data lokal dengan respons dari server
-//     user.value = res.data.user;
-
-//     alert("Profile updated successfully!");
-//     isEditing.value = false;
-//   } catch (error) {
-//     console.error("Gagal mengupdate profile:", error);
-//     if (error.response?.status === 422) {
-//       // Menampilkan error validasi Laravel
-//       const errors = error.response.data.errors;
-//       const messages = Object.values(errors).flat().join("\n");
-//       alert(`Validasi gagal:\n${messages}`);
-//     } else if (error.response?.status === 401) {
-//       alert("Sesi Anda habis. Silakan login ulang.");
-//       window.location.href = "/login";
-//     } else {
-//       alert("Terjadi kesalahan saat mengupdate profil.");
-//     }
-//   }
-// };
-
-// // Panggil fetchUser saat komponen dipasang
-// onMounted(() => {
-//   fetchUser();
-// });
-
 import { ref, onMounted } from "vue";
 import axios from "axios";
 
@@ -215,16 +119,24 @@ definePageMeta({
 const user = ref({
   name: "",
   email: "",
+  phone: "",
+  usertype: "",
   profile_image: "",
 });
+
+const editUser = ref({
+  name: "",
+  email: "",
+});
+
 const profileImage = ref("/assets/images/photo_default.png");
-const selectedFile = ref(null); // Untuk menyimpan file gambar
+const selectedFile = ref(null);
 const isEditing = ref(false);
 const token = useCookie("my_auth_token");
 
 const fallbackImage = "/assets/images/photo_default.png";
 
-// Ambil data user saat mount
+// Ambil data user
 const fetchUser = async () => {
   try {
     const res = await axios.get(useApi("/api/user"), {
@@ -233,6 +145,13 @@ const fetchUser = async () => {
       },
     });
     user.value = res.data;
+
+    // Salin ke editUser untuk keperluan form
+    editUser.value = {
+      name: res.data.name,
+      email: res.data.email,
+    };
+
     profileImage.value = user.value.profile_image
       ? useApi(`/public/storage/profile_images/${user.value.profile_image}`)
       : "/assets/images/photo_default.png";
@@ -245,7 +164,7 @@ const fetchUser = async () => {
   }
 };
 
-// Simpan file lokal dan tampilkan preview
+// Handle upload gambar lokal
 const handleFileUpload = (event) => {
   const file = event.target.files[0];
   if (file) {
@@ -254,7 +173,7 @@ const handleFileUpload = (event) => {
   }
 };
 
-// Fungsi untuk upload gambar ke server
+// Upload ke server
 const uploadProfileImage = async () => {
   if (!selectedFile.value) return;
 
@@ -272,7 +191,7 @@ const uploadProfileImage = async () => {
         },
       }
     );
-    // Update gambar jika berhasil
+
     user.value.profile_image = res.data.profile_image;
     profileImage.value = useApi(`/public/storage/profile_images/${res.data.profile_image}`);
   } catch (error) {
@@ -281,15 +200,14 @@ const uploadProfileImage = async () => {
   }
 };
 
-// Fungsi update profil (name + email + optional image)
+// Update profil
 const updateProfile = async () => {
   try {
-    // 1. Kirim name & email
     await axios.put(
       useApi("/api/auth/user/update"),
       {
-        name: user.value.name,
-        email: user.value.email,
+        name: editUser.value.name,
+        email: editUser.value.email,
       },
       {
         headers: {
@@ -298,10 +216,14 @@ const updateProfile = async () => {
       }
     );
 
-    // 2. Jika ada gambar baru, upload
+    // Upload gambar jika ada
     if (selectedFile.value) {
       await uploadProfileImage();
     }
+
+    // Update tampilan kiri
+    user.value.name = editUser.value.name;
+    user.value.email = editUser.value.email;
 
     alert("Profile updated successfully!");
     isEditing.value = false;
@@ -319,7 +241,15 @@ const updateProfile = async () => {
   }
 };
 
+// Toggle mode edit
 const toggleEdit = () => {
+  if (isEditing.value) {
+    // Cancel: kembalikan nilai form ke nilai user asli
+    editUser.value = {
+      name: user.value.name,
+      email: user.value.email,
+    };
+  }
   isEditing.value = !isEditing.value;
 };
 
