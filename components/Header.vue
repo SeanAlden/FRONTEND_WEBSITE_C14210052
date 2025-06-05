@@ -155,6 +155,7 @@
 import { onMounted, ref } from "vue";
 import axios from "axios";
 import { useCookie } from "#app";
+import emitter from "~/plugins/event-bus";
 
 // State
 const isDropdownOpen = ref(false);
@@ -266,9 +267,15 @@ onMounted(() => {
   }
 
   fetchUser();
+
+  // ✅ Dengarkan event profile-updated
+  emitter.on("profile-updated", () => {
+    fetchUser(); // Ambil ulang data user dari server
+  });
 });
 onUnmounted(() => {
   document.removeEventListener("click", closeDropdown);
+  emitter.off("profile-updated"); // Bersihkan event listener
 });
 
 // Navigasi

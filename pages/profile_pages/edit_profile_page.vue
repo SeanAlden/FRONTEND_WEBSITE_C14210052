@@ -131,6 +131,7 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import axios from "axios";
+import emitter from "~/plugins/event-bus";
 
 definePageMeta({
   middleware: ["auth"],
@@ -216,6 +217,9 @@ const uploadProfileImage = async () => {
     profileImage.value = useApi(
       `/public/storage/profile_images/${res.data.profile_image}`
     );
+
+    // Panggil ini setelah update profil berhasil
+    emitter.emit("profile-updated");
   } catch (error) {
     console.error("Gagal mengupload gambar:", error);
     alert("Gagal mengupload gambar profil.");
