@@ -30,7 +30,7 @@ const _sfc_main = {
       profile_image: ""
     });
     const password = ref({
-      oldPassword: "S34nAld3n.",
+      oldPassword: "",
       newPassword: "",
       confirmNewPassword: ""
     });
@@ -59,4 +59,4 @@ _sfc_main.setup = (props, ctx) => {
 };
 
 export { _sfc_main as default };
-//# sourceMappingURL=edit_password_page-LyV0M4WE.mjs.map
+//# sourceMappingURL=edit_password_page-F-YXoYvV.mjs.map

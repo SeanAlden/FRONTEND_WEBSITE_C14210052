@@ -1,6 +1,5 @@
 <template>
-  <!-- <div class="flex min-h-screen bg-gray-100 text-gray-900"> -->
-	<div :class="['flex-1 transition-all duration-300', isSidebarOpen ? 'ml-64' : 'ml-16']" >
+  <div class="flex min-h-screen bg-gray-100 text-gray-900">
     <!-- Header -->
     <Header />
 

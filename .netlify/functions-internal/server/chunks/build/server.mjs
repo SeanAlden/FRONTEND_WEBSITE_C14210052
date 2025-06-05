@@ -866,7 +866,7 @@ const _routes = [
     name: "profile_pages-edit_password_page",
     path: "/profile_pages/edit_password_page",
     meta: __nuxt_page_meta$5 || {},
-    component: () => import('./edit_password_page-LyV0M4WE.mjs')
+    component: () => import('./edit_password_page-F-YXoYvV.mjs')
   },
   {
     name: "profile_pages-edit_profile_page",
@@ -1592,7 +1592,7 @@ const plugins = [
   emitter
 ];
 const layouts = {
-  default: defineAsyncComponent(() => import('./default-BtlYH6iu.mjs').then((m) => m.default || m))
+  default: defineAsyncComponent(() => import('./default-M6X-UmAt.mjs').then((m) => m.default || m))
 };
 const LayoutLoader = defineComponent({
   name: "LayoutLoader",
