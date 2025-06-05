@@ -6,6 +6,7 @@ import { getActiveHead, CapoPlugin } from 'unhead';
 import { defineHeadPlugin } from '@unhead/shared';
 import { useRoute as useRoute$1, RouterView, createMemoryHistory, createRouter, START_LOCATION } from 'vue-router';
 import { createConsola as createConsola$1 } from 'consola/core';
+import mitt from 'mitt';
 import { ssrRenderSuspense, ssrRenderComponent, ssrRenderVNode } from 'vue/server-renderer';
 import axios from 'axios';
 import 'node:http';
@@ -703,13 +704,13 @@ const _routes = [
     name: "analysis_pages-accuracy_page",
     path: "/analysis_pages/accuracy_page",
     meta: __nuxt_page_meta$w || {},
-    component: () => import('./accuracy_page-D0mCAZMF.mjs')
+    component: () => import('./accuracy_page-Uta9UAxh.mjs')
   },
   {
     name: "analysis_pages-decision_tree_page",
     path: "/analysis_pages/decision_tree_page",
     meta: __nuxt_page_meta$v || {},
-    component: () => import('./decision_tree_page-CSM60vuv.mjs')
+    component: () => import('./decision_tree_page-DwGcXVuc.mjs')
   },
   {
     name: "analysis_pages-entropy_gain_page",
@@ -721,7 +722,7 @@ const _routes = [
     name: "analysis_pages-sales_count_page",
     path: "/analysis_pages/sales_count_page",
     meta: __nuxt_page_meta$t || {},
-    component: () => import('./sales_count_page-BRHhUKfS.mjs')
+    component: () => import('./sales_count_page-C4J_DJ5r.mjs')
   },
   {
     name: "analysis_pages-time_count_page",
@@ -733,7 +734,7 @@ const _routes = [
     name: "analysis_pages-weight_count_page",
     path: "/analysis_pages/weight_count_page",
     meta: __nuxt_page_meta$r || {},
-    component: () => import('./weight_count_page-TcI6RRjC.mjs')
+    component: () => import('./weight_count_page-BKcSgQld.mjs')
   },
   {
     name: "category_pages-add_category",
@@ -745,13 +746,13 @@ const _routes = [
     name: "category_pages-categories",
     path: "/category_pages/categories",
     meta: __nuxt_page_meta$p || {},
-    component: () => import('./categories-CHD8K6lM.mjs')
+    component: () => import('./categories-cQRvh-h_.mjs')
   },
   {
     name: "category_pages-detail-id",
     path: "/category_pages/detail/:id()",
     meta: __nuxt_page_meta$o || {},
-    component: () => import('./_id_-p4w2LEO_.mjs')
+    component: () => import('./_id_-_L7-rNfu.mjs')
   },
   {
     name: "category_pages-edit-id",
@@ -769,37 +770,37 @@ const _routes = [
     name: "employee_pages-detail-id",
     path: "/employee_pages/detail/:id()",
     meta: __nuxt_page_meta$l || {},
-    component: () => import('./_id_-Cbs4RgYQ.mjs')
+    component: () => import('./_id_-BBkRIQXh.mjs')
   },
   {
     name: "employee_pages-edit-id",
     path: "/employee_pages/edit/:id()",
     meta: __nuxt_page_meta$k || {},
-    component: () => import('./_id_-CQ1xvcgd.mjs')
+    component: () => import('./_id_-Dn69UH3H.mjs')
   },
   {
     name: "employee_pages-employees",
     path: "/employee_pages/employees",
     meta: __nuxt_page_meta$j || {},
-    component: () => import('./employees-XuKzJ78M.mjs')
+    component: () => import('./employees-CZs2SFmv.mjs')
   },
   {
     name: "employee_pages-registered_employees",
     path: "/employee_pages/registered_employees",
     meta: __nuxt_page_meta$i || {},
-    component: () => import('./registered_employees-m1Qw4Rsp.mjs')
+    component: () => import('./registered_employees-JgFvKqxK.mjs')
   },
   {
     name: "index",
     path: "/",
     meta: __nuxt_page_meta$h || {},
-    component: () => import('./index-MWCRV0Oz.mjs')
+    component: () => import('./index-D3CNT2ko.mjs')
   },
   {
     name: "login",
     path: "/login",
     meta: __nuxt_page_meta$g || {},
-    component: () => import('./login-BqtBijj6.mjs')
+    component: () => import('./login-Dit67QzH.mjs')
   },
   {
     name: "notifications",
@@ -817,37 +818,37 @@ const _routes = [
     name: "product_pages-deleted_products_history",
     path: "/product_pages/deleted_products_history",
     meta: __nuxt_page_meta$d || {},
-    component: () => import('./deleted_products_history-DP6XLsHU.mjs')
+    component: () => import('./deleted_products_history-BAKQghIz.mjs')
   },
   {
     name: "product_pages-deleted_products",
     path: "/product_pages/deleted_products",
     meta: __nuxt_page_meta$c || {},
-    component: () => import('./deleted_products-BNh2NrD_.mjs')
+    component: () => import('./deleted_products-wquNcHoH.mjs')
   },
   {
     name: "product_pages-detail-id",
     path: "/product_pages/detail/:id()",
     meta: __nuxt_page_meta$b || {},
-    component: () => import('./_id_-O0JyvcDa.mjs')
+    component: () => import('./_id_-DE1KxGvR.mjs')
   },
   {
     name: "product_pages-edit-id",
     path: "/product_pages/edit/:id()",
     meta: __nuxt_page_meta$a || {},
-    component: () => import('./_id_-BWYR2be-.mjs')
+    component: () => import('./_id_-B28gcnkD.mjs')
   },
   {
     name: "product_pages-entry_products",
     path: "/product_pages/entry_products",
     meta: __nuxt_page_meta$9 || {},
-    component: () => import('./entry_products-DWXNuiHu.mjs')
+    component: () => import('./entry_products-DG-9O_QQ.mjs')
   },
   {
     name: "product_pages-exit_products",
     path: "/product_pages/exit_products",
     meta: __nuxt_page_meta$8 || {},
-    component: () => import('./exit_products-CFaGeWz4.mjs')
+    component: () => import('./exit_products-BYSRHxVP.mjs')
   },
   {
     name: "product_pages-product_stocks_report",
@@ -859,43 +860,43 @@ const _routes = [
     name: "product_pages-products",
     path: "/product_pages/products",
     meta: __nuxt_page_meta$6 || {},
-    component: () => import('./products-DQYMkGW_.mjs')
+    component: () => import('./products-DXk3XiIc.mjs')
   },
   {
     name: "profile_pages-edit_password_page",
     path: "/profile_pages/edit_password_page",
     meta: __nuxt_page_meta$5 || {},
-    component: () => import('./edit_password_page-DUNyNkt3.mjs')
+    component: () => import('./edit_password_page-LyV0M4WE.mjs')
   },
   {
     name: "profile_pages-edit_profile_page",
     path: "/profile_pages/edit_profile_page",
     meta: __nuxt_page_meta$4 || {},
-    component: () => import('./edit_profile_page-BvwLnj1j.mjs')
+    component: () => import('./edit_profile_page-sp1EpTBq.mjs')
   },
   {
     name: "register",
     path: "/register",
     meta: __nuxt_page_meta$3 || {},
-    component: () => import('./register-B4VW432N.mjs')
+    component: () => import('./register-Cd_qs9QR.mjs')
   },
   {
     name: "sales_report_pages-sales_reports",
     path: "/sales_report_pages/sales_reports",
     meta: __nuxt_page_meta$2 || {},
-    component: () => import('./sales_reports-Ca2sLItW.mjs')
+    component: () => import('./sales_reports-ElkUsVOb.mjs')
   },
   {
     name: "transaction_pages-detail-id",
     path: "/transaction_pages/detail/:id()",
     meta: __nuxt_page_meta$1 || {},
-    component: () => import('./_id_-BG9nMvHN.mjs')
+    component: () => import('./_id_-rmsqr3w3.mjs')
   },
   {
     name: "transaction_pages-transactions",
     path: "/transaction_pages/transactions",
     meta: __nuxt_page_meta || {},
-    component: () => import('./transactions-DwZPoCxs.mjs')
+    component: () => import('./transactions-Cw5Mrtb6.mjs')
   }
 ];
 const _wrapInTransition = (props, children) => {
@@ -1022,10 +1023,10 @@ const globalMiddleware = [
   manifest_45route_45rule
 ];
 const namedMiddleware = {
-  auth: () => import('./auth-BdO-h0Oc.mjs'),
-  guest: () => import('./guest-BBK5-Lhc.mjs'),
-  $auth: () => import('./auth-CLunpKe8.mjs'),
-  $guest: () => import('./guest-C1LxDFBM.mjs')
+  auth: () => import('./auth-C86Deiz_.mjs'),
+  guest: () => import('./guest-C2bOh-L5.mjs'),
+  $auth: () => import('./auth-CeRC1K6O.mjs'),
+  $guest: () => import('./guest-BEqvMm29.mjs')
 };
 const plugin$1 = /* @__PURE__ */ defineNuxtPlugin({
   name: "nuxt:router",
@@ -1579,6 +1580,7 @@ const plugin_wmlUyJB46B = /* @__PURE__ */ defineNuxtPlugin(async () => {
     }
   };
 });
+const emitter = mitt();
 const plugins = [
   payloadPlugin,
   unhead_KgADcZ0jPj,
@@ -1586,10 +1588,11 @@ const plugins = [
   revive_payload_server_eJ33V7gbc6,
   plugin,
   components_plugin_KR1HBZs4kY,
-  plugin_wmlUyJB46B
+  plugin_wmlUyJB46B,
+  emitter
 ];
 const layouts = {
-  default: defineAsyncComponent(() => import('./default-X2V6l1u4.mjs').then((m) => m.default || m))
+  default: defineAsyncComponent(() => import('./default-BtlYH6iu.mjs').then((m) => m.default || m))
 };
 const LayoutLoader = defineComponent({
   name: "LayoutLoader",
@@ -1854,8 +1857,8 @@ const _sfc_main$1 = {
     const statusMessage = _error.statusMessage ?? (is404 ? "Page Not Found" : "Internal Server Error");
     const description = _error.message || _error.toString();
     const stack = void 0;
-    const _Error404 = defineAsyncComponent(() => import('./error-404-YBd4rKeF.mjs'));
-    const _Error = defineAsyncComponent(() => import('./error-500-BpK7594A.mjs'));
+    const _Error404 = defineAsyncComponent(() => import('./error-404-CRww_Usf.mjs'));
+    const _Error = defineAsyncComponent(() => import('./error-500-DGgJJjst.mjs'));
     const ErrorTemplate = is404 ? _Error404 : _Error;
     return (_ctx, _push, _parent, _attrs) => {
       _push(ssrRenderComponent(unref(ErrorTemplate), mergeProps({ statusCode: unref(statusCode), statusMessage: unref(statusMessage), description: unref(description), stack: unref(stack) }, _attrs), null, _parent));

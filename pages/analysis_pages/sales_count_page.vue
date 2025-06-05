@@ -140,7 +140,7 @@ const filteredProducts = computed(() => {
   return transactions.value.filter((transaction) => {
     const searchString = searchQuery.value.toLowerCase();
     return (
-      transaction.id.toString().includes(searchString) ||
+      transaction.transaction_code.toString().includes(searchString) ||
       transaction.gross_amount.toString().includes(searchString) ||
       transaction.transaction_date.toLowerCase().includes(searchString) ||
       transaction.details.some(
