@@ -21,6 +21,7 @@
               </button> -->
 
               <button
+                ref="notificationButton"
                 class="h-10 w-10 overflow-hidden rounded-full"
                 @click="toggleNotificationDropdown"
               >
@@ -42,6 +43,7 @@
               <transition name="fade">
                 <div
                   v-if="isNotificationDropdownOpen"
+                  ref="notificationDropdown"
                   class="absolute right-0 z-50 mt-2 w-80 rounded-lg border bg-white shadow-lg"
                 >
                   <div class="border-b bg-gray-50 p-4 font-semibold text-gray-700">
@@ -217,6 +219,8 @@ const user = ref({
 const fallbackImage = "/assets/images/photo_default.png";
 const profileButton = ref<HTMLElement | null>(null);
 const dropdownMenu = ref<HTMLElement | null>(null);
+const notificationDropdown = ref<HTMLElement | null>(null);
+const notificationButton = ref<HTMLElement | null>(null);
 const isDropdownOpen = ref(false);
 const isLogoutModalOpen = ref(false);
 
@@ -277,12 +281,23 @@ const toggleNotificationDropdown = async () => {
 };
 
 const closeDropdown = (event: MouseEvent) => {
+  const target = event.target as Node;
+
+  // Tutup dropdown profil jika klik di luar
   if (
     dropdownMenu.value &&
-    !dropdownMenu.value.contains(event.target as Node) &&
-    !profileButton.value?.contains(event.target as Node)
+    !dropdownMenu.value.contains(target) &&
+    !profileButton.value?.contains(target)
   ) {
     isDropdownOpen.value = false;
+  }
+
+  // Tutup dropdown notifikasi jika klik di luar
+  if (
+    notificationDropdown.value &&
+    !notificationDropdown.value.contains(target) &&
+    !notificationButton.value?.contains(target)
+  ) {
     isNotificationDropdownOpen.value = false;
   }
 };
