@@ -27,7 +27,9 @@
                 ref="notificationDropdown"
                 class="absolute right-14 z-50 mt-2 w-80 rounded-lg border bg-white shadow-lg"
               >
-                <div class="border-b bg-gray-50 p-4 text-center font-semibold text-gray-700">
+                <div
+                  class="border-b bg-gray-50 p-4 text-center font-semibold text-gray-700"
+                >
                   Recent Notifications
                 </div>
                 <div class="max-h-80 overflow-y-auto">
@@ -47,7 +49,10 @@
                       Mark as Read
                     </button>
                   </div>
-                  <div v-if="notifications.length === 0" class="p-4 text-center text-sm text-gray-500">
+                  <div
+                    v-if="notifications.length === 0"
+                    class="p-4 text-center text-sm text-gray-500"
+                  >
                     No new notifications.
                   </div>
                 </div>
@@ -224,11 +229,15 @@ const fetchNotifications = async () => {
 
 const markAsRead = async (id: number) => {
   try {
-    await axios.put(useApi(`/api/notifications/${id}`), {}, {
-      headers: {
-        Authorization: `Bearer ${token.value}`,
-      },
-    });
+    await axios.put(
+      useApi(`/api/notifications/${id}`),
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${token.value}`,
+        },
+      }
+    );
     notifications.value = notifications.value.filter((n: any) => n.id !== id);
   } catch (error) {
     console.error("Failed to mark as read:", error);
@@ -294,9 +303,18 @@ const logout = async () => {
   }
 };
 
-const goToEditProfile = () => router.push("/profile_pages/edit_profile_page");
-const goToChangePassword = () => router.push("/profile_pages/edit_password_page");
-const goToNotifications = () => router.push("/notifications");
+const goToEditProfile = () => {
+  isDropdownOpen.value = false;
+  router.push("/profile_pages/edit_profile_page");
+};
+const goToChangePassword = () => {
+  isDropdownOpen.value = false;
+  router.push("/profile_pages/edit_password_page");
+};
+const goToNotifications = () => {
+  isNotificationDropdownOpen.value = false; // Tutup dropdown
+  router.push("/notifications");
+};
 const onImageError = (event: Event) => {
   (event.target as HTMLImageElement).src = fallbackImage;
 };
