@@ -9,7 +9,7 @@
           <div class="flex items-center gap-6">
             <button
               class="h-10 w-10 overflow-hidden rounded-full"
-              @click="goToNotifications"
+              @click="toggleNotificationDropdown"
             >
               <img
                 src="/assets/icons/Doorbell.png"
@@ -17,6 +17,50 @@
                 class="h-full w-full object-cover"
               />
             </button>
+            <!-- Notification Dropdown -->
+            <transition name="fade">
+              <div
+                v-if="isNotificationDropdownOpen"
+                ref="notificationDropdown"
+                class="absolute right-16 z-50 mt-2 w-80 rounded-lg bg-white shadow-lg"
+              >
+                <div class="border-b p-4">
+                  <h2 class="text-lg font-semibold text-gray-800">Notifications</h2>
+                </div>
+                <div class="max-h-80 divide-y overflow-y-auto">
+                  <div
+                    v-for="notification in notifications.slice(0, 5)"
+                    :key="notification.id"
+                    class="p-4"
+                  >
+                    <p class="text-sm text-gray-700">{{ notification.message }}</p>
+                    <p class="text-xs text-gray-500">
+                      {{ formatDate(notification.notification_time) }}
+                    </p>
+                    <button
+                      class="mt-2 text-sm text-blue-500 hover:underline"
+                      @click="markAsRead(notification.id)"
+                    >
+                      Read
+                    </button>
+                  </div>
+                  <div
+                    v-if="notifications.length === 0"
+                    class="p-4 text-center text-sm text-gray-500"
+                  >
+                    No new notifications
+                  </div>
+                </div>
+                <div class="border-t p-3 text-center">
+                  <button
+                    class="text-sm font-semibold text-blue-600 hover:underline"
+                    @click="goToNotifications"
+                  >
+                    See All
+                  </button>
+                </div>
+              </div>
+            </transition>
             <button
               ref="profileButton"
               class="h-10 w-10 overflow-hidden rounded-full bg-gray-300 focus:outline-none"
@@ -187,6 +231,81 @@ const fallbackImage = "/assets/images/photo_default.png";
 //   }
 // };
 
+// Tambahan State
+const isNotificationDropdownOpen = ref(false);
+const notificationDropdown = ref<HTMLElement | null>(null);
+const notifications = ref<Array<any>>([]);
+
+// Toggle Notifikasi
+const toggleNotificationDropdown = async () => {
+  isNotificationDropdownOpen.value = !isNotificationDropdownOpen.value;
+  if (isNotificationDropdownOpen.value) {
+    await fetchNotifications();
+  }
+};
+
+// Ambil Notifikasi
+const fetchNotifications = async () => {
+  try {
+    const res = await axios.get(useApi("/api/notifications"), {
+      headers: {
+        Authorization: `Bearer ${token.value}`,
+      },
+    });
+    notifications.value = res.data;
+  } catch (error) {
+    console.error("Gagal mengambil notifikasi:", error);
+  }
+};
+
+// Tandai sebagai dibaca
+const markAsRead = async (id: number) => {
+  try {
+    await axios.put(useApi(`/api/notifications/${id}`), {}, {
+      headers: {
+        Authorization: `Bearer ${token.value}`,
+      },
+    });
+    // Refresh list
+    await fetchNotifications();
+  } catch (error) {
+    console.error("Gagal menandai notifikasi:", error);
+  }
+};
+
+// Format tanggal
+const formatDate = (datetimeStr: string): string => {
+  const date = new Date(datetimeStr);
+  return date.toLocaleString();
+};
+
+// Tambahkan event listener untuk klik di luar dropdown
+const closeAllDropdowns = (event: MouseEvent) => {
+  const isClickOutsideNotif =
+    notificationDropdown.value &&
+    !notificationDropdown.value.contains(event.target as Node);
+  const isClickOutsideProfile =
+    dropdownMenu.value &&
+    !dropdownMenu.value.contains(event.target as Node);
+  const isClickOutsideBell = !(event.target as HTMLElement).closest("button");
+
+  if (
+    isNotificationDropdownOpen.value &&
+    isClickOutsideNotif &&
+    !(event.target as HTMLElement).closest("button")
+  ) {
+    isNotificationDropdownOpen.value = false;
+  }
+
+  if (
+    isDropdownOpen.value &&
+    isClickOutsideProfile &&
+    !(event.target as HTMLElement).closest("button")
+  ) {
+    isDropdownOpen.value = false;
+  }
+};
+
 // ✅ Tambahan: Ambil data user
 const fetchUser = async () => {
   try {
@@ -261,7 +380,7 @@ const closeDropdown = (event: MouseEvent) => {
 
 // Lifecycle
 onMounted(() => {
-  document.addEventListener("click", closeDropdown);
+  document.addEventListener("click", closeAllDropdowns);
   if (isLogoutModalOpen.value === true) {
     isLogoutModalOpen.value = false;
   }
@@ -274,7 +393,7 @@ onMounted(() => {
   });
 });
 onUnmounted(() => {
-  document.removeEventListener("click", closeDropdown);
+  document.removeEventListener("click", closeAllDropdowns);
   emitter.off("profile-updated"); // Bersihkan event listener
 });
 
