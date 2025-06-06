@@ -21,7 +21,7 @@
             </button>
 
             <!-- Notification Dropdown -->
-            <transition name="fade">
+            <!-- <transition name="fade">
               <div
                 v-if="isNotificationDropdownOpen"
                 ref="notificationDropdown"
@@ -42,6 +42,60 @@
                     <p class="text-xs text-gray-500">
                       {{ formatDate(notif.notification_time) }}
                     </p>
+                    <button
+                      class="mt-2 text-sm text-blue-600 hover:underline"
+                      @click="markAsRead(notif.id)"
+                    >
+                      Mark as Read
+                    </button>
+                  </div>
+                  <div
+                    v-if="notifications.length === 0"
+                    class="p-4 text-center text-sm text-gray-500"
+                  >
+                    No new notifications.
+                  </div>
+                </div>
+                <div class="border-t p-3 text-center">
+                  <button
+                    class="text-sm text-blue-600 hover:underline"
+                    @click="goToNotifications"
+                  >
+                    See all
+                  </button>
+                </div>
+              </div>
+            </transition> -->
+
+            <!-- Notification Dropdown -->
+            <transition name="fade">
+              <div
+                v-if="isNotificationDropdownOpen"
+                ref="notificationDropdown"
+                class="absolute right-14 z-50 mt-2 w-80 rounded-lg border-t-4 border-gray-800 bg-white shadow-lg"
+              >
+                <div
+                  class="flex items-center justify-between bg-gray-50 p-4 text-lg font-semibold text-gray-900"
+                >
+                  <span>Notifications</span>
+                </div>
+                <div class="max-h-80 overflow-y-auto">
+                  <div
+                    v-for="(notif, index) in notifications"
+                    :key="notif.id"
+                    class="flex items-center border-b px-4 py-3 hover:bg-gray-100"
+                  >
+                    <img
+                      src="/assets/icons/notification_icon.png"
+                      alt="Notification"
+                      class="mr-3 h-5 w-5"
+                    />
+                    <div class="flex-1">
+                      <p class="text-sm text-gray-800">{{ notif.message }}</p>
+                      <p class="text-xs text-gray-500">
+                        {{ formatDate(notif.notification_time) }}
+                      </p>
+                    </div>
                     <button
                       class="mt-2 text-sm text-blue-600 hover:underline"
                       @click="markAsRead(notif.id)"
@@ -348,5 +402,30 @@ const showLogoutModal = () => {
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
+}
+
+.notification-dropdown {
+  border-radius: 8px;
+  background-color: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.notification-header {
+  background-color: #f8f9fa;
+  font-weight: bold;
+  border-bottom: 1px solid #dee2e6;
+}
+.notification-item {
+  display: flex;
+  align-items: center;
+  padding: 10px 15px;
+  border-bottom: 1px solid #e9ecef;
+}
+.notification-item:hover {
+  background-color: #f1f3f5;
+}
+.notification-icon {
+  margin-right: 10px;
+  width: 20px;
+  height: 20px;
 }
 </style>
