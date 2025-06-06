@@ -173,7 +173,7 @@
           <div
             v-if="isNotificationDropdownOpen"
             ref="notificationDropdown"
-            class="absolute right-14 z-50 mt-6 w-80 rounded-lg border-t-4 border-gray-800 bg-white shadow-lg"
+            class="absolute right-0 z-50 mt-2 w-56 rounded-lg border bg-white shadow-lg"
           >
             <div
               class="flex items-center justify-between bg-gray-50 p-4 text-lg font-semibold text-gray-900"
