@@ -1,18 +1,18 @@
 <template>
-  <div class="min-h-screen p-6 bg-gray-100">
+  <div class="min-h-screen bg-gray-100 p-6">
     <h1 class="text-2xl font-bold">Dashboard</h1>
     <!-- <p class="text-gray-600">Hello, john doe</p> -->
     <p class="text-gray-600">Hello, {{ user?.name || "Guest" }}</p>
 
     <!-- Dropdown untuk pilih bulan -->
-    <!-- <div class="flex flex-wrap items-center mt-4 mb-4">
+    <!-- <div class="mb-4 mt-4 flex flex-wrap items-center">
       <label for="month" class="mr-2 text-sm font-medium text-gray-700"
         >Pilih Bulan:</label
       >
       <select
         v-model="currentMonth"
         @change="fetchData"
-        class="px-2 py-1 border border-gray-300 rounded-md"
+        class="rounded-md border border-gray-300 px-2 py-1"
       >
         <option v-for="month in months" :key="month" :value="month">{{ month }}</option>
       </select>
@@ -23,22 +23,22 @@
       <select
         v-model="currentYear"
         @change="fetchData"
-        class="px-2 py-1 border border-gray-300 rounded-md"
+        class="rounded-md border border-gray-300 px-2 py-1"
       >
         <option v-for="year in years" :key="year" :value="year">{{ year }}</option>
       </select>
     </div> -->
 
-    <div class="flex flex-wrap items-center mt-4 mb-4">
+    <div class="mb-4 mt-4 flex flex-wrap items-center">
       <!-- Dropdown Bulan -->
-      <div class="flex items-center mb-2 mr-6">
+      <div class="mb-2 mr-6 flex items-center">
         <label for="month" class="mr-2 text-sm font-medium text-gray-700">
           Pilih Bulan:
         </label>
         <select
           v-model="currentMonth"
           @change="fetchData"
-          class="px-2 py-1 border border-gray-300 rounded-md"
+          class="rounded-md border border-gray-300 px-2 py-1"
         >
           <option v-for="month in months" :key="month" :value="month">
             {{ month }}
@@ -47,14 +47,14 @@
       </div>
 
       <!-- Dropdown Tahun -->
-      <div class="flex items-center mb-2">
+      <div class="mb-2 flex items-center">
         <label for="year" class="mr-2 text-sm font-medium text-gray-700">
           Pilih Tahun:
         </label>
         <!-- <select
           v-model="currentYear"
           @change="fetchData"
-          class="px-2 py-1 border border-gray-300 rounded-md"
+          class="rounded-md border border-gray-300 px-2 py-1"
         >
           <option v-for="year in years" :key="year" :value="year">{{ year }}</option>
         </select> -->
@@ -62,30 +62,30 @@
           v-model="currentYear"
           type="number"
           @change="fetchData"
-          class="px-2 py-1 border border-gray-300 rounded-md"
+          class="rounded-md border border-gray-300 px-2 py-1"
         />
       </div>
     </div>
 
-    <div class="grid grid-cols-1 gap-4 mt-4 md:grid-cols-3">
-      <div class="flex items-center p-4 bg-white rounded-lg shadow">
-        <img src="/assets/icons/income.png" class="w-10 h-10 mr-3" />
+    <div class="mt-4 grid grid-cols-1 gap-4 md:grid-cols-3">
+      <div class="flex items-center rounded-lg bg-white p-4 shadow">
+        <img src="/assets/icons/income.png" class="mr-3 h-10 w-10" />
         <div class="overflow-x-auto whitespace-nowrap">
           <p class="text-gray-500">Income Total ({{ currentMonth }})</p>
           <p class="text-xl font-bold">{{ formatPrice(totalRevenue) }}</p>
         </div>
       </div>
 
-      <div class="flex items-center p-4 bg-white rounded-lg shadow">
-        <img src="/assets/icons/transaction.png" class="w-10 h-10 mr-3" />
+      <div class="flex items-center rounded-lg bg-white p-4 shadow">
+        <img src="/assets/icons/transaction.png" class="mr-3 h-10 w-10" />
         <div class="overflow-x-auto whitespace-nowrap">
           <p class="text-gray-500">Transaction Total ({{ currentMonth }})</p>
           <p class="text-xl font-bold">{{ totalTransactions }}</p>
         </div>
       </div>
 
-      <div class="flex items-center p-4 bg-white rounded-lg shadow">
-        <img src="/assets/icons/product_data.png" class="w-10 h-10 mr-3" />
+      <div class="flex items-center rounded-lg bg-white p-4 shadow">
+        <img src="/assets/icons/product_data.png" class="mr-3 h-10 w-10" />
         <div class="overflow-x-auto whitespace-nowrap">
           <p class="text-gray-500">Product Total</p>
           <p class="text-xl font-bold">{{ totalProducts }}</p>
@@ -93,17 +93,17 @@
       </div>
     </div>
 
-    <div class="grid grid-cols-1 gap-4 mt-6 md:grid-cols-2">
-      <div class="p-4 overflow-x-auto bg-white rounded-lg shadow whitespace-nowrap">
+    <div class="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2">
+      <div class="overflow-x-auto whitespace-nowrap rounded-lg bg-white p-4 shadow">
         <h2 class="text-lg font-bold">Top Products</h2>
-        <table class="w-full mt-3 border border-collapse border-gray-200">
+        <table class="mt-3 w-full border-collapse border border-gray-200">
           <thead>
             <tr class="bg-gray-100">
-              <th class="p-2 border">Photo</th>
-              <th class="p-2 border">Product</th>
-              <th class="p-2 border">Price</th>
-              <th class="p-2 border">Category</th>
-              <th class="p-2 border">Sold Total</th>
+              <th class="border p-2">Photo</th>
+              <th class="border p-2">Product</th>
+              <th class="border p-2">Price</th>
+              <th class="border p-2">Category</th>
+              <th class="border p-2">Sold Total</th>
             </tr>
           </thead>
           <tbody>
@@ -115,14 +115,16 @@
                       ? useApi(`/storage/${product.photo}`)
                       : '/assets/images/avatar.png'
                   "
-                  class="w-10 h-10 mr-2"
+                  class="mr-2 h-10 w-10"
                 /> -->
                 <img
                   :src="
-                    product.photo ? useApi(`/public/storage/${product.photo}`) : fallbackImage
+                    product.photo
+                      ? useApi(`/public/storage/${product.photo}`)
+                      : fallbackImage
                   "
                   @error="onImageError"
-                  class="w-10 h-10 mr-2"
+                  class="mr-2 h-10 w-10"
                 />
               </td>
               <td>{{ product.name }}</td>
@@ -134,7 +136,7 @@
         </table>
       </div>
 
-      <div class="p-4 overflow-x-auto bg-white rounded-lg shadow whitespace-nowrap">
+      <div class="overflow-x-auto whitespace-nowrap rounded-lg bg-white p-4 shadow">
         <h2 class="text-lg font-bold">Grafik Penjualan</h2>
         <canvas id="salesChart"></canvas>
       </div>
@@ -246,6 +248,18 @@ export default {
       }
     };
 
+    const fetchNotifications = async () => {
+      try {
+        const res = await axios.get(useApi("/api/notifications"), {
+          headers: { Authorization: `Bearer ${token.value}` },
+        });
+        notifications.value = res.data.slice(0, 5);
+        unreadCount.value = res.data.filter(notif);
+      } catch (err) {
+        console.error("Gagal mengambil notifikasi:", err);
+      }
+    };
+
     const renderChart = () => {
       const ctx = document.getElementById("salesChart").getContext("2d");
       if (chartInstance) chartInstance.destroy();
@@ -286,6 +300,7 @@ export default {
     onMounted(() => {
       fetchUser();
       fetchData();
+      fetchNotifications();
     });
 
     return {
@@ -300,8 +315,9 @@ export default {
       currentYear,
       years,
       fetchData,
+      fetchNotifications,
       formatPrice,
-      user, // ✅ kembalikan jika ingin ditampilkan di template
+      user, 
       onImageError,
     };
   },
