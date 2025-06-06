@@ -8,7 +8,7 @@
         <div class="relative">
           <div class="flex items-center gap-6">
             <!-- Notification Button -->
-            <button
+            <!-- <button
               ref="notificationButton"
               class="h-10 w-10 overflow-hidden rounded-full"
               @click="toggleNotificationDropdown"
@@ -18,7 +18,28 @@
                 alt="Notification"
                 class="h-full w-full object-cover"
               />
-            </button>
+            </button> -->
+            <div class="relative">
+              <button
+                ref="notificationButton"
+                class="h-10 w-10 overflow-hidden rounded-full"
+                @click="toggleNotificationDropdown"
+              >
+                <img
+                  src="/assets/icons/Doorbell.png"
+                  alt="Notification"
+                  class="h-full w-full object-cover"
+                />
+              </button>
+
+              <!-- Badge -->
+              <span
+                v-if="newNotificationCount > 0"
+                class="absolute -right-1 -top-1 rounded-full bg-red-600 px-1.5 py-0.5 text-xs font-bold text-white"
+              >
+                {{ newNotificationCount > 9 ? "9+" : newNotificationCount }}
+              </span>
+            </div>
 
             <!-- Notification Dropdown -->
             <!-- <transition name="fade">
@@ -255,6 +276,7 @@ const profileButton = ref<HTMLElement | null>(null);
 const notificationDropdown = ref<HTMLElement | null>(null);
 const notificationButton = ref<HTMLElement | null>(null);
 const router = useRouter();
+const newNotificationCount = ref(0);
 
 const user = ref({
   name: "",
@@ -268,6 +290,19 @@ const fallbackImage = "/assets/images/photo_default.png";
 // Notifications
 const notifications = ref([]);
 
+// const fetchNotifications = async () => {
+//   try {
+//     const res = await axios.get(useApi("/api/notifications"), {
+//       headers: {
+//         Authorization: `Bearer ${token.value}`,
+//       },
+//     });
+//     notifications.value = res.data.slice(0, 5); // ambil maksimal 5 notifikasi terbaru
+//   } catch (error) {
+//     console.error("Failed to fetch notifications:", error);
+//   }
+// };
+
 const fetchNotifications = async () => {
   try {
     const res = await axios.get(useApi("/api/notifications"), {
@@ -275,7 +310,9 @@ const fetchNotifications = async () => {
         Authorization: `Bearer ${token.value}`,
       },
     });
-    notifications.value = res.data.slice(0, 5); // ambil maksimal 5 notifikasi terbaru
+    const allNotifications = res.data;
+    notifications.value = allNotifications.slice(0, 5);
+    newNotificationCount.value = allNotifications.filter((n: any) => !n.is_read).length;
   } catch (error) {
     console.error("Failed to fetch notifications:", error);
   }
@@ -293,6 +330,7 @@ const markAsRead = async (id: number) => {
       }
     );
     notifications.value = notifications.value.filter((n: any) => n.id !== id);
+    newNotificationCount.value = Math.max(0, newNotificationCount.value - 1);
   } catch (error) {
     console.error("Failed to mark as read:", error);
   }
