@@ -9,9 +9,9 @@
           <div class="flex items-center gap-6">
             <button
               class="h-10 w-10 overflow-hidden rounded-full"
-              @click="goToNotifications"
+              @click="toggleNotificationDropdown"
             >
-              <img
+              <img	
                 src="/assets/icons/Doorbell.png"
                 alt="Notification"
                 class="h-full w-full object-cover"
@@ -39,6 +39,45 @@
             </button>
           </div>
         </div>
+
+        <!-- Notification Dropdown -->
+        <transition name="fade">
+          <div
+            v-if="isNotificationOpen"
+            class="absolute right-20 z-50 mt-2 w-96 rounded-lg border bg-white shadow-lg"
+            style="top: 100%"
+          >
+            <div class="border-b bg-gray-50 p-4 text-center">
+              <h3 class="text-lg font-semibold text-gray-900">Notifications</h3>
+            </div>
+            <ul class="max-h-80 divide-y divide-gray-200 overflow-y-auto">
+              <li
+                v-for="notif in notifications.slice(0, 5)"
+                :key="notif.id"
+                class="px-4 py-3 text-left"
+              >
+                <div class="text-sm font-medium text-gray-800">{{ notif.message }}</div>
+                <div class="text-xs text-gray-500">
+                  {{ new Date(notif.notification_time).toLocaleString() }}
+                </div>
+                <button
+                  class="mt-1 text-xs text-blue-600 hover:underline"
+                  @click="markAsRead(notif.id)"
+                >
+                  Mark as Read
+                </button>
+              </li>
+            </ul>
+            <div class="border-t p-2 text-center">
+              <button
+                class="text-sm text-blue-600 hover:underline"
+                @click="goToNotifications"
+              >
+                See All
+              </button>
+            </div>
+          </div>
+        </transition>
 
         <!-- Dropdown Menu -->
         <transition name="fade">
@@ -163,6 +202,8 @@ const isLogoutModalOpen = ref(false);
 const dropdownMenu = ref<HTMLElement | null>(null);
 const profileButton = ref<HTMLElement | null>(null);
 const router = useRouter();
+const isNotificationOpen = ref(false);
+const notifications = ref<any[]>([]);
 
 // const user = ref<{ name: string; email: string; usertype: string } | null>(null);
 // const user = ref(null);
@@ -186,6 +227,44 @@ const fallbackImage = "/assets/images/photo_default.png";
 //     return false;
 //   }
 // };
+
+// Toggle notification dropdown
+const toggleNotificationDropdown = async () => {
+  isNotificationOpen.value = !isNotificationOpen.value;
+  if (isNotificationOpen.value) {
+    await fetchNotifications();
+  }
+};
+
+// Fetch last 5 unread notifications
+const fetchNotifications = async () => {
+  try {
+    const res = await axios.get(useApi("/api/notifications"), {
+      headers: {
+        Authorization: `Bearer ${token.value}`,
+      },
+    });
+    notifications.value = res.data;
+  } catch (error) {
+    console.error("Failed to fetch notifications:", error);
+  }
+};
+
+// Mark notification as read
+const markAsRead = async (id: number) => {
+  try {
+    await axios.put(useApi(`/api/notifications/${id}`), {}, {
+      headers: {
+        Authorization: `Bearer ${token.value}`,
+      },
+    });
+
+    // Remove from list or mark visually
+    notifications.value = notifications.value.filter((n) => n.id !== id);
+  } catch (error) {
+    console.error("Failed to mark as read:", error);
+  }
+};
 
 // ✅ Tambahan: Ambil data user
 const fetchUser = async () => {
@@ -249,14 +328,31 @@ const goToNotifications = () => {
 };
 
 // Tutup dropdown jika klik di luar
+// const closeDropdown = (event: MouseEvent) => {
+//   if (
+//     dropdownMenu.value &&
+//     !dropdownMenu.value.contains(event.target as Node) &&
+//     !profileButton.value?.contains(event.target as Node)
+//   ) {
+//     isDropdownOpen.value = false;
+//   }
+// };
+
 const closeDropdown = (event: MouseEvent) => {
-  if (
+  const target = event.target as Node;
+
+  const clickOutsideDropdown =
     dropdownMenu.value &&
-    !dropdownMenu.value.contains(event.target as Node) &&
-    !profileButton.value?.contains(event.target as Node)
-  ) {
-    isDropdownOpen.value = false;
-  }
+    !dropdownMenu.value.contains(target) &&
+    !profileButton.value?.contains(target);
+
+  const clickOutsideNotification = !(
+    (event.target as HTMLElement).closest(".notification-dropdown") ||
+    (event.target as HTMLElement).closest(".notification-button")
+  );
+
+  if (clickOutsideDropdown) isDropdownOpen.value = false;
+  if (clickOutsideNotification) isNotificationOpen.value = false;
 };
 
 // Lifecycle
