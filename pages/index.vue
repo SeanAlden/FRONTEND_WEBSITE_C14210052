@@ -248,18 +248,6 @@ export default {
       }
     };
 
-    const fetchNotifications = async () => {
-      try {
-        const res = await axios.get(useApi("/api/notifications"), {
-          headers: { Authorization: `Bearer ${token.value}` },
-        });
-        notifications.value = res.data.slice(0, 5);
-        unreadCount.value = res.data.filter(notif);
-      } catch (err) {
-        console.error("Gagal mengambil notifikasi:", err);
-      }
-    };
-
     const renderChart = () => {
       const ctx = document.getElementById("salesChart").getContext("2d");
       if (chartInstance) chartInstance.destroy();
@@ -300,7 +288,6 @@ export default {
     onMounted(() => {
       fetchUser();
       fetchData();
-      fetchNotifications();
     });
 
     return {
@@ -315,7 +302,6 @@ export default {
       currentYear,
       years,
       fetchData,
-      fetchNotifications,
       formatPrice,
       user, 
       onImageError,

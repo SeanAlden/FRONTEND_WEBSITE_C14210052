@@ -290,6 +290,7 @@ const closeDropdown = (event: MouseEvent) => {
 onMounted(() => {
   document.addEventListener("click", closeDropdown);
   fetchUser();
+  fetchNotifications(); // ⬅️ Panggil saat mount
   emitter.on("profile-updated", fetchUser);
 });
 
@@ -344,9 +345,13 @@ const onImageError = (event: Event) => {
 
 const markAsRead = async (id: number) => {
   try {
-    await axios.put(useApi(`/api/notifications/${id}`), {}, {
-      headers: { Authorization: `Bearer ${token.value}` },
-    });
+    await axios.put(
+      useApi(`/api/notifications/${id}`),
+      {},
+      {
+        headers: { Authorization: `Bearer ${token.value}` },
+      }
+    );
     notifications.value = notifications.value.filter((notif) => notif.id !== id);
     unreadCount.value = unreadCount.value > 0 ? unreadCount.value - 1 : 0;
   } catch (err) {
