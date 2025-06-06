@@ -5,11 +5,13 @@
     >
       <h1 class="text-xl font-semibold"></h1>
       <div class="align-items-xl-end relative flex">
-        <div>
+        <div class="relative">
           <div class="flex items-center gap-6">
+            <!-- Notification Button -->
             <button
+              ref="notificationButton"
               class="h-10 w-10 overflow-hidden rounded-full"
-              @click="goToNotifications"
+              @click="toggleNotificationDropdown"
             >
               <img
                 src="/assets/icons/Doorbell.png"
@@ -17,16 +19,55 @@
                 class="h-full w-full object-cover"
               />
             </button>
+
+            <!-- Notification Dropdown -->
+            <transition name="fade">
+              <div
+                v-if="isNotificationDropdownOpen"
+                ref="notificationDropdown"
+                class="absolute right-14 z-50 mt-2 w-80 rounded-lg border bg-white shadow-lg"
+              >
+                <div class="border-b bg-gray-50 p-4 text-center font-semibold text-gray-700">
+                  Recent Notifications
+                </div>
+                <div class="max-h-80 overflow-y-auto">
+                  <div
+                    v-for="(notif, index) in notifications"
+                    :key="notif.id"
+                    class="border-b px-4 py-3 hover:bg-gray-50"
+                  >
+                    <p class="text-sm text-gray-800">{{ notif.message }}</p>
+                    <p class="text-xs text-gray-500">
+                      {{ formatDate(notif.notification_time) }}
+                    </p>
+                    <button
+                      class="mt-2 text-sm text-blue-600 hover:underline"
+                      @click="markAsRead(notif.id)"
+                    >
+                      Mark as Read
+                    </button>
+                  </div>
+                  <div v-if="notifications.length === 0" class="p-4 text-center text-sm text-gray-500">
+                    No new notifications.
+                  </div>
+                </div>
+                <div class="border-t p-3 text-center">
+                  <button
+                    class="text-sm text-blue-600 hover:underline"
+                    @click="goToNotifications"
+                  >
+                    See all
+                  </button>
+                </div>
+              </div>
+            </transition>
+
+            <!-- Profile Button -->
             <button
               ref="profileButton"
               class="h-10 w-10 overflow-hidden rounded-full bg-gray-300 focus:outline-none"
               @click="toggleDropdown"
             >
-              <!-- <img
-                src="/assets/images/photo_default.png"
-                alt="Profile"
-                class="h-full w-full object-cover"
-              /> -->
               <img
                 :src="
                   user.profile_image
@@ -40,7 +81,7 @@
           </div>
         </div>
 
-        <!-- Dropdown Menu -->
+        <!-- Profile Dropdown -->
         <transition name="fade">
           <div
             v-if="isDropdownOpen"
@@ -48,11 +89,6 @@
             class="absolute right-0 z-50 mt-2 w-56 rounded-lg border bg-white shadow-lg"
           >
             <div class="border-b bg-gray-50 p-4 text-center">
-              <!-- <img
-                :src="profileImage"
-                alt="Profile"
-                class="mx-auto h-16 w-16 rounded-full border border-gray-300"
-              /> -->
               <img
                 :src="
                   user.profile_image
@@ -61,10 +97,6 @@
                 "
                 class="mx-auto h-16 w-16 rounded-full border border-gray-300"
               />
-
-              <!-- <h3 class="mt-2 text-lg font-semibold text-gray-900">John Doe</h3>
-              <p class="text-sm text-gray-600">johndoe7@gmail.com</p>
-              <p class="text-xs text-gray-500">Admin</p> -->
 
               <h3 class="mt-2 text-lg font-semibold text-gray-900">
                 {{ user?.name || "Guest" }}
@@ -135,7 +167,6 @@
               class="rounded-lg bg-red-500 px-6 py-2 text-white hover:bg-red-600"
               @click.prevent="logout"
             >
-              <!-- <button class="rounded-lg bg-red-500 px-6 py-2 text-white hover:bg-red-600"> -->
               Yes
             </button>
             <button
@@ -149,75 +180,23 @@
       </div>
     </transition>
   </div>
-	<!-- Notifikasi Dropdown -->
-<div class="relative">
-  <button
-    class="h-10 w-10 overflow-hidden rounded-full"
-    @click="toggleNotificationDropdown"
-  >
-    <img
-      src="/assets/icons/Doorbell.png"
-      alt="Notification"
-      class="h-full w-full object-cover"
-    />
-  </button>
-
-  <transition name="fade">
-    <div
-      v-if="isNotificationDropdownOpen"
-      ref="notificationDropdown"
-      class="absolute right-0 z-50 mt-2 w-80 rounded-lg border bg-white shadow-lg"
-    >
-      <div class="border-b bg-gray-50 p-4 text-center font-semibold text-gray-700">
-        Notifications
-      </div>
-      <ul class="max-h-96 overflow-y-auto">
-        <li
-          v-for="notification in notifications"
-          :key="notification.id"
-          class="border-b p-3 hover:bg-gray-50"
-        >
-          <div class="text-sm text-gray-800">{{ notification.message }}</div>
-          <div class="text-xs text-gray-500">
-            {{ formatTime(notification.notification_time) }}
-          </div>
-          <button
-            class="mt-1 text-sm text-blue-600 hover:underline"
-            @click="markAsRead(notification.id)"
-          >
-            Mark as Read
-          </button>
-        </li>
-      </ul>
-      <div class="p-2 text-center">
-        <button
-          class="text-sm text-blue-600 hover:underline"
-          @click="goToNotifications"
-        >
-          See all
-        </button>
-      </div>
-    </div>
-  </transition>
-</div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { onMounted, ref, onUnmounted } from "vue";
 import axios from "axios";
 import { useCookie } from "#app";
 import emitter from "~/plugins/event-bus";
 
-// State
 const isDropdownOpen = ref(false);
+const isNotificationDropdownOpen = ref(false);
 const isLogoutModalOpen = ref(false);
 const dropdownMenu = ref<HTMLElement | null>(null);
 const profileButton = ref<HTMLElement | null>(null);
+const notificationDropdown = ref<HTMLElement | null>(null);
+const notificationButton = ref<HTMLElement | null>(null);
 const router = useRouter();
-import dayjs from "dayjs";
 
-// const user = ref<{ name: string; email: string; usertype: string } | null>(null);
-// const user = ref(null);
 const user = ref({
   name: "",
   email: "",
@@ -225,26 +204,11 @@ const user = ref({
   usertype: "",
 });
 const token = useCookie("my_auth_token");
-// const profileImage = ref("/assets/images/photo_default.png"); // Default image
-const profileImage = ref(""); // Kosongkan awalnya
-
 const fallbackImage = "/assets/images/photo_default.png";
 
-// const checkImageExists = async (url: string) => {
-//   try {
-//     const res = await fetch(url, { method: "HEAD" });
-//     return res.ok;
-//   } catch (error) {
-//     return false;
-//   }
-// };
+// Notifications
+const notifications = ref([]);
 
-// State tambahan
-const isNotificationDropdownOpen = ref(false);
-const notificationDropdown = ref<HTMLElement | null>(null);
-const notifications = ref<any[]>([]);
-
-// Fetch notifikasi (5 terakhir, unread)
 const fetchNotifications = async () => {
   try {
     const res = await axios.get(useApi("/api/notifications"), {
@@ -252,26 +216,12 @@ const fetchNotifications = async () => {
         Authorization: `Bearer ${token.value}`,
       },
     });
-    notifications.value = res.data.slice(0, 5); // Ambil maksimal 5 notifikasi
-  } catch (err) {
-    console.error("Failed to fetch notifications:", err);
+    notifications.value = res.data.slice(0, 5); // ambil maksimal 5 notifikasi terbaru
+  } catch (error) {
+    console.error("Failed to fetch notifications:", error);
   }
 };
 
-// Format waktu
-const formatTime = (datetime: string) => {
-  return dayjs(datetime).format("DD MMM YYYY HH:mm");
-};
-
-// Toggle Dropdown Notifikasi
-const toggleNotificationDropdown = async () => {
-  isNotificationDropdownOpen.value = !isNotificationDropdownOpen.value;
-  if (isNotificationDropdownOpen.value) {
-    await fetchNotifications();
-  }
-};
-
-// Tandai notifikasi sebagai read
 const markAsRead = async (id: number) => {
   try {
     await axios.put(useApi(`/api/notifications/${id}`), {}, {
@@ -279,26 +229,41 @@ const markAsRead = async (id: number) => {
         Authorization: `Bearer ${token.value}`,
       },
     });
-    // Refresh daftar notifikasi setelah dibaca
-    await fetchNotifications();
+    notifications.value = notifications.value.filter((n: any) => n.id !== id);
   } catch (error) {
-    console.error("Gagal menandai notifikasi:", error);
+    console.error("Failed to mark as read:", error);
   }
 };
 
-// Close dropdown jika klik di luar (tambahkan notifikasi dropdown)
-const closeDropdown = (event: MouseEvent) => {
-  const target = event.target as Node;
+const toggleDropdown = () => {
+  isDropdownOpen.value = !isDropdownOpen.value;
+};
+
+const toggleNotificationDropdown = () => {
+  isNotificationDropdownOpen.value = !isNotificationDropdownOpen.value;
+  if (isNotificationDropdownOpen.value) {
+    fetchNotifications();
+  }
+};
+
+const closeAllDropdowns = (event: MouseEvent) => {
   if (
-    (dropdownMenu.value && !dropdownMenu.value.contains(target) && !profileButton.value?.contains(target)) &&
-    (notificationDropdown.value && !notificationDropdown.value.contains(target))
+    dropdownMenu.value &&
+    !dropdownMenu.value.contains(event.target as Node) &&
+    !profileButton.value?.contains(event.target as Node)
   ) {
     isDropdownOpen.value = false;
+  }
+
+  if (
+    notificationDropdown.value &&
+    !notificationDropdown.value.contains(event.target as Node) &&
+    !notificationButton.value?.contains(event.target as Node)
+  ) {
     isNotificationDropdownOpen.value = false;
   }
 };
 
-// ✅ Tambahan: Ambil data user
 const fetchUser = async () => {
   try {
     const res = await axios.get(useApi("/api/user"), {
@@ -307,123 +272,51 @@ const fetchUser = async () => {
       },
     });
     user.value = res.data;
-    console.log("User:", user.value);
   } catch (error) {
-    const err = error as any; // jika ingin cepat dan tidak ketat
-    if (err.response?.status === 401) {
+    if ((error as any).response?.status === 401) {
       alert("Sesi Anda telah habis. Silakan login ulang.");
       router.push("/login");
     }
   }
-  //   if (axios.isAxiosError(error)) {
-  //     if (error.response?.status === 401) {
-  //       alert("Sesi Anda telah habis. Silakan login ulang.");
-  //       router.push("/login");
-  //     } else {
-  //       console.error("Kesalahan dari server:", error.response);
-  //     }
-  //   } else {
-  //     console.error("Kesalahan tak diketahui:", error);
-  //   }
-  // }
 };
 
-// const fetchUser = async () => {
-//   try {
-//     const res = await axios.get("http://127.0.0.1:8000/api/user", {
-//       headers: {
-//         Authorization: `Bearer ${token.value}`,
-//       },
-//     });
-//     user.value = res.data;
-
-//     const imageUrl = `http://127.0.0.1:8000/storage/profile_images/${user.value?.profile_image}`;
-//     const exists = await checkImageExists(imageUrl);
-
-//     profileImage.value = exists ? imageUrl : "/assets/images/photo_default.png";
-//   } catch (error) {
-//     console.error("Gagal mengambil data user:", error);
-//     if (error.response?.status === 401) {
-//       alert("Sesi Anda telah habis. Silakan login ulang.");
-//       router.push("/login");
-//     }
-//   }
-// };
-
-// Fungsi toggle dropdown
-const toggleDropdown = () => {
-  isDropdownOpen.value = !isDropdownOpen.value;
-};
-
-const goToNotifications = () => {
-  router.push("/notifications");
-};
-
-// Tutup dropdown jika klik di luar
-// const closeDropdown = (event: MouseEvent) => {
-//   if (
-//     dropdownMenu.value &&
-//     !dropdownMenu.value.contains(event.target as Node) &&
-//     !profileButton.value?.contains(event.target as Node)
-//   ) {
-//     isDropdownOpen.value = false;
-//   }
-// };
-
-// Lifecycle
-onMounted(() => {
-  document.addEventListener("click", closeDropdown);
-  if (isLogoutModalOpen.value === true) {
-    isLogoutModalOpen.value = false;
-  }
-
-  fetchUser();
-
-  // ✅ Dengarkan event profile-updated
-  emitter.on("profile-updated", () => {
-    fetchUser(); // Ambil ulang data user dari server
-  });
-});
-onUnmounted(() => {
-  document.removeEventListener("click", closeDropdown);
-  emitter.off("profile-updated"); // Bersihkan event listener
-});
-
-// Navigasi
-const goToEditProfile = () => router.push("/profile_pages/edit_profile_page");
-const goToChangePassword = () => router.push("/profile_pages/edit_password_page");
-
-// Logout
-async function logout() {
+const logout = async () => {
   try {
-    const res = await axios.delete(useApi("/api/auth/signout"), {
+    await axios.delete(useApi("/api/auth/signout"), {
       headers: {
         Authorization: `Bearer ${token.value}`,
       },
     });
-    console.log("Logout success:", res.data);
-
-    // Hapus token cookie
     token.value = null;
-
-    // Redirect ke halaman login
     window.location.href = "/login";
   } catch (error) {
-    console.error("Logout failed:", error);
     alert("Gagal logout. Silakan coba lagi.");
   }
-}
-
-// const onImageError = (event: { target: { src: string } }) => {
-//   event.target.src = fallbackImage;
-// };
-
-const onImageError = (event: Event) => {
-  const target = event.target as HTMLImageElement;
-  target.src = fallbackImage;
 };
 
-// Tampilkan Modal Logout
+const goToEditProfile = () => router.push("/profile_pages/edit_profile_page");
+const goToChangePassword = () => router.push("/profile_pages/edit_password_page");
+const goToNotifications = () => router.push("/notifications");
+const onImageError = (event: Event) => {
+  (event.target as HTMLImageElement).src = fallbackImage;
+};
+
+const formatDate = (timestamp: string): string => {
+  const date = new Date(timestamp);
+  return date.toLocaleString();
+};
+
+onMounted(() => {
+  document.addEventListener("click", closeAllDropdowns);
+  fetchUser();
+  emitter.on("profile-updated", fetchUser);
+});
+
+onUnmounted(() => {
+  document.removeEventListener("click", closeAllDropdowns);
+  emitter.off("profile-updated", fetchUser);
+});
+
 const showLogoutModal = () => {
   isLogoutModalOpen.value = true;
 };
