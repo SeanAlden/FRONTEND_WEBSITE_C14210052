@@ -9,6 +9,17 @@
           <div class="flex items-center gap-6">
             <!-- Notifikasi Bell Button -->
             <div class="relative">
+              <!-- <button
+                class="h-10 w-10 overflow-hidden rounded-full"
+                @click="toggleNotificationDropdown"
+              >
+                <img
+                  src="/assets/icons/Doorbell.png"
+                  alt="Notification"
+                  class="h-full w-full object-cover"
+                />
+              </button> -->
+
               <button
                 class="h-10 w-10 overflow-hidden rounded-full"
                 @click="toggleNotificationDropdown"
@@ -18,6 +29,13 @@
                   alt="Notification"
                   class="h-full w-full object-cover"
                 />
+                <!-- 🔴 Badge Jumlah Notifikasi -->
+                <span
+                  v-if="unreadCount > 0"
+                  class="absolute right-0 top-0 inline-flex h-5 w-5 -translate-y-1/2 translate-x-1/2 transform items-center justify-center rounded-full bg-red-600 text-xs font-bold text-white"
+                >
+                  {{ unreadCount }}
+                </span>
               </button>
 
               <!-- Dropdown Notifikasi -->
@@ -46,7 +64,10 @@
                         Read
                       </button>
                     </div>
-                    <div v-if="notifications.length === 0" class="p-4 text-center text-gray-500">
+                    <div
+                      v-if="notifications.length === 0"
+                      class="p-4 text-center text-gray-500"
+                    >
                       No new notifications.
                     </div>
                   </div>
@@ -109,7 +130,11 @@
                 class="flex w-full items-center rounded-lg px-4 py-3 text-gray-700 hover:bg-gray-100"
                 @click="goToEditProfile"
               >
-                <img src="/assets/icons/person.png" alt="Edit Profile" class="mr-3 h-5 w-5" />
+                <img
+                  src="/assets/icons/person.png"
+                  alt="Edit Profile"
+                  class="mr-3 h-5 w-5"
+                />
                 Edit Profile
               </button>
               <button
@@ -179,6 +204,7 @@ import axios from "axios";
 import { useCookie } from "#app";
 import emitter from "~/plugins/event-bus";
 
+const unreadCount = ref(0);
 const router = useRouter();
 const token = useCookie("my_auth_token");
 
@@ -212,12 +238,24 @@ const fetchUser = async () => {
   }
 };
 
+// const fetchNotifications = async () => {
+//   try {
+//     const res = await axios.get(useApi("/api/notifications"), {
+//       headers: { Authorization: `Bearer ${token.value}` },
+//     });
+//     notifications.value = res.data.slice(0, 5);
+//   } catch (err) {
+//     console.error("Gagal mengambil notifikasi:", err);
+//   }
+// };
+
 const fetchNotifications = async () => {
   try {
     const res = await axios.get(useApi("/api/notifications"), {
       headers: { Authorization: `Bearer ${token.value}` },
     });
     notifications.value = res.data.slice(0, 5);
+    unreadCount.value = res.data.filter((notif: any) => !notif.read_at).length;
   } catch (err) {
     console.error("Gagal mengambil notifikasi:", err);
   }
@@ -289,12 +327,28 @@ const onImageError = (event: Event) => {
   target.src = fallbackImage;
 };
 
+// const markAsRead = async (id: number) => {
+//   try {
+//     await axios.put(
+//       useApi(`/api/notifications/${id}`),
+//       {},
+//       {
+//         headers: { Authorization: `Bearer ${token.value}` },
+//       }
+//     );
+//     notifications.value = notifications.value.filter((notif) => notif.id !== id);
+//   } catch (err) {
+//     console.error("Gagal menandai sebagai dibaca:", err);
+//   }
+// };
+
 const markAsRead = async (id: number) => {
   try {
     await axios.put(useApi(`/api/notifications/${id}`), {}, {
       headers: { Authorization: `Bearer ${token.value}` },
     });
     notifications.value = notifications.value.filter((notif) => notif.id !== id);
+    unreadCount.value = unreadCount.value > 0 ? unreadCount.value - 1 : 0;
   } catch (err) {
     console.error("Gagal menandai sebagai dibaca:", err);
   }
