@@ -21,7 +21,7 @@
               </button> -->
 
               <button
-                class="h-15 w-15 overflow-hidden rounded-full"
+                class="h-20 w-20 overflow-hidden rounded-full"
                 @click="toggleNotificationDropdown"
               >
                 <img
