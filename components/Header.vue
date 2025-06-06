@@ -318,6 +318,7 @@ const fetchNotifications = async () => {
   }
 };
 
+// Fungsi menandai notifikasi telah dibaca
 const markAsRead = async (id: number) => {
   try {
     await axios.put(
