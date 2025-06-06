@@ -1,31 +1,31 @@
 <template>
   <div>
     <header
-      class="fixed top-0 left-0 right-0 flex items-center justify-between px-6 py-4 bg-gray-400 shadow"
+      class="fixed left-0 right-0 top-0 flex items-center justify-between bg-gray-400 px-6 py-4 shadow"
     >
       <h1 class="text-xl font-semibold"></h1>
-      <div class="relative flex align-items-xl-end">
+      <div class="align-items-xl-end relative flex">
         <div>
           <div class="flex items-center gap-6">
             <button
-              class="w-10 h-10 overflow-hidden rounded-full"
+              class="h-10 w-10 overflow-hidden rounded-full"
               @click="goToNotifications"
             >
               <img
                 src="/assets/icons/Doorbell.png"
                 alt="Notification"
-                class="object-cover w-full h-full"
+                class="h-full w-full object-cover"
               />
             </button>
             <button
               ref="profileButton"
-              class="w-10 h-10 overflow-hidden bg-gray-300 rounded-full focus:outline-none"
+              class="h-10 w-10 overflow-hidden rounded-full bg-gray-300 focus:outline-none"
               @click="toggleDropdown"
             >
               <!-- <img
                 src="/assets/images/photo_default.png"
                 alt="Profile"
-                class="object-cover w-full h-full"
+                class="h-full w-full object-cover"
               /> -->
               <img
                 :src="
@@ -34,7 +34,7 @@
                     : fallbackImage
                 "
                 @error="onImageError"
-                class="object-cover w-full h-full"
+                class="h-full w-full object-cover"
               />
             </button>
           </div>
@@ -45,13 +45,13 @@
           <div
             v-if="isDropdownOpen"
             ref="dropdownMenu"
-            class="absolute right-0 z-50 w-56 mt-2 bg-white border rounded-lg shadow-lg"
+            class="absolute right-0 z-50 mt-2 w-56 rounded-lg border bg-white shadow-lg"
           >
-            <div class="p-4 text-center border-b bg-gray-50">
+            <div class="border-b bg-gray-50 p-4 text-center">
               <!-- <img
                 :src="profileImage"
                 alt="Profile"
-                class="w-16 h-16 mx-auto border border-gray-300 rounded-full"
+                class="mx-auto h-16 w-16 rounded-full border border-gray-300"
               /> -->
               <img
                 :src="
@@ -59,7 +59,7 @@
                     ? useApi(`/public/storage/profile_images/${user.profile_image}`)
                     : fallbackImage
                 "
-                class="w-16 h-16 mx-auto border border-gray-300 rounded-full"
+                class="mx-auto h-16 w-16 rounded-full border border-gray-300"
               />
 
               <!-- <h3 class="mt-2 text-lg font-semibold text-gray-900">John Doe</h3>
@@ -79,32 +79,32 @@
 
             <div class="p-2">
               <button
-                class="flex items-center w-full px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-100"
+                class="flex w-full items-center rounded-lg px-4 py-3 text-gray-700 hover:bg-gray-100"
                 @click="goToEditProfile"
               >
                 <img
                   src="/assets/icons/person.png"
                   alt="Edit Profile"
-                  class="w-5 h-5 mr-3"
+                  class="mr-3 h-5 w-5"
                 />
                 Edit Profile
               </button>
               <button
-                class="flex items-center w-full px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-100"
+                class="flex w-full items-center rounded-lg px-4 py-3 text-gray-700 hover:bg-gray-100"
                 @click="goToChangePassword"
               >
                 <img
                   src="/assets/icons/password.png"
                   alt="Change Password"
-                  class="w-5 h-5 mr-3"
+                  class="mr-3 h-5 w-5"
                 />
                 Change Password
               </button>
               <button
-                class="flex items-center w-full px-4 py-3 text-red-600 rounded-lg hover:bg-red-100"
+                class="flex w-full items-center rounded-lg px-4 py-3 text-red-600 hover:bg-red-100"
                 @click="showLogoutModal"
               >
-                <img src="/assets/icons/logout.png" alt="Log Out" class="w-5 h-5 mr-3" />
+                <img src="/assets/icons/logout.png" alt="Log Out" class="mr-3 h-5 w-5" />
                 Log Out
               </button>
             </div>
@@ -119,27 +119,27 @@
         v-if="isLogoutModalOpen"
         class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
       >
-        <div class="p-6 text-center bg-white rounded-lg shadow-lg w-96">
+        <div class="w-96 rounded-lg bg-white p-6 text-center shadow-lg">
           <img
             src="/assets/icons/logout.png"
             alt="Logout Icon"
-            class="w-10 h-10 mx-auto mb-3"
+            class="mx-auto mb-3 h-10 w-10"
           />
           <h2 class="text-xl font-semibold text-gray-900">Log Out Account</h2>
           <p class="mt-2 text-gray-700">
             Are you sure you want to logout? <br />
             Once you logout you need to login again. Are you OK?
           </p>
-          <div class="flex justify-center mt-4 space-x-4">
+          <div class="mt-4 flex justify-center space-x-4">
             <button
-              class="px-6 py-2 text-white bg-red-500 rounded-lg hover:bg-red-600"
+              class="rounded-lg bg-red-500 px-6 py-2 text-white hover:bg-red-600"
               @click.prevent="logout"
             >
-              <!-- <button class="px-6 py-2 text-white bg-red-500 rounded-lg hover:bg-red-600"> -->
+              <!-- <button class="rounded-lg bg-red-500 px-6 py-2 text-white hover:bg-red-600"> -->
               Yes
             </button>
             <button
-              class="px-6 py-2 text-gray-700 bg-gray-300 rounded-lg hover:bg-gray-400"
+              class="rounded-lg bg-gray-300 px-6 py-2 text-gray-700 hover:bg-gray-400"
               @click="isLogoutModalOpen = false"
             >
               No
@@ -149,6 +149,57 @@
       </div>
     </transition>
   </div>
+	<!-- Notifikasi Dropdown -->
+<div class="relative">
+  <button
+    class="h-10 w-10 overflow-hidden rounded-full"
+    @click="toggleNotificationDropdown"
+  >
+    <img
+      src="/assets/icons/Doorbell.png"
+      alt="Notification"
+      class="h-full w-full object-cover"
+    />
+  </button>
+
+  <transition name="fade">
+    <div
+      v-if="isNotificationDropdownOpen"
+      ref="notificationDropdown"
+      class="absolute right-0 z-50 mt-2 w-80 rounded-lg border bg-white shadow-lg"
+    >
+      <div class="border-b bg-gray-50 p-4 text-center font-semibold text-gray-700">
+        Notifications
+      </div>
+      <ul class="max-h-96 overflow-y-auto">
+        <li
+          v-for="notification in notifications"
+          :key="notification.id"
+          class="border-b p-3 hover:bg-gray-50"
+        >
+          <div class="text-sm text-gray-800">{{ notification.message }}</div>
+          <div class="text-xs text-gray-500">
+            {{ formatTime(notification.notification_time) }}
+          </div>
+          <button
+            class="mt-1 text-sm text-blue-600 hover:underline"
+            @click="markAsRead(notification.id)"
+          >
+            Mark as Read
+          </button>
+        </li>
+      </ul>
+      <div class="p-2 text-center">
+        <button
+          class="text-sm text-blue-600 hover:underline"
+          @click="goToNotifications"
+        >
+          See all
+        </button>
+      </div>
+    </div>
+  </transition>
+</div>
 </template>
 
 <script setup lang="ts">
@@ -163,6 +214,7 @@ const isLogoutModalOpen = ref(false);
 const dropdownMenu = ref<HTMLElement | null>(null);
 const profileButton = ref<HTMLElement | null>(null);
 const router = useRouter();
+import dayjs from "dayjs";
 
 // const user = ref<{ name: string; email: string; usertype: string } | null>(null);
 // const user = ref(null);
@@ -186,6 +238,65 @@ const fallbackImage = "/assets/images/photo_default.png";
 //     return false;
 //   }
 // };
+
+// State tambahan
+const isNotificationDropdownOpen = ref(false);
+const notificationDropdown = ref<HTMLElement | null>(null);
+const notifications = ref<any[]>([]);
+
+// Fetch notifikasi (5 terakhir, unread)
+const fetchNotifications = async () => {
+  try {
+    const res = await axios.get(useApi("/api/notifications"), {
+      headers: {
+        Authorization: `Bearer ${token.value}`,
+      },
+    });
+    notifications.value = res.data.slice(0, 5); // Ambil maksimal 5 notifikasi
+  } catch (err) {
+    console.error("Failed to fetch notifications:", err);
+  }
+};
+
+// Format waktu
+const formatTime = (datetime: string) => {
+  return dayjs(datetime).format("DD MMM YYYY HH:mm");
+};
+
+// Toggle Dropdown Notifikasi
+const toggleNotificationDropdown = async () => {
+  isNotificationDropdownOpen.value = !isNotificationDropdownOpen.value;
+  if (isNotificationDropdownOpen.value) {
+    await fetchNotifications();
+  }
+};
+
+// Tandai notifikasi sebagai read
+const markAsRead = async (id: number) => {
+  try {
+    await axios.put(useApi(`/api/notifications/${id}`), {}, {
+      headers: {
+        Authorization: `Bearer ${token.value}`,
+      },
+    });
+    // Refresh daftar notifikasi setelah dibaca
+    await fetchNotifications();
+  } catch (error) {
+    console.error("Gagal menandai notifikasi:", error);
+  }
+};
+
+// Close dropdown jika klik di luar (tambahkan notifikasi dropdown)
+const closeDropdown = (event: MouseEvent) => {
+  const target = event.target as Node;
+  if (
+    (dropdownMenu.value && !dropdownMenu.value.contains(target) && !profileButton.value?.contains(target)) &&
+    (notificationDropdown.value && !notificationDropdown.value.contains(target))
+  ) {
+    isDropdownOpen.value = false;
+    isNotificationDropdownOpen.value = false;
+  }
+};
 
 // ✅ Tambahan: Ambil data user
 const fetchUser = async () => {
@@ -249,15 +360,15 @@ const goToNotifications = () => {
 };
 
 // Tutup dropdown jika klik di luar
-const closeDropdown = (event: MouseEvent) => {
-  if (
-    dropdownMenu.value &&
-    !dropdownMenu.value.contains(event.target as Node) &&
-    !profileButton.value?.contains(event.target as Node)
-  ) {
-    isDropdownOpen.value = false;
-  }
-};
+// const closeDropdown = (event: MouseEvent) => {
+//   if (
+//     dropdownMenu.value &&
+//     !dropdownMenu.value.contains(event.target as Node) &&
+//     !profileButton.value?.contains(event.target as Node)
+//   ) {
+//     isDropdownOpen.value = false;
+//   }
+// };
 
 // Lifecycle
 onMounted(() => {
