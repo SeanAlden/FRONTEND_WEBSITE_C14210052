@@ -88,60 +88,6 @@
               </div>
             </transition> -->
 
-            <!-- Notification Dropdown -->
-            <transition name="fade">
-              <div
-                v-if="isNotificationDropdownOpen"
-                ref="notificationDropdown"
-                class="absolute right-14 z-50 mt-6 w-80 rounded-lg border-t-4 border-gray-800 bg-white shadow-lg"
-              >
-                <div
-                  class="flex items-center justify-between bg-gray-50 p-4 text-lg font-semibold text-gray-900"
-                >
-                  <span>Notifications</span>
-                </div>
-                <div class="max-h-80 overflow-y-auto">
-                  <div
-                    v-for="(notif, index) in notifications"
-                    :key="notif.id"
-                    class="flex items-center border-b px-4 py-3 hover:bg-gray-100"
-                  >
-                    <img
-                      src="/assets/icons/notification_icon.png"
-                      alt="Notification"
-                      class="mr-3 h-5 w-5"
-                    />
-                    <div class="flex-1">
-                      <p class="text-sm text-gray-800">{{ notif.message }}</p>
-                      <p class="text-xs text-gray-500">
-                        {{ formatDate(notif.notification_time) }}
-                      </p>
-                    </div>
-                    <button
-                      class="mt-2 text-sm text-blue-600 hover:underline"
-                      @click="markAsRead(notif.id)"
-                    >
-                      Mark as Read
-                    </button>
-                  </div>
-                  <div
-                    v-if="notifications.length === 0"
-                    class="p-4 text-center text-sm text-gray-500"
-                  >
-                    No new notifications.
-                  </div>
-                </div>
-                <div class="border-t p-3 text-center">
-                  <button
-                    class="text-sm text-blue-600 hover:underline"
-                    @click="goToNotifications"
-                  >
-                    See all
-                  </button>
-                </div>
-              </div>
-            </transition>
-
             <!-- Profile Button -->
             <button
               ref="profileButton"
@@ -218,6 +164,59 @@
               >
                 <img src="/assets/icons/logout.png" alt="Log Out" class="mr-3 h-5 w-5" />
                 Log Out
+              </button>
+            </div>
+          </div>
+        </transition>
+        <!-- Notification Dropdown -->
+        <transition name="fade">
+          <div
+            v-if="isNotificationDropdownOpen"
+            ref="notificationDropdown"
+            class="absolute right-14 z-50 mt-6 w-80 rounded-lg border-t-4 border-gray-800 bg-white shadow-lg"
+          >
+            <div
+              class="flex items-center justify-between bg-gray-50 p-4 text-lg font-semibold text-gray-900"
+            >
+              <span>Notifications</span>
+            </div>
+            <div class="max-h-80 overflow-y-auto">
+              <div
+                v-for="(notif, index) in notifications"
+                :key="notif.id"
+                class="flex items-center border-b px-4 py-3 hover:bg-gray-100"
+              >
+                <img
+                  src="/assets/icons/notification_icon.png"
+                  alt="Notification"
+                  class="mr-3 h-5 w-5"
+                />
+                <div class="flex-1">
+                  <p class="text-sm text-gray-800">{{ notif.message }}</p>
+                  <p class="text-xs text-gray-500">
+                    {{ formatDate(notif.notification_time) }}
+                  </p>
+                </div>
+                <button
+                  class="mt-2 text-sm text-blue-600 hover:underline"
+                  @click="markAsRead(notif.id)"
+                >
+                  Mark as Read
+                </button>
+              </div>
+              <div
+                v-if="notifications.length === 0"
+                class="p-4 text-center text-sm text-gray-500"
+              >
+                No new notifications.
+              </div>
+            </div>
+            <div class="border-t p-3 text-center">
+              <button
+                class="text-sm text-blue-600 hover:underline"
+                @click="goToNotifications"
+              >
+                See all
               </button>
             </div>
           </div>
