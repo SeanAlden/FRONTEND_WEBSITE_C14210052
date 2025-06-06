@@ -443,6 +443,8 @@ const showLogoutModal = () => {
 }
 
 .notification-dropdown {
+  top: 100%; /* Menempatkan dropdown tepat di bawah tombol */
+  left: 0; /* Menjaga agar dropdown sejajar dengan tombol */
   border-radius: 8px;
   background-color: white;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
