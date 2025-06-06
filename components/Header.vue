@@ -180,7 +180,7 @@
             >
               <span>Notifications</span>
             </div>
-            <div class="max-h-80 overflow-y-auto">
+            <div class="max-h-10 overflow-y-auto">
               <div
                 v-for="(notif, index) in notifications"
                 :key="notif.id"
