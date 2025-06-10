@@ -157,14 +157,25 @@
 //   window.removeEventListener("resize", handleResize);
 // });
 
-import { defineProps, defineEmits, ref } from "vue";
+import { defineProps, defineEmits, ref, watch } from "vue";
 const props = defineProps({ isSidebarOpen: Boolean });
 const emit = defineEmits(["toggle-sidebar"]);
 const isProductsOpen = ref(false);
 const toggleSidebar = () => {
   emit("toggle-sidebar");
-  if (!props.isSidebarOpen) isProductsOpen.value = false;
+  // if (!props.isSidebarOpen) isProductsOpen.value = false;
 };
+
+// Tutup submenu produk saat sidebar ditutup
+watch(
+  () => props.isSidebarOpen,
+  (newVal) => {
+    if (!newVal) {
+      isProductsOpen.value = false;
+    }
+  }
+);
+
 const toggleProductsDropdown = () => {
   if (!props.isSidebarOpen) {
     emit("toggle-sidebar");

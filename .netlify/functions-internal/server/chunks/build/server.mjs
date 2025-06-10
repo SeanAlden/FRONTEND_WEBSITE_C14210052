@@ -1592,7 +1592,7 @@ const plugins = [
   emitter
 ];
 const layouts = {
-  default: defineAsyncComponent(() => import('./default-n_T97Kvs.mjs').then((m) => m.default || m))
+  default: defineAsyncComponent(() => import('./default-Jza9yT-U.mjs').then((m) => m.default || m))
 };
 const LayoutLoader = defineComponent({
   name: "LayoutLoader",
