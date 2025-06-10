@@ -1,6 +1,6 @@
 import { u as useApi } from './useApi-Dqh0F_3-.mjs';
 import { defineComponent, ref, mergeProps, unref, useSSRContext, withCtx, createVNode, createBlock, createCommentVNode, openBlock, createTextVNode } from 'vue';
-import { ssrRenderAttrs, ssrRenderComponent, ssrRenderClass, ssrRenderSlot, ssrRenderAttr, ssrInterpolate } from 'vue/server-renderer';
+import { ssrRenderAttrs, ssrRenderComponent, ssrRenderClass, ssrRenderSlot, ssrRenderAttr, ssrInterpolate, ssrRenderList } from 'vue/server-renderer';
 import { p as publicAssetsURL } from '../routes/renderer.mjs';
 import { u as useRouter, e as useCookie } from './server.mjs';
 import { _ as __nuxt_component_0 } from './nuxt-link-BJjwR1_u.mjs';
@@ -30,22 +30,51 @@ const _sfc_main$2 = /* @__PURE__ */ defineComponent({
   __name: "Header",
   __ssrInlineRender: true,
   setup(__props) {
-    const isDropdownOpen = ref(false);
-    const isLogoutModalOpen = ref(false);
-    ref(null);
-    ref(null);
+    const unreadCount = ref(0);
     useRouter();
+    useCookie("my_auth_token");
     const user = ref({
       name: "",
       email: "",
       profile_image: "",
       usertype: ""
     });
-    useCookie("my_auth_token");
-    ref("");
+    ref(null);
+    ref(null);
+    ref(null);
+    ref(null);
+    const isDropdownOpen = ref(false);
+    const isLogoutModalOpen = ref(false);
+    const isNotificationDropdownOpen = ref(false);
+    const notifications = ref([]);
+    const formatTime = (timeStr) => {
+      return new Date(timeStr).toLocaleString();
+    };
     return (_ctx, _push, _parent, _attrs) => {
       var _a, _b, _c;
-      _push(`<div${ssrRenderAttrs(_attrs)}><header class="fixed top-0 left-0 right-0 flex items-center justify-between px-6 py-4 bg-gray-400 shadow"><h1 class="text-xl font-semibold"></h1><div class="relative flex align-items-xl-end"><div><div class="flex items-center gap-6"><button class="w-10 h-10 overflow-hidden rounded-full"><img${ssrRenderAttr("src", _imports_0$1)} alt="Notification" class="object-cover w-full h-full"></button><button class="w-10 h-10 overflow-hidden bg-gray-300 rounded-full focus:outline-none"><img${ssrRenderAttr(
+      _push(`<div${ssrRenderAttrs(_attrs)}><header class="fixed top-0 left-0 right-0 flex items-center justify-between px-6 py-4 bg-gray-400 shadow"><h1 class="text-xl font-semibold"></h1><div class="relative flex align-items-xl-end"><div><div class="flex items-center gap-6"><div class="relative"><button class="w-10 h-10 overflow-hidden rounded-full"><img${ssrRenderAttr("src", _imports_0$1)} alt="Notification" class="object-cover w-full h-full">`);
+      if (unreadCount.value > 0) {
+        _push(`<span class="absolute top-0 right-0 inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white transform translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full">${ssrInterpolate(unreadCount.value)}</span>`);
+      } else {
+        _push(`<!---->`);
+      }
+      _push(`</button>`);
+      if (isNotificationDropdownOpen.value) {
+        _push(`<div class="absolute right-0 z-50 mt-2 bg-white border rounded-lg shadow-lg w-80"><div class="p-4 font-semibold text-gray-700 border-b bg-gray-50"> Notifications </div><div class="overflow-y-auto max-h-64"><!--[-->`);
+        ssrRenderList(notifications.value, (notif, index) => {
+          _push(`<div class="px-4 py-3 border-b last:border-b-0 hover:bg-gray-50"><p class="text-sm text-gray-800">${ssrInterpolate(notif.message)}</p><p class="text-xs text-gray-500">${ssrInterpolate(formatTime(notif.notification_time))}</p><button class="mt-2 text-sm text-blue-500 hover:underline"> Read </button></div>`);
+        });
+        _push(`<!--]-->`);
+        if (notifications.value.length === 0) {
+          _push(`<div class="p-4 text-center text-gray-500"> No new notifications. </div>`);
+        } else {
+          _push(`<!---->`);
+        }
+        _push(`</div><div class="p-2 text-center border-t bg-gray-50"><button class="text-sm text-blue-600 hover:underline"> See All </button></div></div>`);
+      } else {
+        _push(`<!---->`);
+      }
+      _push(`</div><button class="w-10 h-10 overflow-hidden bg-gray-300 rounded-full focus:outline-none"><img${ssrRenderAttr(
         "src",
         user.value.profile_image ? ("useApi" in _ctx ? _ctx.useApi : unref(useApi))(`/public/storage/profile_images/${user.value.profile_image}`) : fallbackImage
       )} class="object-cover w-full h-full"></button></div></div>`);
@@ -396,4 +425,4 @@ _sfc_main.setup = (props, ctx) => {
 };
 
 export { _sfc_main as default };
-//# sourceMappingURL=default-M6X-UmAt.mjs.map
+//# sourceMappingURL=default-n_T97Kvs.mjs.map

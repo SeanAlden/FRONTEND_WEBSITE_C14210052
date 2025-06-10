@@ -1,39 +1,39 @@
 <template>
   <div>
     <header
-      class="fixed left-0 right-0 top-0 flex items-center justify-between bg-gray-400 px-6 py-4 shadow"
+      class="fixed top-0 left-0 right-0 flex items-center justify-between px-6 py-4 bg-gray-400 shadow"
     >
       <h1 class="text-xl font-semibold"></h1>
-      <div class="align-items-xl-end relative flex">
+      <div class="relative flex align-items-xl-end">
         <div>
           <div class="flex items-center gap-6">
             <!-- Notifikasi Bell Button -->
             <div class="relative">
               <!-- <button
-                class="h-10 w-10 overflow-hidden rounded-full"
+                class="w-10 h-10 overflow-hidden rounded-full"
                 @click="toggleNotificationDropdown"
               >
                 <img
                   src="/assets/icons/Doorbell.png"
                   alt="Notification"
-                  class="h-full w-full object-cover"
+                  class="object-cover w-full h-full"
                 />
               </button> -->
 
               <button
                 ref="notificationButton"
-                class="h-10 w-10 overflow-hidden rounded-full"
+                class="w-10 h-10 overflow-hidden rounded-full"
                 @click="toggleNotificationDropdown"
               >
                 <img
                   src="/assets/icons/Doorbell.png"
                   alt="Notification"
-                  class="h-full w-full object-cover"
+                  class="object-cover w-full h-full"
                 />
                 <!-- 🔴 Badge Jumlah Notifikasi -->
                 <span
                   v-if="unreadCount > 0"
-                  class="absolute right-0 top-0 inline-flex h-5 w-5 -translate-y-1/2 translate-x-1/2 transform items-center justify-center rounded-full bg-red-600 text-xs font-bold text-white"
+                  class="absolute top-0 right-0 inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white transform translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full"
                 >
                   {{ unreadCount }}
                 </span>
@@ -44,16 +44,16 @@
                 <div
                   v-if="isNotificationDropdownOpen"
                   ref="notificationDropdown"
-                  class="absolute right-0 z-50 mt-2 w-80 rounded-lg border bg-white shadow-lg"
+                  class="absolute right-0 z-50 mt-2 bg-white border rounded-lg shadow-lg w-80"
                 >
-                  <div class="border-b bg-gray-50 p-4 font-semibold text-gray-700">
+                  <div class="p-4 font-semibold text-gray-700 border-b bg-gray-50">
                     Notifications
                   </div>
-                  <div class="max-h-64 overflow-y-auto">
+                  <div class="overflow-y-auto max-h-64">
                     <div
                       v-for="(notif, index) in notifications"
                       :key="notif.id"
-                      class="border-b px-4 py-3 last:border-b-0 hover:bg-gray-50"
+                      class="px-4 py-3 border-b last:border-b-0 hover:bg-gray-50"
                     >
                       <p class="text-sm text-gray-800">{{ notif.message }}</p>
                       <p class="text-xs text-gray-500">
@@ -73,7 +73,7 @@
                       No new notifications.
                     </div>
                   </div>
-                  <div class="border-t bg-gray-50 p-2 text-center">
+                  <div class="p-2 text-center border-t bg-gray-50">
                     <button
                       class="text-sm text-blue-600 hover:underline"
                       @click="goToNotifications"
@@ -88,7 +88,7 @@
             <!-- Profile Button -->
             <button
               ref="profileButton"
-              class="h-10 w-10 overflow-hidden rounded-full bg-gray-300 focus:outline-none"
+              class="w-10 h-10 overflow-hidden bg-gray-300 rounded-full focus:outline-none"
               @click="toggleDropdown"
             >
               <img
@@ -98,7 +98,7 @@
                     : fallbackImage
                 "
                 @error="onImageError"
-                class="h-full w-full object-cover"
+                class="object-cover w-full h-full"
               />
             </button>
           </div>
@@ -109,16 +109,16 @@
           <div
             v-if="isDropdownOpen"
             ref="dropdownMenu"
-            class="absolute right-0 z-50 mt-2 w-56 rounded-lg border bg-white shadow-lg"
+            class="absolute right-0 z-50 w-56 mt-2 bg-white border rounded-lg shadow-lg"
           >
-            <div class="border-b bg-gray-50 p-4 text-center">
+            <div class="p-4 text-center border-b bg-gray-50">
               <img
                 :src="
                   user.profile_image
                     ? useApi(`/public/storage/profile_images/${user.profile_image}`)
                     : fallbackImage
                 "
-                class="mx-auto h-16 w-16 rounded-full border border-gray-300"
+                class="w-16 h-16 mx-auto border border-gray-300 rounded-full"
               />
               <h3 class="mt-2 text-lg font-semibold text-gray-900">
                 {{ user?.name || "Guest" }}
@@ -129,32 +129,32 @@
 
             <div class="p-2">
               <button
-                class="flex w-full items-center rounded-lg px-4 py-3 text-gray-700 hover:bg-gray-100"
+                class="flex items-center w-full px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-100"
                 @click="goToEditProfile"
               >
                 <img
                   src="/assets/icons/person.png"
                   alt="Edit Profile"
-                  class="mr-3 h-5 w-5"
+                  class="w-5 h-5 mr-3"
                 />
                 Edit Profile
               </button>
               <button
-                class="flex w-full items-center rounded-lg px-4 py-3 text-gray-700 hover:bg-gray-100"
+                class="flex items-center w-full px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-100"
                 @click="goToChangePassword"
               >
                 <img
                   src="/assets/icons/password.png"
                   alt="Change Password"
-                  class="mr-3 h-5 w-5"
+                  class="w-5 h-5 mr-3"
                 />
                 Change Password
               </button>
               <button
-                class="flex w-full items-center rounded-lg px-4 py-3 text-red-600 hover:bg-red-100"
+                class="flex items-center w-full px-4 py-3 text-red-600 rounded-lg hover:bg-red-100"
                 @click="showLogoutModal"
               >
-                <img src="/assets/icons/logout.png" alt="Log Out" class="mr-3 h-5 w-5" />
+                <img src="/assets/icons/logout.png" alt="Log Out" class="w-5 h-5 mr-3" />
                 Log Out
               </button>
             </div>
@@ -169,26 +169,26 @@
         v-if="isLogoutModalOpen"
         class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
       >
-        <div class="w-96 rounded-lg bg-white p-6 text-center shadow-lg">
+        <div class="p-6 text-center bg-white rounded-lg shadow-lg w-96">
           <img
             src="/assets/icons/logout.png"
             alt="Logout Icon"
-            class="mx-auto mb-3 h-10 w-10"
+            class="w-10 h-10 mx-auto mb-3"
           />
           <h2 class="text-xl font-semibold text-gray-900">Log Out Account</h2>
           <p class="mt-2 text-gray-700">
             Are you sure you want to logout? <br />
             Once you logout you need to login again. Are you OK?
           </p>
-          <div class="mt-4 flex justify-center space-x-4">
+          <div class="flex justify-center mt-4 space-x-4">
             <button
-              class="rounded-lg bg-red-500 px-6 py-2 text-white hover:bg-red-600"
+              class="px-6 py-2 text-white bg-red-500 rounded-lg hover:bg-red-600"
               @click.prevent="logout"
             >
               Yes
             </button>
             <button
-              class="rounded-lg bg-gray-300 px-6 py-2 text-gray-700 hover:bg-gray-400"
+              class="px-6 py-2 text-gray-700 bg-gray-300 rounded-lg hover:bg-gray-400"
               @click="isLogoutModalOpen = false"
             >
               No
@@ -237,7 +237,7 @@ const fetchUser = async () => {
   } catch (err: any) {
     if (err.response?.status === 401) {
       alert("Sesi Anda telah habis. Silakan login ulang.");
-      router.push("/login");
+      // router.push("/login");
     }
   }
 };

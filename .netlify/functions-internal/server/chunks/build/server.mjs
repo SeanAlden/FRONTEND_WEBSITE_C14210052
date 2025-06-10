@@ -794,7 +794,7 @@ const _routes = [
     name: "index",
     path: "/",
     meta: __nuxt_page_meta$h || {},
-    component: () => import('./index-D3CNT2ko.mjs')
+    component: () => import('./index-DO1q5cQl.mjs')
   },
   {
     name: "login",
@@ -1592,7 +1592,7 @@ const plugins = [
   emitter
 ];
 const layouts = {
-  default: defineAsyncComponent(() => import('./default-M6X-UmAt.mjs').then((m) => m.default || m))
+  default: defineAsyncComponent(() => import('./default-n_T97Kvs.mjs').then((m) => m.default || m))
 };
 const LayoutLoader = defineComponent({
   name: "LayoutLoader",

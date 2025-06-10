@@ -137,25 +137,24 @@ const _sfc_main = {
       fetchData,
       formatPrice,
       user,
-      // ✅ kembalikan jika ingin ditampilkan di template
       onImageError
     };
   }
 };
 function _sfc_ssrRender(_ctx, _push, _parent, _attrs, $props, $setup, $data, $options) {
   var _a;
-  _push(`<div${ssrRenderAttrs(mergeProps({ class: "min-h-screen p-6 bg-gray-100" }, _attrs))}><h1 class="text-2xl font-bold">Dashboard</h1><p class="text-gray-600">Hello, ${ssrInterpolate(((_a = $setup.user) == null ? void 0 : _a.name) || "Guest")}</p><div class="flex flex-wrap items-center mt-4 mb-4"><div class="flex items-center mb-2 mr-6"><label for="month" class="mr-2 text-sm font-medium text-gray-700"> Pilih Bulan: </label><select class="px-2 py-1 border border-gray-300 rounded-md"><!--[-->`);
+  _push(`<div${ssrRenderAttrs(mergeProps({ class: "min-h-screen bg-gray-100 p-6" }, _attrs))}><h1 class="text-2xl font-bold">Dashboard</h1><p class="text-gray-600">Hello, ${ssrInterpolate(((_a = $setup.user) == null ? void 0 : _a.name) || "Guest")}</p><div class="mb-4 mt-4 flex flex-wrap items-center"><div class="mb-2 mr-6 flex items-center"><label for="month" class="mr-2 text-sm font-medium text-gray-700"> Pilih Bulan: </label><select class="rounded-md border border-gray-300 px-2 py-1"><!--[-->`);
   ssrRenderList($setup.months, (month) => {
     _push(`<option${ssrRenderAttr("value", month)}${ssrIncludeBooleanAttr(Array.isArray($setup.currentMonth) ? ssrLooseContain($setup.currentMonth, month) : ssrLooseEqual($setup.currentMonth, month)) ? " selected" : ""}>${ssrInterpolate(month)}</option>`);
   });
-  _push(`<!--]--></select></div><div class="flex items-center mb-2"><label for="year" class="mr-2 text-sm font-medium text-gray-700"> Pilih Tahun: </label><input${ssrRenderAttr("value", $setup.currentYear)} type="number" class="px-2 py-1 border border-gray-300 rounded-md"></div></div><div class="grid grid-cols-1 gap-4 mt-4 md:grid-cols-3"><div class="flex items-center p-4 bg-white rounded-lg shadow"><img${ssrRenderAttr("src", _imports_0)} class="w-10 h-10 mr-3"><div class="overflow-x-auto whitespace-nowrap"><p class="text-gray-500">Income Total (${ssrInterpolate($setup.currentMonth)})</p><p class="text-xl font-bold">${ssrInterpolate($setup.formatPrice($setup.totalRevenue))}</p></div></div><div class="flex items-center p-4 bg-white rounded-lg shadow"><img${ssrRenderAttr("src", _imports_1)} class="w-10 h-10 mr-3"><div class="overflow-x-auto whitespace-nowrap"><p class="text-gray-500">Transaction Total (${ssrInterpolate($setup.currentMonth)})</p><p class="text-xl font-bold">${ssrInterpolate($setup.totalTransactions)}</p></div></div><div class="flex items-center p-4 bg-white rounded-lg shadow"><img${ssrRenderAttr("src", _imports_2)} class="w-10 h-10 mr-3"><div class="overflow-x-auto whitespace-nowrap"><p class="text-gray-500">Product Total</p><p class="text-xl font-bold">${ssrInterpolate($setup.totalProducts)}</p></div></div></div><div class="grid grid-cols-1 gap-4 mt-6 md:grid-cols-2"><div class="p-4 overflow-x-auto bg-white rounded-lg shadow whitespace-nowrap"><h2 class="text-lg font-bold">Top Products</h2><table class="w-full mt-3 border border-collapse border-gray-200"><thead><tr class="bg-gray-100"><th class="p-2 border">Photo</th><th class="p-2 border">Product</th><th class="p-2 border">Price</th><th class="p-2 border">Category</th><th class="p-2 border">Sold Total</th></tr></thead><tbody><!--[-->`);
+  _push(`<!--]--></select></div><div class="mb-2 flex items-center"><label for="year" class="mr-2 text-sm font-medium text-gray-700"> Pilih Tahun: </label><input${ssrRenderAttr("value", $setup.currentYear)} type="number" class="rounded-md border border-gray-300 px-2 py-1"></div></div><div class="mt-4 grid grid-cols-1 gap-4 md:grid-cols-3"><div class="flex items-center rounded-lg bg-white p-4 shadow"><img${ssrRenderAttr("src", _imports_0)} class="mr-3 h-10 w-10"><div class="overflow-x-auto whitespace-nowrap"><p class="text-gray-500">Income Total (${ssrInterpolate($setup.currentMonth)})</p><p class="text-xl font-bold">${ssrInterpolate($setup.formatPrice($setup.totalRevenue))}</p></div></div><div class="flex items-center rounded-lg bg-white p-4 shadow"><img${ssrRenderAttr("src", _imports_1)} class="mr-3 h-10 w-10"><div class="overflow-x-auto whitespace-nowrap"><p class="text-gray-500">Transaction Total (${ssrInterpolate($setup.currentMonth)})</p><p class="text-xl font-bold">${ssrInterpolate($setup.totalTransactions)}</p></div></div><div class="flex items-center rounded-lg bg-white p-4 shadow"><img${ssrRenderAttr("src", _imports_2)} class="mr-3 h-10 w-10"><div class="overflow-x-auto whitespace-nowrap"><p class="text-gray-500">Product Total</p><p class="text-xl font-bold">${ssrInterpolate($setup.totalProducts)}</p></div></div></div><div class="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2"><div class="overflow-x-auto whitespace-nowrap rounded-lg bg-white p-4 shadow"><h2 class="text-lg font-bold">Top Products</h2><table class="mt-3 w-full border-collapse border border-gray-200"><thead><tr class="bg-gray-100"><th class="border p-2">Photo</th><th class="border p-2">Product</th><th class="border p-2">Price</th><th class="border p-2">Category</th><th class="border p-2">Sold Total</th></tr></thead><tbody><!--[-->`);
   ssrRenderList($setup.topProducts, (product) => {
     _push(`<tr class="border"><td class="flex items-center p-2"><img${ssrRenderAttr(
       "src",
       product.photo ? ("useApi" in _ctx ? _ctx.useApi : unref(useApi))(`/public/storage/${product.photo}`) : _ctx.fallbackImage
-    )} class="w-10 h-10 mr-2"></td><td>${ssrInterpolate(product.name)}</td><td class="p-2">${ssrInterpolate($setup.formatPrice(product.price))}</td><td class="p-2">${ssrInterpolate(product.category_name)}</td><td class="p-2">${ssrInterpolate(product.total_sold)}</td></tr>`);
+    )} class="mr-2 h-10 w-10"></td><td>${ssrInterpolate(product.name)}</td><td class="p-2">${ssrInterpolate($setup.formatPrice(product.price))}</td><td class="p-2">${ssrInterpolate(product.category_name)}</td><td class="p-2">${ssrInterpolate(product.total_sold)}</td></tr>`);
   });
-  _push(`<!--]--></tbody></table></div><div class="p-4 overflow-x-auto bg-white rounded-lg shadow whitespace-nowrap"><h2 class="text-lg font-bold">Grafik Penjualan</h2><canvas id="salesChart"></canvas></div></div></div>`);
+  _push(`<!--]--></tbody></table></div><div class="overflow-x-auto whitespace-nowrap rounded-lg bg-white p-4 shadow"><h2 class="text-lg font-bold">Grafik Penjualan</h2><canvas id="salesChart"></canvas></div></div></div>`);
 }
 const _sfc_setup = _sfc_main.setup;
 _sfc_main.setup = (props, ctx) => {
@@ -166,4 +165,4 @@ _sfc_main.setup = (props, ctx) => {
 const index = /* @__PURE__ */ _export_sfc(_sfc_main, [["ssrRender", _sfc_ssrRender]]);
 
 export { index as default };
-//# sourceMappingURL=index-D3CNT2ko.mjs.map
+//# sourceMappingURL=index-DO1q5cQl.mjs.map
