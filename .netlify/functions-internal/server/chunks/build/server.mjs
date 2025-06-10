@@ -597,6 +597,9 @@ const generateRouteKey$1 = (routeProps, override) => {
 function toArray(value) {
   return Array.isArray(value) ? value : [value];
 }
+const __nuxt_page_meta$w = {
+  middleware: ["auth"]
+};
 const __nuxt_page_meta$v = {
   middleware: ["auth"]
 };
@@ -700,96 +703,97 @@ const _routes = [
   {
     name: "analysis_pages-accuracy_page",
     path: "/analysis_pages/accuracy_page",
-    meta: __nuxt_page_meta$v || {},
+    meta: __nuxt_page_meta$w || {},
     component: () => import('./accuracy_page-Uta9UAxh.mjs')
   },
   {
     name: "analysis_pages-decision_tree_page",
     path: "/analysis_pages/decision_tree_page",
-    meta: __nuxt_page_meta$u || {},
+    meta: __nuxt_page_meta$v || {},
     component: () => import('./decision_tree_page-DwGcXVuc.mjs')
   },
   {
     name: "analysis_pages-entropy_gain_page",
     path: "/analysis_pages/entropy_gain_page",
-    meta: __nuxt_page_meta$t || {},
+    meta: __nuxt_page_meta$u || {},
     component: () => import('./entropy_gain_page-BaQ5dLDm.mjs')
   },
   {
     name: "analysis_pages-sales_count_page",
     path: "/analysis_pages/sales_count_page",
-    meta: __nuxt_page_meta$s || {},
+    meta: __nuxt_page_meta$t || {},
     component: () => import('./sales_count_page-C4J_DJ5r.mjs')
   },
   {
     name: "analysis_pages-time_count_page",
     path: "/analysis_pages/time_count_page",
-    meta: __nuxt_page_meta$r || {},
+    meta: __nuxt_page_meta$s || {},
     component: () => import('./time_count_page-B9_Ea2k0.mjs')
   },
   {
     name: "analysis_pages-weight_count_page",
     path: "/analysis_pages/weight_count_page",
-    meta: __nuxt_page_meta$q || {},
+    meta: __nuxt_page_meta$r || {},
     component: () => import('./weight_count_page-BKcSgQld.mjs')
   },
   {
     name: "category_pages-add_category",
     path: "/category_pages/add_category",
-    meta: __nuxt_page_meta$p || {},
+    meta: __nuxt_page_meta$q || {},
     component: () => import('./add_category-CvSQvpFQ.mjs')
   },
   {
     name: "category_pages-categories",
     path: "/category_pages/categories",
-    meta: __nuxt_page_meta$o || {},
+    meta: __nuxt_page_meta$p || {},
     component: () => import('./categories-cQRvh-h_.mjs')
   },
   {
     name: "category_pages-detail-id",
     path: "/category_pages/detail/:id()",
-    meta: __nuxt_page_meta$n || {},
+    meta: __nuxt_page_meta$o || {},
     component: () => import('./_id_-_L7-rNfu.mjs')
   },
   {
     name: "category_pages-edit-id",
     path: "/category_pages/edit/:id()",
-    meta: __nuxt_page_meta$m || {},
+    meta: __nuxt_page_meta$n || {},
     component: () => import('./_id_-hxMuIAKN.mjs')
   },
   {
     name: "employee_pages-add_employee",
     path: "/employee_pages/add_employee",
-    meta: __nuxt_page_meta$l || {},
+    meta: __nuxt_page_meta$m || {},
     component: () => import('./add_employee-DClAMeMg.mjs')
   },
   {
     name: "employee_pages-detail-id",
     path: "/employee_pages/detail/:id()",
-    meta: __nuxt_page_meta$k || {},
+    meta: __nuxt_page_meta$l || {},
     component: () => import('./_id_-BBkRIQXh.mjs')
   },
   {
     name: "employee_pages-edit-id",
     path: "/employee_pages/edit/:id()",
-    meta: __nuxt_page_meta$j || {},
+    meta: __nuxt_page_meta$k || {},
     component: () => import('./_id_-Dn69UH3H.mjs')
   },
   {
     name: "employee_pages-employees",
     path: "/employee_pages/employees",
-    meta: __nuxt_page_meta$i || {},
+    meta: __nuxt_page_meta$j || {},
     component: () => import('./employees-CZs2SFmv.mjs')
   },
   {
     name: "employee_pages-registered_employees",
     path: "/employee_pages/registered_employees",
-    meta: __nuxt_page_meta$h || {},
+    meta: __nuxt_page_meta$i || {},
     component: () => import('./registered_employees-JgFvKqxK.mjs')
   },
   {
     name: "index",
     path: "/",
+    meta: __nuxt_page_meta$h || {},
     component: () => import('./index-C29bmo5U.mjs')
   },
   {
