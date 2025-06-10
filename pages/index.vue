@@ -151,9 +151,9 @@ import axios from "axios";
 import { useCookie } from "#app";
 import { useApi } from "~/composables/useApi";
 
-definePageMeta({
-  middleware: ["auth"],
-});
+// definePageMeta({
+//   middleware: ["auth"],
+// });
 
 export default {
   setup() {
@@ -237,10 +237,10 @@ export default {
         renderChart();
       } catch (error) {
         console.error("Error fetching dashboard data:", error);
-        // if (error.response?.status === 401) {
-        //   alert("Autentikasi gagal, silakan login ulang.");
-        //   window.location.href = "/login";
-        // }
+        if (error.response?.status === 401) {
+          alert("Autentikasi gagal, silakan login ulang.");
+          window.location.href = "/login";
+        }
       } finally {
         setTimeout(() => {
           isLoading.value = false;

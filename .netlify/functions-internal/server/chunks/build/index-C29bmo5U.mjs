@@ -58,6 +58,7 @@ const _sfc_main = {
     const user = ref(null);
     const token = useCookie("my_auth_token");
     const fetchData = async () => {
+      var _a;
       try {
         isLoading.value = true;
         const response = await axios.get(
@@ -78,6 +79,10 @@ const _sfc_main = {
         renderChart();
       } catch (error) {
         console.error("Error fetching dashboard data:", error);
+        if (((_a = error.response) == null ? void 0 : _a.status) === 401) {
+          alert("Autentikasi gagal, silakan login ulang.");
+          (void 0).location.href = "/login";
+        }
       } finally {
         setTimeout(() => {
           isLoading.value = false;
@@ -160,4 +165,4 @@ _sfc_main.setup = (props, ctx) => {
 const index = /* @__PURE__ */ _export_sfc(_sfc_main, [["ssrRender", _sfc_ssrRender]]);
 
 export { index as default };
-//# sourceMappingURL=index-BtBGSeWz.mjs.map
+//# sourceMappingURL=index-C29bmo5U.mjs.map
