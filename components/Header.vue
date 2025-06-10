@@ -235,10 +235,10 @@ const fetchUser = async () => {
     });
     user.value = res.data;
   } catch (err: any) {
-    if (err.response?.status === 401) {
-      alert("Sesi Anda telah habis. Silakan login ulang.");
-      // router.push("/login");
-    }
+    // if (err.response?.status === 401) {
+    //   alert("Sesi Anda telah habis. Silakan login ulang.");
+    //   router.push("/login");
+    // }
   }
 };
 
