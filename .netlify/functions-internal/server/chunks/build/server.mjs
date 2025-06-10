@@ -794,7 +794,7 @@ const _routes = [
     name: "index",
     path: "/",
     meta: __nuxt_page_meta$h || {},
-    component: () => import('./index-DO1q5cQl.mjs')
+    component: () => import('./index-C29bmo5U.mjs')
   },
   {
     name: "login",
