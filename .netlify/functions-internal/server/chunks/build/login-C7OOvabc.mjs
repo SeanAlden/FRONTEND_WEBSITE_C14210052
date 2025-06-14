@@ -26,15 +26,17 @@ const _sfc_main = {
     const email = ref("");
     const password = ref("");
     useCookie("my_auth_token");
+    const errorMessage = ref("");
+    const successMessage = ref("");
     return (_ctx, _push, _parent, _attrs) => {
-      _push(`<div${ssrRenderAttrs(mergeProps({ class: "flex items-center justify-center min-h-screen bg-gray-100" }, _attrs))}><div class="w-full max-w-md p-8 bg-white rounded-lg shadow-md"><h2 class="mb-6 text-2xl font-semibold text-center text-gray-800"> Login </h2><form>`);
-      if (_ctx.errorMessage) {
-        _push(`<div class="mb-4 text-sm text-red-500">${ssrInterpolate(_ctx.errorMessage)}</div>`);
+      _push(`<div${ssrRenderAttrs(mergeProps({ class: "flex items-center justify-center min-h-screen bg-gray-100" }, _attrs))}><div class="w-full max-w-md p-8 bg-white rounded-lg shadow-md"><h2 class="mb-6 text-2xl font-semibold text-center text-gray-800">Login</h2><form>`);
+      if (unref(errorMessage)) {
+        _push(`<div class="mb-4 text-sm text-red-500">${ssrInterpolate(unref(errorMessage))}</div>`);
       } else {
         _push(`<!---->`);
       }
-      if (_ctx.successMessage) {
-        _push(`<div class="mb-4 text-sm text-green-500">${ssrInterpolate(_ctx.successMessage)}</div>`);
+      if (unref(successMessage)) {
+        _push(`<div class="mb-4 text-sm text-green-500">${ssrInterpolate(unref(successMessage))}</div>`);
       } else {
         _push(`<!---->`);
       }
@@ -50,4 +52,4 @@ _sfc_main.setup = (props, ctx) => {
 };
 
 export { _sfc_main as default };
-//# sourceMappingURL=login-Dit67QzH.mjs.map
+//# sourceMappingURL=login-C7OOvabc.mjs.map

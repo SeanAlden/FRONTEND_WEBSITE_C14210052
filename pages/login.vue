@@ -1,9 +1,7 @@
 <template>
   <div class="flex items-center justify-center min-h-screen bg-gray-100">
     <div class="w-full max-w-md p-8 bg-white rounded-lg shadow-md">
-      <h2 class="mb-6 text-2xl font-semibold text-center text-gray-800">
-        Login
-      </h2>
+      <h2 class="mb-6 text-2xl font-semibold text-center text-gray-800">Login</h2>
 
       <form @submit.prevent="login">
         <!-- Error Alert -->
@@ -54,12 +52,13 @@
   </div>
 </template>
 
-
 <script setup>
 const router = useRouter();
-const email = ref('');
-const password = ref('');
-const cookie = useCookie('my_auth_token');
+const email = ref("");
+const password = ref("");
+const cookie = useCookie("my_auth_token");
+const errorMessage = ref("");
+const successMessage = ref("");
 
 definePageMeta({
   layout: false,
@@ -67,22 +66,26 @@ definePageMeta({
 });
 
 async function login() {
+  errorMessage.value = "";
+  successMessage.value = "";
+
   try {
-    const result = await $fetch(useApi('/api/auth/signin'), {
-      method: 'POST',
+    const result = await $fetch(useApi("/api/auth/signin"), {
+      method: "POST",
       body: {
         email: email.value,
-        password: password.value
-      }
+        password: password.value,
+      },
     });
-    console.log('Login success:', result);
+    console.log("Login success:", result);
     // cookie.value = result.token || result; // Simpan token ke cookie jika tersedia
     cookie.value = result.token; // Simpan token ke cookie jika tersedia
     // Redirect ke home page
-    router.push('/');
+    router.push("/");
   } catch (error) {
-    console.error('Login failed:', error);
-    alert('Login gagal. Periksa email dan password Anda.');
+    console.error("Login failed:", error);
+    // alert("Login gagal. Periksa email dan password Anda.");
+    errorMessage.value = "Login gagal. Periksa email dan password Anda.";
   }
 }
 </script>

@@ -800,7 +800,7 @@ const _routes = [
     name: "login",
     path: "/login",
     meta: __nuxt_page_meta$g || {},
-    component: () => import('./login-Dit67QzH.mjs')
+    component: () => import('./login-C7OOvabc.mjs')
   },
   {
     name: "notifications",
