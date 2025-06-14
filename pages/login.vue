@@ -86,6 +86,10 @@ async function login() {
     console.error("Login failed:", error);
     // alert("Login gagal. Periksa email dan password Anda.");
     errorMessage.value = "Login gagal. Periksa email dan password Anda.";
+		
+    setTimeout(() => {
+      errorMessage.value = "";
+    }, 5000);
   }
 }
 </script>
