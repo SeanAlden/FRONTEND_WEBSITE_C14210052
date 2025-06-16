@@ -750,7 +750,8 @@ watch(itemsPerPage, () => {
               <tr v-else v-for="product in paginatedTransactions" :key="product.no">
                 <td class="px-4 py-2 border text-lg-center">
                   <!-- {{ (currentPage - 1) * itemsPerPage + product.no }} -->
-                  {{ (currentPage - 1) * itemsPerPage }}
+                  {{ product.no }}
+                  <!-- {{ (currentPage - 1) * itemsPerPage }} -->
                 </td>
                 <!-- <td class="flex items-center justify-center px-0 py-2 border"> -->
                 <td
