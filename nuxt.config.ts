@@ -29,9 +29,11 @@ export default defineNuxtConfig({
 
   recaptcha: {
     siteKey: '6Lcda2UrAAAAAPnrnhuAlKNzwIp3A66ooOqNT77P', // ganti dengan milikmu
-    version: 2, // pakai v2 checkbox
-    size: 'normal', // atau 'compact'
-    hideBadge: true // opsional
+    version: 'v3', // pakai v2 checkbox
+    // size: 'normal', // atau 'compact'
+    // hideBadge: true // opsional
+        // language: 'id' // Optional
+
   },
 
   laravelSanctum: {
