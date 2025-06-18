@@ -56,7 +56,7 @@ const _sfc_main = {
     const filteredProducts = computed(() => {
       return transactions.value.filter((transaction) => {
         const searchString = searchQuery.value.toLowerCase();
-        return transaction.transaction_code.toString().includes(searchString) || transaction.gross_amount.toString().includes(searchString) || transaction.transaction_date.toLowerCase().includes(searchString) || transaction.details.some(
+        return transaction.transaction_code.toLowerCase().includes(searchString) || transaction.gross_amount.toString().includes(searchString) || transaction.transaction_date.toLowerCase().includes(searchString) || transaction.details.some(
           (detail) => detail.product.name.toLowerCase().includes(searchString) || detail.quantity.toString().includes(searchString)
         );
       });
@@ -89,33 +89,33 @@ const _sfc_main = {
       fetchData();
     });
     return (_ctx, _push, _parent, _attrs) => {
-      _push(`<div${ssrRenderAttrs(mergeProps({ class: "container mx-auto p-6" }, _attrs))} data-v-dfc6d35d><h1 class="mb-4 text-2xl font-bold" data-v-dfc6d35d> Proses Analisis - Bobot Waktu &amp; Penjualan Berbobot </h1><p class="mb-4" data-v-dfc6d35d> Melakukan perhitungan penjualan mentah dahulu sebelum menghitung bobot waktu </p><div class="mt-4" data-v-dfc6d35d><button class="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-700" data-v-dfc6d35d> Time Count </button></div>`);
+      _push(`<div${ssrRenderAttrs(mergeProps({ class: "container p-6 mx-auto" }, _attrs))} data-v-f4e3383c><h1 class="mb-4 text-2xl font-bold" data-v-f4e3383c> Proses Analisis - Bobot Waktu &amp; Penjualan Berbobot </h1><p class="mb-4" data-v-f4e3383c> Melakukan perhitungan penjualan mentah dahulu sebelum menghitung bobot waktu </p><div class="mt-4" data-v-f4e3383c><button class="px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-700" data-v-f4e3383c> Time Count </button></div>`);
       if (isLoading.value) {
-        _push(`<div class="flex items-center justify-center py-10" data-v-dfc6d35d><div class="loader h-16 w-16 rounded-full border-8 border-t-8 border-gray-200 ease-linear" data-v-dfc6d35d></div></div>`);
+        _push(`<div class="flex items-center justify-center py-10" data-v-f4e3383c><div class="w-16 h-16 ease-linear border-8 border-t-8 border-gray-200 rounded-full loader" data-v-f4e3383c></div></div>`);
       } else {
         _push(`<!---->`);
       }
       if (!isLoading.value) {
-        _push(`<div class="overflow-x-auto whitespace-nowrap" data-v-dfc6d35d><div class="mb-4 flex items-center justify-between" data-v-dfc6d35d><div data-v-dfc6d35d><label class="mr-2" data-v-dfc6d35d>Show</label><select id="itemsPerPage" data-v-dfc6d35d><!--[-->`);
+        _push(`<div class="overflow-x-auto whitespace-nowrap" data-v-f4e3383c><div class="flex items-center justify-between mb-4" data-v-f4e3383c><div data-v-f4e3383c><label class="mr-2" data-v-f4e3383c>Show</label><select id="itemsPerPage" data-v-f4e3383c><!--[-->`);
         ssrRenderList(itemsPerPageOptions, (option) => {
-          _push(`<option${ssrRenderAttr("value", option)} data-v-dfc6d35d${ssrIncludeBooleanAttr(Array.isArray(itemsPerPage.value) ? ssrLooseContain(itemsPerPage.value, option) : ssrLooseEqual(itemsPerPage.value, option)) ? " selected" : ""}>${ssrInterpolate(option)}</option>`);
+          _push(`<option${ssrRenderAttr("value", option)} data-v-f4e3383c${ssrIncludeBooleanAttr(Array.isArray(itemsPerPage.value) ? ssrLooseContain(itemsPerPage.value, option) : ssrLooseEqual(itemsPerPage.value, option)) ? " selected" : ""}>${ssrInterpolate(option)}</option>`);
         });
-        _push(`<!--]--></select><span class="ml-2" data-v-dfc6d35d>entries</span></div><input type="text"${ssrRenderAttr("value", searchQuery.value)} placeholder="Search" class="rounded border p-2" data-v-dfc6d35d></div><div class="overflow-x-auto whitespace-nowrap" data-v-dfc6d35d><table class="w-full border-collapse border border-gray-300 bg-white" data-v-dfc6d35d><thead data-v-dfc6d35d><tr class="bg-gray-200" data-v-dfc6d35d><th class="border p-2" data-v-dfc6d35d>Transaction Code</th><th class="border p-2" data-v-dfc6d35d>Gross Amount</th><th class="border p-2" data-v-dfc6d35d>Date</th><th class="border p-2" data-v-dfc6d35d>Product Quantities</th><th class="border p-2" data-v-dfc6d35d>Raw Sales</th></tr></thead><tbody data-v-dfc6d35d><!--[-->`);
+        _push(`<!--]--></select><span class="ml-2" data-v-f4e3383c>entries</span></div><input type="text"${ssrRenderAttr("value", searchQuery.value)} placeholder="Search" class="p-2 border rounded" data-v-f4e3383c></div><div class="overflow-x-auto whitespace-nowrap" data-v-f4e3383c><table class="w-full bg-white border border-collapse border-gray-300" data-v-f4e3383c><thead data-v-f4e3383c><tr class="bg-gray-200" data-v-f4e3383c><th class="p-2 border" data-v-f4e3383c>Transaction Code</th><th class="p-2 border" data-v-f4e3383c>Gross Amount</th><th class="p-2 border" data-v-f4e3383c>Date</th><th class="p-2 border" data-v-f4e3383c>Product Quantities</th><th class="p-2 border" data-v-f4e3383c>Raw Sales</th></tr></thead><tbody data-v-f4e3383c><!--[-->`);
         ssrRenderList(paginatedProducts.value, (transaction) => {
-          _push(`<tr class="border" data-v-dfc6d35d><td class="border p-2 text-center" data-v-dfc6d35d>${ssrInterpolate(transaction.transaction_code)}</td><td class="border p-2 text-center" data-v-dfc6d35d>${ssrInterpolate(formatPrice(transaction.gross_amount))}</td><td class="border p-2 text-center" data-v-dfc6d35d>${ssrInterpolate(new Date(transaction.transaction_date).toLocaleDateString())}</td><td class="border p-2" data-v-dfc6d35d><ul data-v-dfc6d35d><!--[-->`);
+          _push(`<tr class="border" data-v-f4e3383c><td class="p-2 text-center border" data-v-f4e3383c>${ssrInterpolate(transaction.transaction_code)}</td><td class="p-2 text-center border" data-v-f4e3383c>${ssrInterpolate(formatPrice(transaction.gross_amount))}</td><td class="p-2 text-center border" data-v-f4e3383c>${ssrInterpolate(new Date(transaction.transaction_date).toLocaleDateString())}</td><td class="p-2 border" data-v-f4e3383c><ul data-v-f4e3383c><!--[-->`);
           ssrRenderList(transaction.details, (detail) => {
-            _push(`<li data-v-dfc6d35d>${ssrInterpolate(detail.product.name)} (${ssrInterpolate(detail.quantity)}) </li>`);
+            _push(`<li data-v-f4e3383c>${ssrInterpolate(detail.product.name)} (${ssrInterpolate(detail.quantity)}) </li>`);
           });
-          _push(`<!--]--></ul></td><td class="border p-2 text-center" data-v-dfc6d35d>${ssrInterpolate(transaction.details.reduce((sum, detail) => sum + detail.quantity, 0))}</td></tr>`);
+          _push(`<!--]--></ul></td><td class="p-2 text-center border" data-v-f4e3383c>${ssrInterpolate(transaction.details.reduce((sum, detail) => sum + detail.quantity, 0))}</td></tr>`);
         });
-        _push(`<!--]--></tbody></table></div><div class="mt-4 flex justify-between" data-v-dfc6d35d><div data-v-dfc6d35d> Showing ${ssrInterpolate((currentPage.value - 1) * itemsPerPage.value + 1)} to ${ssrInterpolate(Math.min(currentPage.value * itemsPerPage.value, filteredProducts.value.length))} of ${ssrInterpolate(filteredProducts.value.length)} entries </div><div class="flex items-center space-x-2" data-v-dfc6d35d><button${ssrIncludeBooleanAttr(currentPage.value === 1) ? " disabled" : ""} class="rounded border bg-gray-300 px-3 py-1 disabled:opacity-50" data-v-dfc6d35d> Prev </button><!--[-->`);
+        _push(`<!--]--></tbody></table></div><div class="flex justify-between mt-4" data-v-f4e3383c><div data-v-f4e3383c> Showing ${ssrInterpolate((currentPage.value - 1) * itemsPerPage.value + 1)} to ${ssrInterpolate(Math.min(currentPage.value * itemsPerPage.value, filteredProducts.value.length))} of ${ssrInterpolate(filteredProducts.value.length)} entries </div><div class="flex items-center space-x-2" data-v-f4e3383c><button${ssrIncludeBooleanAttr(currentPage.value === 1) ? " disabled" : ""} class="px-3 py-1 bg-gray-300 border rounded disabled:opacity-50" data-v-f4e3383c> Prev </button><!--[-->`);
         ssrRenderList(generatePagination.value, (page) => {
           _push(`<button class="${ssrRenderClass([{
             "bg-blue-500 text-white": currentPage.value === page,
             "bg-white text-blue-500 hover:bg-blue-100": currentPage.value !== page && page !== "..."
-          }, "rounded border px-3 py-1 transition-all duration-200"])}" data-v-dfc6d35d>${ssrInterpolate(page)}</button>`);
+          }, "px-3 py-1 transition-all duration-200 border rounded"])}" data-v-f4e3383c>${ssrInterpolate(page)}</button>`);
         });
-        _push(`<!--]--><button${ssrIncludeBooleanAttr(currentPage.value === totalPages.value) ? " disabled" : ""} class="rounded border bg-gray-300 px-3 py-1 disabled:opacity-50" data-v-dfc6d35d> Next </button></div></div></div>`);
+        _push(`<!--]--><button${ssrIncludeBooleanAttr(currentPage.value === totalPages.value) ? " disabled" : ""} class="px-3 py-1 bg-gray-300 border rounded disabled:opacity-50" data-v-f4e3383c> Next </button></div></div></div>`);
       } else {
         _push(`<!---->`);
       }
@@ -129,7 +129,7 @@ _sfc_main.setup = (props, ctx) => {
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("pages/analysis_pages/sales_count_page.vue");
   return _sfc_setup ? _sfc_setup(props, ctx) : void 0;
 };
-const sales_count_page = /* @__PURE__ */ _export_sfc(_sfc_main, [["__scopeId", "data-v-dfc6d35d"]]);
+const sales_count_page = /* @__PURE__ */ _export_sfc(_sfc_main, [["__scopeId", "data-v-f4e3383c"]]);
 
 export { sales_count_page as default };
-//# sourceMappingURL=sales_count_page-C4J_DJ5r.mjs.map
+//# sourceMappingURL=sales_count_page-3CCpBihv.mjs.map

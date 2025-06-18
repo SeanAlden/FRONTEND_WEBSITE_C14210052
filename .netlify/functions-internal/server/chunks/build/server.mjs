@@ -722,7 +722,7 @@ const _routes = [
     name: "analysis_pages-sales_count_page",
     path: "/analysis_pages/sales_count_page",
     meta: __nuxt_page_meta$t || {},
-    component: () => import('./sales_count_page-C4J_DJ5r.mjs')
+    component: () => import('./sales_count_page-3CCpBihv.mjs')
   },
   {
     name: "analysis_pages-time_count_page",
@@ -746,7 +746,7 @@ const _routes = [
     name: "category_pages-categories",
     path: "/category_pages/categories",
     meta: __nuxt_page_meta$p || {},
-    component: () => import('./categories-cQRvh-h_.mjs')
+    component: () => import('./categories-DHMmQmqt.mjs')
   },
   {
     name: "category_pages-detail-id",
@@ -800,7 +800,7 @@ const _routes = [
     name: "login",
     path: "/login",
     meta: __nuxt_page_meta$g || {},
-    component: () => import('./login-C7OOvabc.mjs')
+    component: () => import('./login-CoQQFA37.mjs')
   },
   {
     name: "notifications",
@@ -884,7 +884,7 @@ const _routes = [
     name: "sales_report_pages-sales_reports",
     path: "/sales_report_pages/sales_reports",
     meta: __nuxt_page_meta$2 || {},
-    component: () => import('./sales_reports-ElkUsVOb.mjs')
+    component: () => import('./sales_reports-BenUeGlu.mjs')
   },
   {
     name: "transaction_pages-detail-id",
