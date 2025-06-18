@@ -23,13 +23,13 @@ export default defineNuxtConfig({
     "@pinia/nuxt",
     "@qirolab/nuxt-sanctum-authentication",
     // 'nuxt-recaptcha',
-    '@nuxtjs/recaptcha'
+    "@nuxtjs/recaptcha",
     // '@sidebase/nuxt-auth',
   ],
 
-  recaptcha: {
-    siteKey: '6Lcda2UrAAAAAPnrnhuAlKNzwIp3A66ooOqNT77P', // dari .env
-  },
+  // recaptcha: {
+  //   siteKey: '6Lcda2UrAAAAAPnrnhuAlKNzwIp3A66ooOqNT77P', // dari .env
+  // },
 
   laravelSanctum: {
     // apiUrl: "http://127.0.0.1:8000",
