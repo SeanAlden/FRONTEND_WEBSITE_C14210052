@@ -317,7 +317,7 @@ const filteredCategories = computed(() => {
       category.name.toLowerCase().includes(query) ||
       (category.products &&
         category.products.some((product) => product.name.toLowerCase().includes(query)) ||
-        category.products.some((product) => product.code.toLowerCase().includes(query)))
+        category.code.toLowerCase().includes(query))
     );
   });
 });
