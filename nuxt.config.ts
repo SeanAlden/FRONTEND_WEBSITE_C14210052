@@ -22,9 +22,14 @@ export default defineNuxtConfig({
     "@nuxtjs/tailwindcss",
     "@pinia/nuxt",
     "@qirolab/nuxt-sanctum-authentication",
-    'nuxt-recaptcha',
+    // 'nuxt-recaptcha',
+    '@nuxtjs/recaptcha'
     // '@sidebase/nuxt-auth',
   ],
+
+  recaptcha: {
+    siteKey: '6Lcda2UrAAAAAPnrnhuAlKNzwIp3A66ooOqNT77P', // dari .env
+  },
 
   laravelSanctum: {
     // apiUrl: "http://127.0.0.1:8000",
