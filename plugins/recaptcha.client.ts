@@ -20,7 +20,7 @@ export default defineNuxtPlugin((nuxtApp) => {
   nuxtApp.vueApp.use(VueReCaptcha, {
     siteKey: siteKey, // Use the typed siteKey
     loaderOptions: {
-      autoHideBadge: true, // Set to true to hide the reCAPTCHA badge, but remember to disclose usage
+      autoHideBadge: false, // Set to true to hide the reCAPTCHA badge, but remember to disclose usage
     },
   });
 });
