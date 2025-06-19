@@ -4,7 +4,7 @@ import Chart from 'chart.js/auto';
 import axios from 'axios';
 import { e as useCookie } from './server.mjs';
 import { p as publicAssetsURL } from '../routes/renderer.mjs';
-import { ssrRenderAttrs, ssrInterpolate, ssrRenderList, ssrRenderAttr, ssrIncludeBooleanAttr, ssrLooseContain, ssrLooseEqual } from 'vue/server-renderer';
+import { ssrRenderAttrs, ssrRenderList, ssrRenderAttr, ssrInterpolate, ssrIncludeBooleanAttr, ssrLooseContain, ssrLooseEqual } from 'vue/server-renderer';
 import { _ as _export_sfc } from './_plugin-vue_export-helper-1tPrXgE0.mjs';
 import '../_/nitro.mjs';
 import 'node:http';
@@ -142,8 +142,7 @@ const _sfc_main = {
   }
 };
 function _sfc_ssrRender(_ctx, _push, _parent, _attrs, $props, $setup, $data, $options) {
-  var _a;
-  _push(`<div${ssrRenderAttrs(mergeProps({ class: "min-h-screen p-6 bg-gray-100" }, _attrs))}><h1 class="text-2xl font-bold">Dashboard</h1><p class="text-gray-600">Hello, ${ssrInterpolate(((_a = $setup.user) == null ? void 0 : _a.name) || "Guest")}</p><div class="flex flex-wrap items-center mt-4 mb-4"><div class="flex items-center mb-2 mr-6"><label for="month" class="mr-2 text-sm font-medium text-gray-700"> Pilih Bulan: </label><select class="px-2 py-1 border border-gray-300 rounded-md"><!--[-->`);
+  _push(`<div${ssrRenderAttrs(mergeProps({ class: "min-h-screen p-6 bg-gray-100" }, _attrs))}><h1 class="text-2xl font-bold">Dashboard</h1><div class="flex flex-wrap items-center mt-4 mb-4"><div class="flex items-center mb-2 mr-6"><label for="month" class="mr-2 text-sm font-medium text-gray-700"> Pilih Bulan: </label><select class="px-2 py-1 border border-gray-300 rounded-md"><!--[-->`);
   ssrRenderList($setup.months, (month) => {
     _push(`<option${ssrRenderAttr("value", month)}${ssrIncludeBooleanAttr(Array.isArray($setup.currentMonth) ? ssrLooseContain($setup.currentMonth, month) : ssrLooseEqual($setup.currentMonth, month)) ? " selected" : ""}>${ssrInterpolate(month)}</option>`);
   });
@@ -165,4 +164,4 @@ _sfc_main.setup = (props, ctx) => {
 const index = /* @__PURE__ */ _export_sfc(_sfc_main, [["ssrRender", _sfc_ssrRender]]);
 
 export { index as default };
-//# sourceMappingURL=index-C29bmo5U.mjs.map
+//# sourceMappingURL=index-DOEoJUiC.mjs.map

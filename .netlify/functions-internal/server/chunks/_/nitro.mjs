@@ -5356,7 +5356,7 @@ function _expandFromEnv(value) {
 const _inlineRuntimeConfig = {
   "app": {
     "baseURL": "/",
-    "buildId": "64ca6d64-ad0e-4cc2-9b58-f833404f1ebf",
+    "buildId": "d01901ac-d9bf-4039-9d47-b5f3da50e998",
     "buildAssetsDir": "/_nuxt/",
     "cdnURL": ""
   },
@@ -5385,6 +5385,7 @@ const _inlineRuntimeConfig = {
   },
   "public": {
     "apiBase": "https://asiaraya.my.id",
+    "recaptchaSiteKey": "6Lcda2UrAAAAAPnrnhuAlKNzwIp3A66ooOqNT77P",
     "laravelSanctum": {
       "authMode": "cookie",
       "userStateKey": "sanctum.authenticated.user",

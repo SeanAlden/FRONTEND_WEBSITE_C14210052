@@ -42,14 +42,11 @@
           />
         </div>
 
-        <div class="mb-4">
-          <NuxtRecaptcha
-            v-if="recaptchaAvailable"
-            @success="onCaptchaVerified"
-            @error="onCaptchaError"
-            @expired="onCaptchaExpired"
-          />
+        <div class="mb-4 text-sm text-center text-gray-500">
+            <p>This site is protected by reCAPTCHA and the Google</p>
+            <p><a href="https://policies.google.com/privacy" target="_blank" class="text-blue-600 hover:underline">Privacy Policy</a> and <a href="https://policies.google.com/terms" target="_blank" class="text-blue-600 hover:underline">Terms of Service</a> apply.</p>
         </div>
+
 
         <button
           type="submit"
@@ -64,6 +61,7 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
+import { useReCaptcha } from 'vue-recaptcha-v3'; // Import useReCaptcha for v3
 
 const router = useRouter();
 const email = ref("");
@@ -72,34 +70,16 @@ const cookie = useCookie("my_auth_token");
 const errorMessage = ref("");
 const successMessage = ref("");
 
-// --- Tambahan untuk reCAPTCHA ---
-const { vueApp } = useNuxtApp();
+// For reCAPTCHA v3
+const { executeRecaptcha, recaptchaLoaded } = useReCaptcha();
 const captchaToken = ref(null);
-const recaptchaAvailable = ref(false); // Ref untuk menunda render captcha
 
-// Fungsi untuk menangani hasil captcha
-const onCaptchaVerified = (response) => {
-  console.log("reCAPTCHA verified:", response);
-  captchaToken.value = response;
-  errorMessage.value = ""; // Hapus pesan error jika ada
-};
+// No longer needed for v3 since there's no visible widget to "load" in this way
+// const recaptchaAvailable = ref(false);
+// onMounted(() => {
+//   recaptchaAvailable.value = true;
+// });
 
-const onCaptchaError = (error) => {
-  console.error("reCAPTCHA error:", error);
-  errorMessage.value = "Terjadi kesalahan pada verifikasi reCAPTCHA.";
-  captchaToken.value = null;
-};
-
-const onCaptchaExpired = () => {
-  console.log("reCAPTCHA token expired");
-  captchaToken.value = null;
-};
-// --- Akhir Tambahan reCAPTCHA ---
-
-// Tunda render reCAPTCHA sampai komponen di-mount untuk menghindari hydration mismatch
-onMounted(() => {
-  recaptchaAvailable.value = true;
-});
 
 definePageMeta({
   layout: false,
@@ -109,6 +89,18 @@ definePageMeta({
 async function login() {
   errorMessage.value = "";
   successMessage.value = "";
+
+  // Execute reCAPTCHA v3 right before the login attempt
+  try {
+    await recaptchaLoaded(); // Ensure reCAPTCHA script is loaded
+    captchaToken.value = await executeRecaptcha('login'); // 'login' is an action name
+    console.log("reCAPTCHA v3 token:", captchaToken.value);
+  } catch (error) {
+    console.error("reCAPTCHA execution error:", error);
+    errorMessage.value = "Terjadi kesalahan saat memverifikasi reCAPTCHA. Silakan coba lagi.";
+    captchaToken.value = null;
+    return; // Stop login if reCAPTCHA fails client-side
+  }
 
   // --- Validasi Captcha sebelum mengirim ke backend ---
   if (!captchaToken.value) {
@@ -133,26 +125,18 @@ async function login() {
     console.error("Login failed:", error);
     // Tangani pesan error dari backend
     if (error.response && error.response.status === 422) {
-      // Jika error validasi, mungkin karena captcha salah
       errorMessage.value =
         "Verifikasi reCAPTCHA gagal atau tidak valid. Silakan coba lagi.";
     } else {
       errorMessage.value = "Login gagal. Periksa email dan password Anda.";
     }
 
-    // Reset captcha di Nuxt setelah gagal login
-    // Ini akan memaksa user untuk mengisi ulang captcha
-    // You might need to adjust this depending on how the @nuxtjs/recaptcha module exposes its reset method
-    // A common way is to use a template ref to access the component instance and call its method
-    if (vueApp.$recaptcha) { // Check if $recaptcha is available on vueApp
-      vueApp.$recaptcha.reset();
-    }
-    captchaToken.value = null;
+    // For v3, no explicit reset needed, as you execute for each action.
+    captchaToken.value = null; // Clear token on failure
 
     setTimeout(() => {
       errorMessage.value = "";
     }, 5000);
   }
 }
-// 
 </script>
