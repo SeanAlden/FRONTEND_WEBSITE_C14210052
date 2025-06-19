@@ -142,7 +142,7 @@
 
 import { ref, onMounted } from "vue";
 // Do NOT import useReCaptcha directly at the top level
-// import { useReCaptcha } from 'vue-recaptcha-v3'; // <--- REMOVE OR COMMENT OUT THIS LINE
+import { useReCaptcha } from 'vue-recaptcha-v3'; // <--- REMOVE OR COMMENT OUT THIS LINE
 
 const router = useRouter();
 const email = ref("");
