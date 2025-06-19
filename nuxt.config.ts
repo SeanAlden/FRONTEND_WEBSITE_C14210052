@@ -18,10 +18,10 @@ export default defineNuxtConfig({
 
   css: ["~/assets/css/tailwind.css"],
 
-  // auth: {
-  //   // baseURL: `http://localhost:${process.env.PORT || 3000}`
-  //   baseURL: `https://asiaraya.my.id`
-  // },
+  auth: {
+    // baseURL: `http://localhost:${process.env.PORT || 3000}`
+    baseURL: `https://asiaraya.my.id`
+  },
 
   modules: [
     "@nuxtjs/tailwindcss",
