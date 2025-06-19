@@ -22,8 +22,19 @@ export default defineNuxtConfig({
     "@nuxtjs/tailwindcss",
     "@pinia/nuxt",
     "@qirolab/nuxt-sanctum-authentication",
+    "@nuxtjs/recaptcha", // <--- Add this line
     // '@sidebase/nuxt-auth',
   ],
+
+  // --- Add reCAPTCHA configuration here ---
+  recaptcha: {
+    hideBadge: false, // Set to true to hide the reCAPTCHA badge (recommended for v3, but can be used for v2 if you display terms)
+    language: 'en', // Set your preferred language
+    siteKey: 'YOUR_RECAPTCHA_SITE_KEY', // <--- REPLACE WITH YOUR ACTUAL reCAPTCHA SITE KEY
+    version: 2, // Use v2 for the checkbox type reCAPTCHA
+  },
+  // --- End reCAPTCHA configuration ---
+
 
   laravelSanctum: {
     // apiUrl: "http://127.0.0.1:8000",
