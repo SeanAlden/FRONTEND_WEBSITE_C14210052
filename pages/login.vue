@@ -65,6 +65,7 @@
 <script setup>
 import { ref, onMounted, computed } from "vue";
 import { useNuxtApp } from '#app'; // Import useNuxtApp
+// 
 
 const router = useRouter();
 const email = ref("");
