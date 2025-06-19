@@ -1679,7 +1679,7 @@ async function getSession(getSessionOptions) {
     loading.value = false;
   };
   const headers = await getRequestHeaders(nuxt);
-  return _fetch(nuxt, "/session", {
+  return _fetch(nuxt, "/", {
     onResponse: ({ response }) => {
       const sessionData = response._data;
       {
