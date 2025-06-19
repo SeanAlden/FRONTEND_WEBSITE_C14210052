@@ -66,7 +66,7 @@ export default defineNuxtConfig({
       apiBase: 'https://asiaraya.my.id',
       // apiBase: 'http://127.0.0.1:8000'
       // Add your reCAPTCHA site key here for client-side access
-      recaptchaSiteKey: '6Lcda2UrAAAAAPnrnhuAlKNzwIp3A66ooOqNT77P',
+      recaptchaSiteKey: '6Ld49WUrAAAAACh3Gor5p1UIfdJicTljcR8aO3gJ',
     }
   }
 })
