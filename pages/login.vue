@@ -42,14 +42,20 @@
           />
         </div>
 
-        <div class="mb-4 text-sm text-center text-gray-500">
-            <p>This site is protected by reCAPTCHA and the Google</p>
-            <p><a href="https://policies.google.com/privacy" target="_blank" class="text-blue-600 hover:underline">Privacy Policy</a> and <a href="https://policies.google.com/terms" target="_blank" class="text-blue-600 hover:underline">Terms of Service</a> apply.</p>
-            <p v-if="!recaptchaLoadedRef && process.client" class="mt-2 text-xs text-blue-500">
-              Memuat verifikasi keamanan...
-            </p>
+        <div class="mb-4">
+          <!-- <NuxtRecaptcha 
+            v-if="recaptchaAvailable"
+            @success="onCaptchaVerified"
+            @error="onCaptchaError"
+            @expired="onCaptchaExpired"
+          /> -->
+          <!-- <Recaptcha
+            v-if="recaptchaAvailable"
+            @verify="onCaptchaVerified"
+            @expire="onCaptchaExpired"
+            @error="onCaptchaError"
+          /> -->
         </div>
-
 
         <button
           type="submit"
@@ -63,99 +69,141 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from "vue";
-import { useNuxtApp } from '#app'; // Import useNuxtApp
-// //
+// import { ref, onMounted } from "vue"; // <-- Import 'onMounted'
 
-const router = useRouter();
+// const router = useRouter();
+// const email = ref("");
+// const password = ref("");
+// const cookie = useCookie("my_auth_token");
+// const errorMessage = ref("");
+// const successMessage = ref("");
+
+// // --- Tambahan untuk reCAPTCHA ---
+// const { vueApp } = useNuxtApp(); // Akses instance Nuxt
+// const captchaToken = ref(null); // Ref untuk menyimpan token captcha
+// const recaptchaAvailable = ref(false); // Ref untuk menunda render captcha
+
+// // Fungsi untuk menangani hasil captcha
+// const onCaptchaVerified = (response) => {
+//   console.log("reCAPTCHA verified:", response);
+//   captchaToken.value = response;
+//   errorMessage.value = ""; // Hapus pesan error jika ada
+// };
+
+// const onCaptchaError = (error) => {
+//   console.error("reCAPTCHA error:", error);
+//   errorMessage.value = "Terjadi kesalahan pada verifikasi reCAPTCHA.";
+//   captchaToken.value = null;
+// };
+
+// const onCaptchaExpired = () => {
+//   console.log("reCAPTCHA token expired");
+//   captchaToken.value = null;
+// };
+// // --- Akhir Tambahan reCAPTCHA ---
+
+// // Tunda render reCAPTCHA sampai komponen di-mount untuk menghindari hydration mismatch
+// onMounted(() => {
+//   recaptchaAvailable.value = true;
+// });
+
+// definePageMeta({
+//   layout: false,
+//   middleware: ["guest"],
+// });
+
+// async function login() {
+//   errorMessage.value = "";
+//   successMessage.value = "";
+
+//   // --- Validasi Captcha sebelum mengirim ke backend ---
+//   if (!captchaToken.value) {
+//     errorMessage.value = "Silakan verifikasi bahwa Anda bukan robot.";
+//     return; // Hentikan fungsi jika captcha belum diisi
+//   }
+
+//   try {
+//     const result = await $fetch(useApi("/api/auth/signin"), {
+//       method: "POST",
+//       body: {
+//         email: email.value,
+//         password: password.value,
+//         // Kirim token captcha ke backend dengan nama 'g-recaptcha-response'
+//         "g-recaptcha-response": captchaToken.value,
+//       },
+//     });
+//     console.log("Login success:", result);
+//     cookie.value = result.token;
+//     router.push("/");
+//   } catch (error) {
+//     console.error("Login failed:", error);
+//     // Tangani pesan error dari backend
+//     if (error.response && error.response.status === 422) {
+//       // Jika error validasi, mungkin karena captcha salah
+//       errorMessage.value =
+//         "Verifikasi reCAPTCHA gagal atau tidak valid. Silakan coba lagi.";
+//     } else {
+//       errorMessage.value = "Login gagal. Periksa email dan password Anda.";
+//     }
+
+//     // Reset captcha di Nuxt setelah gagal login
+//     // Ini akan memaksa user untuk mengisi ulang captcha
+//     if (vueApp.recaptcha) {
+//       vueApp.recaptcha.reset();
+//     }
+//     captchaToken.value = null;
+
+//     setTimeout(() => {
+//       errorMessage.value = "";
+//     }, 5000);
+//   }
+// }
+
+import { ref, onMounted } from "vue";
+
 const email = ref("");
 const password = ref("");
-const cookie = useCookie("my_auth_token");
 const errorMessage = ref("");
 const successMessage = ref("");
+const cookie = useCookie("my_auth_token");
+const router = useRouter();
 
-const captchaToken = ref(null);
-
-// Definisikan refs untuk fungsi reCAPTCHA.
-// Inisialisasi mereka sebagai null atau fungsi dummy jika belum tersedia
-let executeRecaptcha = null;
-let recaptchaLoaded = null;
-
-// Gunakan ref terpisah untuk melacak apakah reCAPTCHA sudah loaded sepenuhnya
-const recaptchaLoadedRef = ref(false);
-
-onMounted(async () => {
-  if (process.client) {
-    const nuxtApp = useNuxtApp();
-    try {
-      // Pastikan VueReCaptcha sudah terinstal di app Vue
-      // vue-recaptcha-v3 akan mendaftarkan composable global
-      // Kita bisa mengaksesnya melalui $recaptcha (jika plugin mengaturnya)
-      // atau langsung mencoba import jika plugin belum selesai fully expose composable
-      // Cara yang lebih aman adalah menunggu sampai semua plugin terinisialisasi jika ini masalah timing
-
-      // Coba akses useReCaptcha secara langsung lagi, namun pastikan tidak ada error
-      // Ini adalah perbaikan utama: pastikan `actualUseReCaptcha` benar-benar fungsi.
-      const { useReCaptcha: actualUseReCaptcha } = await import('vue-recaptcha-v3');
-
-      if (typeof actualUseReCaptcha === 'function') {
-        const recaptchaComposable = actualUseReCaptcha();
-        executeRecaptcha = recaptchaComposable.executeRecaptcha;
-        recaptchaLoaded = recaptchaComposable.recaptchaLoaded;
-
-        // Tunggu hingga reCAPTCHA API script dimuat
-        await recaptchaLoaded(); // Ini akan menunggu API Google reCAPTCHA dimuat
-
-        recaptchaLoadedRef.value = true; // Set true setelah API reCAPTCHA dimuat
-        console.log("reCAPTCHA composable initialized and API loaded on client.");
-        errorMessage.value = ""; // Bersihkan pesan error jika berhasil dimuat
-      } else {
-        console.error("useReCaptcha is not a function after dynamic import.");
-        errorMessage.value = "Failed to load reCAPTCHA. Please try refreshing.";
-      }
-
-    } catch (e) {
-      console.error("Failed to load or initialize useReCaptcha on client:", e);
-      errorMessage.value = "Failed to load reCAPTCHA. Please try refreshing.";
-    }
-  } else {
-    console.log("Running on server, reCAPTCHA related logic skipped.");
-  }
-});
-
+const runtimeConfig = useRuntimeConfig();
+const captchaToken = ref("");
 
 definePageMeta({
   layout: false,
   middleware: ["guest"],
 });
 
+async function getRecaptchaToken() {
+  try {
+    if (!window.grecaptcha) {
+      throw new Error("reCAPTCHA belum dimuat.");
+    }
+
+    const token = await window.grecaptcha.execute(
+      runtimeConfig.public.recaptchaSiteKey,
+      { action: "login" }
+    );
+
+    captchaToken.value = token;
+    return token;
+  } catch (error) {
+    console.error("Gagal mendapatkan token reCAPTCHA:", error);
+    errorMessage.value = "Gagal memuat reCAPTCHA. Silakan muat ulang halaman.";
+    return null;
+  }
+}
+
 async function login() {
   errorMessage.value = "";
   successMessage.value = "";
 
-  // Pastikan reCAPTCHA sudah dimuat sepenuhnya sebelum mencoba mendapatkan token
-  if (!recaptchaLoadedRef.value || !executeRecaptcha || !recaptchaLoaded) {
-    errorMessage.value = "Verifikasi reCAPTCHA sedang dimuat, harap tunggu sebentar.";
-    return;
-  }
-
-  // Execute reCAPTCHA v3 right before the login attempt
-  try {
-    // recaptchaLoaded() sudah dipanggil di onMounted dan ditunggu,
-    // tapi memanggilnya lagi di sini tidak masalah dan memastikan API siap.
-    await recaptchaLoaded();
-    const token = await executeRecaptcha('login'); // 'login' is an action name
-    captchaToken.value = token;
-    console.log("reCAPTCHA v3 token:", token);
-  } catch (error) {
-    console.error("reCAPTCHA execution error:", error);
-    errorMessage.value = "Terjadi kesalahan saat memverifikasi reCAPTCHA. Silakan coba lagi.";
-    captchaToken.value = null;
-    return; // Stop login if reCAPTCHA fails client-side
-  }
-
-  if (!captchaToken.value) {
-    errorMessage.value = "Silakan verifikasi bahwa Anda bukan robot.";
+  // Ambil token sebelum login
+  const token = await getRecaptchaToken();
+  if (!token) {
+    errorMessage.value = "Verifikasi reCAPTCHA gagal. Coba lagi.";
     return;
   }
 
@@ -165,7 +213,7 @@ async function login() {
       body: {
         email: email.value,
         password: password.value,
-        "g-recaptcha-response": captchaToken.value,
+        "g-recaptcha-response": token, // kirim ke backend
       },
     });
     console.log("Login success:", result);
@@ -173,18 +221,21 @@ async function login() {
     router.push("/");
   } catch (error) {
     console.error("Login failed:", error);
-    if (error.response && error.response.status === 422) {
-      errorMessage.value =
-        "Verifikasi reCAPTCHA gagal atau tidak valid. Silakan coba lagi.";
-    } else {
-      errorMessage.value = "Login gagal. Periksa email dan password Anda.";
-    }
-
-    captchaToken.value = null;
+    errorMessage.value =
+      "Login gagal. Periksa email, password, atau verifikasi reCAPTCHA.";
 
     setTimeout(() => {
       errorMessage.value = "";
     }, 5000);
   }
 }
+
+onMounted(() => {
+  // Load script reCAPTCHA v3
+  const script = document.createElement("script");
+  script.src = `https://www.google.com/recaptcha/api.js?render=${runtimeConfig.public.recaptchaSiteKey}`;
+  script.async = true;
+  document.head.appendChild(script);
+});
+
 </script>
