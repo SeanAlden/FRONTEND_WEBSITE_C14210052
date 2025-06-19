@@ -841,7 +841,7 @@ const _routes = [
     name: "login",
     path: "/login",
     meta: __nuxt_page_meta$g || {},
-    component: () => import('./login-Czkk8eH7.mjs')
+    component: () => import('./login-DUSCwbV9.mjs')
   },
   {
     name: "notifications",
@@ -1679,7 +1679,7 @@ async function getSession(getSessionOptions) {
     loading.value = false;
   };
   const headers = await getRequestHeaders(nuxt);
-  return _fetch(nuxt, "/", {
+  return _fetch(nuxt, "/session", {
     onResponse: ({ response }) => {
       const sessionData = response._data;
       {

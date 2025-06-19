@@ -5,10 +5,10 @@ export default defineNuxtConfig({
   compatibilityDate: '2024-11-01',
   devtools: { enabled: true },
 
-  devServer: {
-    // host: "127.0.0.1",
-    host: "https://asiaraya.my.id",
-  },
+  // devServer: {
+  //   // host: "127.0.0.1",
+  //   host: "https://asiaraya.my.id",
+  // },
 
   // vite: {
   //   server: {
@@ -18,10 +18,10 @@ export default defineNuxtConfig({
 
   css: ["~/assets/css/tailwind.css"],
 
-  auth: {
-    // baseURL: `http://localhost:${process.env.PORT || 3000}`
-    baseURL: `https://asiaraya.my.id`
-  },
+  // auth: {
+  //   // baseURL: `http://localhost:${process.env.PORT || 3000}`
+  //   baseURL: `https://asiaraya.my.id`
+  // },
 
   modules: [
     "@nuxtjs/tailwindcss",
