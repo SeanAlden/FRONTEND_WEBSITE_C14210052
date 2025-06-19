@@ -60,8 +60,89 @@
 </template>
 
 <script setup>
+// import { ref, onMounted } from "vue";
+// import { useReCaptcha } from 'vue-recaptcha-v3'; // Import useReCaptcha for v3
+
+// const router = useRouter();
+// const email = ref("");
+// const password = ref("");
+// const cookie = useCookie("my_auth_token");
+// const errorMessage = ref("");
+// const successMessage = ref("");
+
+// // For reCAPTCHA v3
+// const { executeRecaptcha, recaptchaLoaded } = useReCaptcha();
+// const captchaToken = ref(null);
+
+// // No longer needed for v3 since there's no visible widget to "load" in this way
+// // const recaptchaAvailable = ref(false);
+// // onMounted(() => {
+// //   recaptchaAvailable.value = true;
+// // });
+
+
+// definePageMeta({
+//   layout: false,
+//   middleware: ["guest"],
+// });
+
+// async function login() {
+//   errorMessage.value = "";
+//   successMessage.value = "";
+
+//   // Execute reCAPTCHA v3 right before the login attempt
+//   try {
+//     await recaptchaLoaded(); // Ensure reCAPTCHA script is loaded
+//     captchaToken.value = await executeRecaptcha('login'); // 'login' is an action name
+//     console.log("reCAPTCHA v3 token:", captchaToken.value);
+//   } catch (error) {
+//     console.error("reCAPTCHA execution error:", error);
+//     errorMessage.value = "Terjadi kesalahan saat memverifikasi reCAPTCHA. Silakan coba lagi.";
+//     captchaToken.value = null;
+//     return; // Stop login if reCAPTCHA fails client-side
+//   }
+
+//   // --- Validasi Captcha sebelum mengirim ke backend ---
+//   if (!captchaToken.value) {
+//     errorMessage.value = "Silakan verifikasi bahwa Anda bukan robot.";
+//     return; // Hentikan fungsi jika captcha belum diisi
+//   }
+
+//   try {
+//     const result = await $fetch(useApi("/api/auth/signin"), {
+//       method: "POST",
+//       body: {
+//         email: email.value,
+//         password: password.value,
+//         // Kirim token captcha ke backend dengan nama 'g-recaptcha-response'
+//         "g-recaptcha-response": captchaToken.value,
+//       },
+//     });
+//     console.log("Login success:", result);
+//     cookie.value = result.token;
+//     router.push("/");
+//   } catch (error) {
+//     console.error("Login failed:", error);
+//     // Tangani pesan error dari backend
+//     if (error.response && error.response.status === 422) {
+//       errorMessage.value =
+//         "Verifikasi reCAPTCHA gagal atau tidak valid. Silakan coba lagi.";
+//     } else {
+//       errorMessage.value = "Login gagal. Periksa email dan password Anda.";
+//     }
+
+//     // For v3, no explicit reset needed, as you execute for each action.
+//     captchaToken.value = null; // Clear token on failure
+
+//     setTimeout(() => {
+//       errorMessage.value = "";
+//     }, 5000);
+//   }
+// }
+
 import { ref, onMounted } from "vue";
-import { useReCaptcha } from 'vue-recaptcha-v3'; // Import useReCaptcha for v3
+// Do NOT import useReCaptcha directly at the top level
+// import { useReCaptcha } from 'vue-recaptcha-v3'; // <--- REMOVE OR COMMENT OUT THIS LINE
 
 const router = useRouter();
 const email = ref("");
@@ -70,16 +151,40 @@ const cookie = useCookie("my_auth_token");
 const errorMessage = ref("");
 const successMessage = ref("");
 
-// For reCAPTCHA v3
-const { executeRecaptcha, recaptchaLoaded } = useReCaptcha();
-const captchaToken = ref(null);
+// Define refs for recaptcha functions, initially null
+let executeRecaptcha = null;
+let recaptchaLoaded = null;
+let recaptchaAvailable = ref(false); // To control UI elements if needed
 
-// No longer needed for v3 since there's no visible widget to "load" in this way
-// const recaptchaAvailable = ref(false);
-// onMounted(() => {
-//   recaptchaAvailable.value = true;
-// });
+onMounted(async () => {
+  // Only attempt to use useReCaptcha on the client side
+  if (process.client) {
+    try {
+      // Import useReCaptcha dynamically *inside* the client-side context
+      // This is the key change to prevent SSR issues
+      const { useReCaptcha: actualUseReCaptcha } = await import('vue-recaptcha-v3');
 
+      // Now call it and destructure
+      const recaptchaComposable = actualUseReCaptcha();
+      executeRecaptcha = recaptchaComposable.executeRecaptcha;
+      recaptchaLoaded = recaptchaComposable.recaptchaLoaded;
+
+      recaptchaAvailable.value = true; // Set true once reCAPTCHA is available
+      console.log("reCAPTCHA composable initialized on client.");
+
+      // If you need an initial token for v3, call it here
+      // await getRecaptchaToken(); // If you want to pre-fetch a token on mount
+    } catch (e) {
+      console.error("Failed to load or initialize useReCaptcha on client:", e);
+      errorMessage.value = "Failed to load reCAPTCHA. Please try refreshing.";
+    }
+  } else {
+    console.log("Running on server, useReCaptcha skipped.");
+  }
+});
+
+// Your other functions like onCaptchaError, onCaptchaExpired (though less relevant for v3 without visible components)
+// ...
 
 definePageMeta({
   layout: false,
@@ -90,10 +195,17 @@ async function login() {
   errorMessage.value = "";
   successMessage.value = "";
 
+  // Ensure reCAPTCHA functions are available before calling them
+  if (!executeRecaptcha || !recaptchaLoaded) {
+    errorMessage.value = "reCAPTCHA is not fully loaded. Please wait or refresh.";
+    return;
+  }
+
   // Execute reCAPTCHA v3 right before the login attempt
   try {
     await recaptchaLoaded(); // Ensure reCAPTCHA script is loaded
-    captchaToken.value = await executeRecaptcha('login'); // 'login' is an action name
+    const token = await executeRecaptcha('login'); // 'login' is an action name
+    captchaToken.value = token;
     console.log("reCAPTCHA v3 token:", captchaToken.value);
   } catch (error) {
     console.error("reCAPTCHA execution error:", error);
@@ -102,10 +214,9 @@ async function login() {
     return; // Stop login if reCAPTCHA fails client-side
   }
 
-  // --- Validasi Captcha sebelum mengirim ke backend ---
   if (!captchaToken.value) {
     errorMessage.value = "Silakan verifikasi bahwa Anda bukan robot.";
-    return; // Hentikan fungsi jika captcha belum diisi
+    return;
   }
 
   try {
@@ -114,7 +225,6 @@ async function login() {
       body: {
         email: email.value,
         password: password.value,
-        // Kirim token captcha ke backend dengan nama 'g-recaptcha-response'
         "g-recaptcha-response": captchaToken.value,
       },
     });
@@ -123,7 +233,6 @@ async function login() {
     router.push("/");
   } catch (error) {
     console.error("Login failed:", error);
-    // Tangani pesan error dari backend
     if (error.response && error.response.status === 422) {
       errorMessage.value =
         "Verifikasi reCAPTCHA gagal atau tidak valid. Silakan coba lagi.";
@@ -131,8 +240,7 @@ async function login() {
       errorMessage.value = "Login gagal. Periksa email dan password Anda.";
     }
 
-    // For v3, no explicit reset needed, as you execute for each action.
-    captchaToken.value = null; // Clear token on failure
+    captchaToken.value = null;
 
     setTimeout(() => {
       errorMessage.value = "";
