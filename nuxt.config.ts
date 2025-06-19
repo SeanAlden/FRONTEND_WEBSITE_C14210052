@@ -22,7 +22,6 @@ export default defineNuxtConfig({
     "@nuxtjs/tailwindcss",
     "@pinia/nuxt",
     "@qirolab/nuxt-sanctum-authentication",
-    "vue-recaptcha-v3",
     // '@sidebase/nuxt-auth',
   ],
 
