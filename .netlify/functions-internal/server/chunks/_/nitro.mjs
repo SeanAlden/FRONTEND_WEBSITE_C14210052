@@ -4331,7 +4331,7 @@ function _expandFromEnv(value) {
 const _inlineRuntimeConfig = {
   "app": {
     "baseURL": "/",
-    "buildId": "1b75150c-750f-457b-9e99-4394c28da4ad",
+    "buildId": "397fe7e3-377d-44b7-bed0-d4d7f7d4477f",
     "buildAssetsDir": "/_nuxt/",
     "cdnURL": ""
   },
@@ -4404,7 +4404,7 @@ const _inlineRuntimeConfig = {
     },
     "auth": {
       "isEnabled": true,
-      "baseURL": "https://asiaraya.my.id",
+      "baseURL": "/api/auth",
       "disableInternalRouting": false,
       "disableServerSideAuth": false,
       "originEnvKey": "AUTH_ORIGIN",
