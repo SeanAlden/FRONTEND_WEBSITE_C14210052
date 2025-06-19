@@ -314,14 +314,8 @@ onUnmounted(() => {
   emitter.off("profile-updated", fetchUser);
 });
 
-const goToEditProfile = () => {
-  isNotificationDropdownOpen.value = false;
-  router.push("/profile_pages/edit_profile_page");
-};
-const goToChangePassword = () => {
-  isNotificationDropdownOpen.value = false;
-  router.push("/profile_pages/edit_password_page");
-};
+const goToEditProfile = () => router.push("/profile_pages/edit_profile_page");
+const goToChangePassword = () => router.push("/profile_pages/edit_password_page");
 const goToNotifications = () => {
   isNotificationDropdownOpen.value = false;
   router.push("/notifications");
