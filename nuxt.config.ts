@@ -66,10 +66,10 @@ export default defineNuxtConfig({
     public: {
       apiBase: 'https://asiaraya.my.id',
       // apiBase: 'http://127.0.0.1:8000'
-      reCaptcha: {
-        // Site Key Anda dari Google
-        siteKey: '6Lcda2UrAAAAAPnrnhuAlKNzwIp3A66ooOqNT77P', 
-      },
+      // reCaptcha: {
+      //   // Site Key Anda dari Google
+      //   siteKey: '6Lcda2UrAAAAAPnrnhuAlKNzwIp3A66ooOqNT77P', 
+      // },
     }
   }
 })
