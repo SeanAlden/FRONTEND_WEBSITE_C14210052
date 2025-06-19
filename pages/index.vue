@@ -288,6 +288,7 @@ export default {
     onMounted(() => {
       fetchUser();
       fetchData();
+      window.location.reload();
     });
 
     return {
@@ -303,7 +304,7 @@ export default {
       years,
       fetchData,
       formatPrice,
-      user, 
+      user,
       onImageError,
     };
   },
