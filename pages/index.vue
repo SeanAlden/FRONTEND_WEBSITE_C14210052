@@ -288,7 +288,6 @@ export default {
     onMounted(() => {
       fetchUser();
       fetchData();
-      window.location.reload();
     });
 
     return {
