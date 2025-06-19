@@ -18,12 +18,28 @@ export default defineNuxtConfig({
 
   css: ["~/assets/css/tailwind.css"],
 
+  // auth: {
+  //   // baseURL: `http://localhost:${process.env.PORT || 3000}`
+  //   baseURL: `https://asiaraya.my.id`
+  // },
+
   modules: [
     "@nuxtjs/tailwindcss",
     "@pinia/nuxt",
     "@qirolab/nuxt-sanctum-authentication",
-    // '@sidebase/nuxt-auth',
+    'nuxt3-recaptcha',
+    // "@nuxtjs/recaptcha",
+    // "@sidebase/nuxt-recaptcha",
+    '@sidebase/nuxt-auth',
   ],
+
+  recaptcha: {
+    siteKey: '6Lcda2UrAAAAAPnrnhuAlKNzwIp3A66ooOqNT77P', // ganti dengan milikmu
+    version: "v3", // pakai v2 checkbox
+    // size: 'normal', // atau 'compact'
+    // hideBadge: true, // opsional
+    // language: 'id' // Optional
+  },
 
   laravelSanctum: {
     // apiUrl: "http://127.0.0.1:8000",
@@ -53,8 +69,12 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      apiBase: 'https://asiaraya.my.id'
+      apiBase: 'https://asiaraya.my.id',
       // apiBase: 'http://127.0.0.1:8000'
+      reCaptcha: {
+        // Site Key Anda dari Google
+        siteKey: '6Lcda2UrAAAAAPnrnhuAlKNzwIp3A66ooOqNT77P', 
+      },
     }
   }
 })

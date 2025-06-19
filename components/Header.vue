@@ -315,11 +315,11 @@ onUnmounted(() => {
 });
 
 const goToEditProfile = () => {
-  isNotificationDropdownOpen.value = false;
+  isDropdownOpen.value = false;
   router.push("/profile_pages/edit_profile_page");
 };
 const goToChangePassword = () => {
-  isNotificationDropdownOpen.value = false;
+  isDropdownOpen.value = false;
   router.push("/profile_pages/edit_password_page");
 };
 const goToNotifications = () => {

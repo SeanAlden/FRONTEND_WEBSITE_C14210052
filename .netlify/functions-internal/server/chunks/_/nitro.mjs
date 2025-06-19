@@ -1584,6 +1584,7 @@ function getRequestHeader(event, name) {
   const value = headers[name.toLowerCase()];
   return value;
 }
+const getHeader = getRequestHeader;
 function getRequestHost(event, opts = {}) {
   if (opts.xForwardedHost) {
     const xForwardedHost = event.node.req.headers["x-forwarded-host"];
@@ -1916,6 +1917,18 @@ const setHeaders = setResponseHeaders;
 function setResponseHeader(event, name, value) {
   event.node.res.setHeader(name, value);
 }
+function appendResponseHeader(event, name, value) {
+  let current = event.node.res.getHeader(name);
+  if (!current) {
+    event.node.res.setHeader(name, value);
+    return;
+  }
+  if (!Array.isArray(current)) {
+    current = [current.toString()];
+  }
+  event.node.res.setHeader(name, [...current, value]);
+}
+const appendHeader = appendResponseHeader;
 function isStream(data) {
   if (!data || typeof data !== "object") {
     return false;
@@ -4097,16 +4110,366 @@ const errorHandler = (async function errorhandler(error, event) {
   return send(event, html);
 });
 
-const plugins = [
-  
-];
+const ERROR_MESSAGES = {
+  NO_ORIGIN: "AUTH_NO_ORIGIN: No `origin` - this is an error in production, see https://sidebase.io/nuxt-auth/resources/errors. You can ignore this during development"
+};
 
-const _lazy_cfKuhB = () => import('../routes/renderer.mjs').then(function (n) { return n.r; });
+const isProduction = "production" === "production";
+function useTypedBackendConfig(runtimeConfig, type) {
+  const provider = runtimeConfig.public.auth.provider;
+  if (provider.type === type) {
+    return provider;
+  }
+  throw new Error("RuntimeError: Type must match at this point");
+}
 
-const handlers = [
-  { route: '/__nuxt_error', handler: _lazy_cfKuhB, lazy: true, middleware: false, method: undefined },
-  { route: '/**', handler: _lazy_cfKuhB, lazy: true, middleware: false, method: undefined }
-];
+function resolveApiBaseURL(runtimeConfig, returnOnlyPathname) {
+  const authRuntimeConfig = runtimeConfig.public.auth;
+  let baseURL = authRuntimeConfig.baseURL;
+  if (authRuntimeConfig.originEnvKey) {
+    const envBaseURL = process.env[authRuntimeConfig.originEnvKey];
+    if (envBaseURL) {
+      baseURL = envBaseURL;
+    }
+  }
+  return baseURL;
+}
+
+function getServerBaseUrl(runtimeConfig, includePath, trustHostUserPreference, isProduction, event) {
+  const baseURL = resolveApiBaseURL(runtimeConfig);
+  const parsed = parseURL(baseURL);
+  if (parsed.protocol && parsed.host) {
+    const base = `${parsed.protocol}//${parsed.host}`;
+    return base;
+  }
+  throw new Error(ERROR_MESSAGES.NO_ORIGIN);
+}
+
+function klona(x) {
+	if (typeof x !== 'object') return x;
+
+	var k, tmp, str=Object.prototype.toString.call(x);
+
+	if (str === '[object Object]') {
+		if (x.constructor !== Object && typeof x.constructor === 'function') {
+			tmp = new x.constructor();
+			for (k in x) {
+				if (x.hasOwnProperty(k) && tmp[k] !== x[k]) {
+					tmp[k] = klona(x[k]);
+				}
+			}
+		} else {
+			tmp = {}; // null
+			for (k in x) {
+				if (k === '__proto__') {
+					Object.defineProperty(tmp, k, {
+						value: klona(x[k]),
+						configurable: true,
+						enumerable: true,
+						writable: true,
+					});
+				} else {
+					tmp[k] = klona(x[k]);
+				}
+			}
+		}
+		return tmp;
+	}
+
+	if (str === '[object Array]') {
+		k = x.length;
+		for (tmp=Array(k); k--;) {
+			tmp[k] = klona(x[k]);
+		}
+		return tmp;
+	}
+
+	if (str === '[object Set]') {
+		tmp = new Set;
+		x.forEach(function (val) {
+			tmp.add(klona(val));
+		});
+		return tmp;
+	}
+
+	if (str === '[object Map]') {
+		tmp = new Map;
+		x.forEach(function (val, key) {
+			tmp.set(klona(key), klona(val));
+		});
+		return tmp;
+	}
+
+	if (str === '[object Date]') {
+		return new Date(+x);
+	}
+
+	if (str === '[object RegExp]') {
+		tmp = new RegExp(x.source, x.flags);
+		tmp.lastIndex = x.lastIndex;
+		return tmp;
+	}
+
+	if (str === '[object DataView]') {
+		return new x.constructor( klona(x.buffer) );
+	}
+
+	if (str === '[object ArrayBuffer]') {
+		return x.slice(0);
+	}
+
+	// ArrayBuffer.isView(x)
+	// ~> `new` bcuz `Buffer.slice` => ref
+	if (str.slice(-6) === 'Array]') {
+		return new x.constructor(x);
+	}
+
+	return x;
+}
+
+const inlineAppConfig = {
+  "nuxt": {}
+};
+
+
+
+const appConfig = defuFn(inlineAppConfig);
+
+const NUMBER_CHAR_RE = /\d/;
+const STR_SPLITTERS = ["-", "_", "/", "."];
+function isUppercase(char = "") {
+  if (NUMBER_CHAR_RE.test(char)) {
+    return void 0;
+  }
+  return char !== char.toLowerCase();
+}
+function splitByCase(str, separators) {
+  const splitters = STR_SPLITTERS;
+  const parts = [];
+  if (!str || typeof str !== "string") {
+    return parts;
+  }
+  let buff = "";
+  let previousUpper;
+  let previousSplitter;
+  for (const char of str) {
+    const isSplitter = splitters.includes(char);
+    if (isSplitter === true) {
+      parts.push(buff);
+      buff = "";
+      previousUpper = void 0;
+      continue;
+    }
+    const isUpper = isUppercase(char);
+    if (previousSplitter === false) {
+      if (previousUpper === false && isUpper === true) {
+        parts.push(buff);
+        buff = char;
+        previousUpper = isUpper;
+        continue;
+      }
+      if (previousUpper === true && isUpper === false && buff.length > 1) {
+        const lastChar = buff.at(-1);
+        parts.push(buff.slice(0, Math.max(0, buff.length - 1)));
+        buff = lastChar + char;
+        previousUpper = isUpper;
+        continue;
+      }
+    }
+    buff += char;
+    previousUpper = isUpper;
+    previousSplitter = isSplitter;
+  }
+  parts.push(buff);
+  return parts;
+}
+function kebabCase(str, joiner) {
+  return str ? (Array.isArray(str) ? str : splitByCase(str)).map((p) => p.toLowerCase()).join(joiner) : "";
+}
+function snakeCase(str) {
+  return kebabCase(str || "", "_");
+}
+
+function getEnv(key, opts) {
+  const envKey = snakeCase(key).toUpperCase();
+  return destr(
+    process.env[opts.prefix + envKey] ?? process.env[opts.altPrefix + envKey]
+  );
+}
+function _isObject(input) {
+  return typeof input === "object" && !Array.isArray(input);
+}
+function applyEnv(obj, opts, parentKey = "") {
+  for (const key in obj) {
+    const subKey = parentKey ? `${parentKey}_${key}` : key;
+    const envValue = getEnv(subKey, opts);
+    if (_isObject(obj[key])) {
+      if (_isObject(envValue)) {
+        obj[key] = { ...obj[key], ...envValue };
+        applyEnv(obj[key], opts, subKey);
+      } else if (envValue === void 0) {
+        applyEnv(obj[key], opts, subKey);
+      } else {
+        obj[key] = envValue ?? obj[key];
+      }
+    } else {
+      obj[key] = envValue ?? obj[key];
+    }
+    if (opts.envExpansion && typeof obj[key] === "string") {
+      obj[key] = _expandFromEnv(obj[key]);
+    }
+  }
+  return obj;
+}
+const envExpandRx = /{{(.*?)}}/g;
+function _expandFromEnv(value) {
+  return value.replace(envExpandRx, (match, key) => {
+    return process.env[key] || match;
+  });
+}
+
+const _inlineRuntimeConfig = {
+  "app": {
+    "baseURL": "/",
+    "buildId": "397fe7e3-377d-44b7-bed0-d4d7f7d4477f",
+    "buildAssetsDir": "/_nuxt/",
+    "cdnURL": ""
+  },
+  "nitro": {
+    "envPrefix": "NUXT_",
+    "routeRules": {
+      "/__nuxt_error": {
+        "cache": false
+      },
+      "/_nuxt/builds/meta/**": {
+        "headers": {
+          "cache-control": "public, max-age=31536000, immutable"
+        }
+      },
+      "/_nuxt/builds/**": {
+        "headers": {
+          "cache-control": "public, max-age=1, immutable"
+        }
+      },
+      "/_nuxt/**": {
+        "headers": {
+          "cache-control": "public, max-age=31536000, immutable"
+        }
+      }
+    }
+  },
+  "public": {
+    "apiBase": "https://asiaraya.my.id",
+    "reCaptcha": {
+      "siteKey": "6Lcda2UrAAAAAPnrnhuAlKNzwIp3A66ooOqNT77P"
+    },
+    "laravelSanctum": {
+      "authMode": "cookie",
+      "userStateKey": "sanctum.authenticated.user",
+      "token": {
+        "storageKey": "AUTH_TOKEN",
+        "provider": "cookie",
+        "responseKey": "token"
+      },
+      "fetchClientOptions": {
+        "retryAttempts": false
+      },
+      "csrf": {
+        "cookieName": "XSRF-TOKEN",
+        "headerName": "X-XSRF-TOKEN"
+      },
+      "sanctumEndpoints": {
+        "csrf": "/sanctum/csrf-cookie",
+        "login": "/api/auth/login",
+        "logout": "/api/auth/logout",
+        "user": "/api/user"
+      },
+      "redirect": {
+        "enableIntendedRedirect": false,
+        "loginPath": "/login",
+        "guestOnlyRedirect": "/",
+        "redirectToAfterLogin": "/",
+        "redirectToAfterLogout": "/"
+      },
+      "middlewareNames": {
+        "auth": "$auth",
+        "guest": "$guest"
+      },
+      "logLevel": 3,
+      "apiUrl": "https://asiaraya.my.id"
+    },
+    "recaptcha": {
+      "siteKey": "6Lcda2UrAAAAAPnrnhuAlKNzwIp3A66ooOqNT77P",
+      "version": "v3"
+    },
+    "auth": {
+      "isEnabled": true,
+      "baseURL": "/api/auth",
+      "disableInternalRouting": false,
+      "disableServerSideAuth": false,
+      "originEnvKey": "AUTH_ORIGIN",
+      "sessionRefresh": {
+        "enablePeriodically": false,
+        "enableOnWindowFocus": true,
+        "handler": ""
+      },
+      "globalAppMiddleware": {
+        "isEnabled": false,
+        "allow404WithoutAuth": true,
+        "addDefaultCallbackUrl": true
+      },
+      "provider": {
+        "type": "authjs",
+        "trustHost": false,
+        "defaultProvider": "",
+        "addDefaultCallbackUrl": true
+      }
+    }
+  }
+};
+const envOptions = {
+  prefix: "NITRO_",
+  altPrefix: _inlineRuntimeConfig.nitro.envPrefix ?? process.env.NITRO_ENV_PREFIX ?? "_",
+  envExpansion: _inlineRuntimeConfig.nitro.envExpansion ?? process.env.NITRO_ENV_EXPANSION ?? false
+};
+const _sharedRuntimeConfig = _deepFreeze(
+  applyEnv(klona(_inlineRuntimeConfig), envOptions)
+);
+function useRuntimeConfig(event) {
+  if (!event) {
+    return _sharedRuntimeConfig;
+  }
+  if (event.context.nitro.runtimeConfig) {
+    return event.context.nitro.runtimeConfig;
+  }
+  const runtimeConfig = klona(_inlineRuntimeConfig);
+  applyEnv(runtimeConfig, envOptions);
+  event.context.nitro.runtimeConfig = runtimeConfig;
+  return runtimeConfig;
+}
+_deepFreeze(klona(appConfig));
+function _deepFreeze(object) {
+  const propNames = Object.getOwnPropertyNames(object);
+  for (const name of propNames) {
+    const value = object[name];
+    if (value && typeof value === "object") {
+      _deepFreeze(value);
+    }
+  }
+  return Object.freeze(object);
+}
+new Proxy(/* @__PURE__ */ Object.create(null), {
+  get: (_, prop) => {
+    console.warn(
+      "Please use `useRuntimeConfig()` instead of accessing config directly."
+    );
+    const runtimeConfig = useRuntimeConfig();
+    if (prop in runtimeConfig) {
+      return runtimeConfig[prop];
+    }
+    return void 0;
+  }
+});
 
 function wrapToPromise(value) {
   if (!value || typeof value.then !== "function") {
@@ -5170,301 +5533,102 @@ function cloneWithProxy(obj, overrides) {
 }
 const cachedEventHandler = defineCachedEventHandler;
 
-function klona(x) {
-	if (typeof x !== 'object') return x;
-
-	var k, tmp, str=Object.prototype.toString.call(x);
-
-	if (str === '[object Object]') {
-		if (x.constructor !== Object && typeof x.constructor === 'function') {
-			tmp = new x.constructor();
-			for (k in x) {
-				if (x.hasOwnProperty(k) && tmp[k] !== x[k]) {
-					tmp[k] = klona(x[k]);
-				}
-			}
-		} else {
-			tmp = {}; // null
-			for (k in x) {
-				if (k === '__proto__') {
-					Object.defineProperty(tmp, k, {
-						value: klona(x[k]),
-						configurable: true,
-						enumerable: true,
-						writable: true,
-					});
-				} else {
-					tmp[k] = klona(x[k]);
-				}
-			}
-		}
-		return tmp;
-	}
-
-	if (str === '[object Array]') {
-		k = x.length;
-		for (tmp=Array(k); k--;) {
-			tmp[k] = klona(x[k]);
-		}
-		return tmp;
-	}
-
-	if (str === '[object Set]') {
-		tmp = new Set;
-		x.forEach(function (val) {
-			tmp.add(klona(val));
-		});
-		return tmp;
-	}
-
-	if (str === '[object Map]') {
-		tmp = new Map;
-		x.forEach(function (val, key) {
-			tmp.set(klona(key), klona(val));
-		});
-		return tmp;
-	}
-
-	if (str === '[object Date]') {
-		return new Date(+x);
-	}
-
-	if (str === '[object RegExp]') {
-		tmp = new RegExp(x.source, x.flags);
-		tmp.lastIndex = x.lastIndex;
-		return tmp;
-	}
-
-	if (str === '[object DataView]') {
-		return new x.constructor( klona(x.buffer) );
-	}
-
-	if (str === '[object ArrayBuffer]') {
-		return x.slice(0);
-	}
-
-	// ArrayBuffer.isView(x)
-	// ~> `new` bcuz `Buffer.slice` => ref
-	if (str.slice(-6) === 'Array]') {
-		return new x.constructor(x);
-	}
-
-	return x;
-}
-
-const inlineAppConfig = {
-  "nuxt": {}
-};
-
-
-
-const appConfig = defuFn(inlineAppConfig);
-
-const NUMBER_CHAR_RE = /\d/;
-const STR_SPLITTERS = ["-", "_", "/", "."];
-function isUppercase(char = "") {
-  if (NUMBER_CHAR_RE.test(char)) {
-    return void 0;
-  }
-  return char !== char.toLowerCase();
-}
-function splitByCase(str, separators) {
-  const splitters = STR_SPLITTERS;
-  const parts = [];
-  if (!str || typeof str !== "string") {
-    return parts;
-  }
-  let buff = "";
-  let previousUpper;
-  let previousSplitter;
-  for (const char of str) {
-    const isSplitter = splitters.includes(char);
-    if (isSplitter === true) {
-      parts.push(buff);
-      buff = "";
-      previousUpper = void 0;
-      continue;
-    }
-    const isUpper = isUppercase(char);
-    if (previousSplitter === false) {
-      if (previousUpper === false && isUpper === true) {
-        parts.push(buff);
-        buff = char;
-        previousUpper = isUpper;
-        continue;
+function defineRenderHandler(render) {
+  const runtimeConfig = useRuntimeConfig();
+  return eventHandler(async (event) => {
+    const nitroApp = useNitroApp();
+    const ctx = { event, render, response: void 0 };
+    await nitroApp.hooks.callHook("render:before", ctx);
+    if (!ctx.response) {
+      if (event.path === `${runtimeConfig.app.baseURL}favicon.ico`) {
+        setResponseHeader(event, "Content-Type", "image/x-icon");
+        return send(
+          event,
+          "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+        );
       }
-      if (previousUpper === true && isUpper === false && buff.length > 1) {
-        const lastChar = buff.at(-1);
-        parts.push(buff.slice(0, Math.max(0, buff.length - 1)));
-        buff = lastChar + char;
-        previousUpper = isUpper;
-        continue;
+      ctx.response = await ctx.render(event);
+      if (!ctx.response) {
+        const _currentStatus = getResponseStatus(event);
+        setResponseStatus(event, _currentStatus === 200 ? 500 : _currentStatus);
+        return send(
+          event,
+          "No response returned from render handler: " + event.path
+        );
       }
     }
-    buff += char;
-    previousUpper = isUpper;
-    previousSplitter = isSplitter;
-  }
-  parts.push(buff);
-  return parts;
-}
-function kebabCase(str, joiner) {
-  return str ? (Array.isArray(str) ? str : splitByCase(str)).map((p) => p.toLowerCase()).join(joiner) : "";
-}
-function snakeCase(str) {
-  return kebabCase(str || "", "_");
-}
-
-function getEnv(key, opts) {
-  const envKey = snakeCase(key).toUpperCase();
-  return destr(
-    process.env[opts.prefix + envKey] ?? process.env[opts.altPrefix + envKey]
-  );
-}
-function _isObject(input) {
-  return typeof input === "object" && !Array.isArray(input);
-}
-function applyEnv(obj, opts, parentKey = "") {
-  for (const key in obj) {
-    const subKey = parentKey ? `${parentKey}_${key}` : key;
-    const envValue = getEnv(subKey, opts);
-    if (_isObject(obj[key])) {
-      if (_isObject(envValue)) {
-        obj[key] = { ...obj[key], ...envValue };
-        applyEnv(obj[key], opts, subKey);
-      } else if (envValue === void 0) {
-        applyEnv(obj[key], opts, subKey);
-      } else {
-        obj[key] = envValue ?? obj[key];
-      }
-    } else {
-      obj[key] = envValue ?? obj[key];
+    await nitroApp.hooks.callHook("render:response", ctx.response, ctx);
+    if (ctx.response.headers) {
+      setResponseHeaders(event, ctx.response.headers);
     }
-    if (opts.envExpansion && typeof obj[key] === "string") {
-      obj[key] = _expandFromEnv(obj[key]);
+    if (ctx.response.statusCode || ctx.response.statusMessage) {
+      setResponseStatus(
+        event,
+        ctx.response.statusCode,
+        ctx.response.statusMessage
+      );
     }
-  }
-  return obj;
-}
-const envExpandRx = /{{(.*?)}}/g;
-function _expandFromEnv(value) {
-  return value.replace(envExpandRx, (match, key) => {
-    return process.env[key] || match;
+    return ctx.response.body;
   });
 }
 
-const _inlineRuntimeConfig = {
-  "app": {
-    "baseURL": "/",
-    "buildId": "64ca6d64-ad0e-4cc2-9b58-f833404f1ebf",
-    "buildAssetsDir": "/_nuxt/",
-    "cdnURL": ""
-  },
-  "nitro": {
-    "envPrefix": "NUXT_",
-    "routeRules": {
-      "/__nuxt_error": {
-        "cache": false
-      },
-      "/_nuxt/builds/meta/**": {
-        "headers": {
-          "cache-control": "public, max-age=31536000, immutable"
-        }
-      },
-      "/_nuxt/builds/**": {
-        "headers": {
-          "cache-control": "public, max-age=1, immutable"
-        }
-      },
-      "/_nuxt/**": {
-        "headers": {
-          "cache-control": "public, max-age=31536000, immutable"
-        }
-      }
-    }
-  },
-  "public": {
-    "apiBase": "https://asiaraya.my.id",
-    "laravelSanctum": {
-      "authMode": "cookie",
-      "userStateKey": "sanctum.authenticated.user",
-      "token": {
-        "storageKey": "AUTH_TOKEN",
-        "provider": "cookie",
-        "responseKey": "token"
-      },
-      "fetchClientOptions": {
-        "retryAttempts": false
-      },
-      "csrf": {
-        "cookieName": "XSRF-TOKEN",
-        "headerName": "X-XSRF-TOKEN"
-      },
-      "sanctumEndpoints": {
-        "csrf": "/sanctum/csrf-cookie",
-        "login": "/api/auth/login",
-        "logout": "/api/auth/logout",
-        "user": "/api/user"
-      },
-      "redirect": {
-        "enableIntendedRedirect": false,
-        "loginPath": "/login",
-        "guestOnlyRedirect": "/",
-        "redirectToAfterLogin": "/",
-        "redirectToAfterLogout": "/"
-      },
-      "middlewareNames": {
-        "auth": "$auth",
-        "guest": "$guest"
-      },
-      "logLevel": 3,
-      "apiUrl": "https://asiaraya.my.id"
-    }
-  }
-};
-const envOptions = {
-  prefix: "NITRO_",
-  altPrefix: _inlineRuntimeConfig.nitro.envPrefix ?? process.env.NITRO_ENV_PREFIX ?? "_",
-  envExpansion: _inlineRuntimeConfig.nitro.envExpansion ?? process.env.NITRO_ENV_EXPANSION ?? false
-};
-const _sharedRuntimeConfig = _deepFreeze(
-  applyEnv(klona(_inlineRuntimeConfig), envOptions)
+const config = useRuntimeConfig();
+const _routeRulesMatcher = toRouteMatcher(
+  createRouter$1({ routes: config.nitro.routeRules })
 );
-function useRuntimeConfig(event) {
-  if (!event) {
-    return _sharedRuntimeConfig;
-  }
-  if (event.context.nitro.runtimeConfig) {
-    return event.context.nitro.runtimeConfig;
-  }
-  const runtimeConfig = klona(_inlineRuntimeConfig);
-  applyEnv(runtimeConfig, envOptions);
-  event.context.nitro.runtimeConfig = runtimeConfig;
-  return runtimeConfig;
-}
-_deepFreeze(klona(appConfig));
-function _deepFreeze(object) {
-  const propNames = Object.getOwnPropertyNames(object);
-  for (const name of propNames) {
-    const value = object[name];
-    if (value && typeof value === "object") {
-      _deepFreeze(value);
+function createRouteRulesHandler(ctx) {
+  return eventHandler((event) => {
+    const routeRules = getRouteRules(event);
+    if (routeRules.headers) {
+      setHeaders(event, routeRules.headers);
     }
-  }
-  return Object.freeze(object);
+    if (routeRules.redirect) {
+      let target = routeRules.redirect.to;
+      if (target.endsWith("/**")) {
+        let targetPath = event.path;
+        const strpBase = routeRules.redirect._redirectStripBase;
+        if (strpBase) {
+          targetPath = withoutBase(targetPath, strpBase);
+        }
+        target = joinURL(target.slice(0, -3), targetPath);
+      } else if (event.path.includes("?")) {
+        const query = getQuery$1(event.path);
+        target = withQuery(target, query);
+      }
+      return sendRedirect(event, target, routeRules.redirect.statusCode);
+    }
+    if (routeRules.proxy) {
+      let target = routeRules.proxy.to;
+      if (target.endsWith("/**")) {
+        let targetPath = event.path;
+        const strpBase = routeRules.proxy._proxyStripBase;
+        if (strpBase) {
+          targetPath = withoutBase(targetPath, strpBase);
+        }
+        target = joinURL(target.slice(0, -3), targetPath);
+      } else if (event.path.includes("?")) {
+        const query = getQuery$1(event.path);
+        target = withQuery(target, query);
+      }
+      return proxyRequest(event, target, {
+        fetch: ctx.localFetch,
+        ...routeRules.proxy
+      });
+    }
+  });
 }
-new Proxy(/* @__PURE__ */ Object.create(null), {
-  get: (_, prop) => {
-    console.warn(
-      "Please use `useRuntimeConfig()` instead of accessing config directly."
+function getRouteRules(event) {
+  event.context._nitro = event.context._nitro || {};
+  if (!event.context._nitro.routeRules) {
+    event.context._nitro.routeRules = getRouteRulesForPath(
+      withoutBase(event.path.split("?")[0], useRuntimeConfig().app.baseURL)
     );
-    const runtimeConfig = useRuntimeConfig();
-    if (prop in runtimeConfig) {
-      return runtimeConfig[prop];
-    }
-    return void 0;
   }
-});
+  return event.context._nitro.routeRules;
+}
+function getRouteRulesForPath(path) {
+  return defu({}, ..._routeRulesMatcher.matchAll(path).reverse());
+}
 
 function createContext(opts = {}) {
   let currentInstance;
@@ -5562,63 +5726,46 @@ const getContext = (key, opts = {}) => defaultNamespace.get(key, opts);
 const asyncHandlersKey = "__unctx_async_handlers__";
 const asyncHandlers = _globalThis[asyncHandlersKey] || (_globalThis[asyncHandlersKey] = /* @__PURE__ */ new Set());
 
-const config = useRuntimeConfig();
-const _routeRulesMatcher = toRouteMatcher(
-  createRouter$1({ routes: config.nitro.routeRules })
-);
-function createRouteRulesHandler(ctx) {
-  return eventHandler((event) => {
-    const routeRules = getRouteRules(event);
-    if (routeRules.headers) {
-      setHeaders(event, routeRules.headers);
-    }
-    if (routeRules.redirect) {
-      let target = routeRules.redirect.to;
-      if (target.endsWith("/**")) {
-        let targetPath = event.path;
-        const strpBase = routeRules.redirect._redirectStripBase;
-        if (strpBase) {
-          targetPath = withoutBase(targetPath, strpBase);
-        }
-        target = joinURL(target.slice(0, -3), targetPath);
-      } else if (event.path.includes("?")) {
-        const query = getQuery$1(event.path);
-        target = withQuery(target, query);
-      }
-      return sendRedirect(event, target, routeRules.redirect.statusCode);
-    }
-    if (routeRules.proxy) {
-      let target = routeRules.proxy.to;
-      if (target.endsWith("/**")) {
-        let targetPath = event.path;
-        const strpBase = routeRules.proxy._proxyStripBase;
-        if (strpBase) {
-          targetPath = withoutBase(targetPath, strpBase);
-        }
-        target = joinURL(target.slice(0, -3), targetPath);
-      } else if (event.path.includes("?")) {
-        const query = getQuery$1(event.path);
-        target = withQuery(target, query);
-      }
-      return proxyRequest(event, target, {
-        fetch: ctx.localFetch,
-        ...routeRules.proxy
-      });
-    }
-  });
+function baseURL() {
+  return useRuntimeConfig().app.baseURL;
 }
-function getRouteRules(event) {
-  event.context._nitro = event.context._nitro || {};
-  if (!event.context._nitro.routeRules) {
-    event.context._nitro.routeRules = getRouteRulesForPath(
-      withoutBase(event.path.split("?")[0], useRuntimeConfig().app.baseURL)
-    );
+function buildAssetsDir() {
+  return useRuntimeConfig().app.buildAssetsDir;
+}
+function buildAssetsURL(...path) {
+  return joinRelativeURL(publicAssetsURL(), buildAssetsDir(), ...path);
+}
+function publicAssetsURL(...path) {
+  const app = useRuntimeConfig().app;
+  const publicBase = app.cdnURL || app.baseURL;
+  return path.length ? joinRelativeURL(publicBase, ...path) : publicBase;
+}
+
+function defineNitroPlugin(def) {
+  return def;
+}
+const _O3nPJ1d1ag = defineNitroPlugin(() => {
+  try {
+    const runtimeConfig = useRuntimeConfig();
+    const trustHostUserPreference = useTypedBackendConfig(runtimeConfig, "authjs").trustHost;
+    getServerBaseUrl(runtimeConfig, false, trustHostUserPreference, isProduction);
+  } catch (error) {
+    {
+      throw error;
+    }
   }
-  return event.context._nitro.routeRules;
-}
-function getRouteRulesForPath(path) {
-  return defu({}, ..._routeRulesMatcher.matchAll(path).reverse());
-}
+});
+
+const plugins = [
+  _O3nPJ1d1ag
+];
+
+const _lazy_cfKuhB = () => import('../routes/renderer.mjs');
+
+const handlers = [
+  { route: '/__nuxt_error', handler: _lazy_cfKuhB, lazy: true, middleware: false, method: undefined },
+  { route: '/**', handler: _lazy_cfKuhB, lazy: true, middleware: false, method: undefined }
+];
 
 function createNitroApp() {
   const config = useRuntimeConfig();
@@ -5747,44 +5894,5 @@ function useNitroApp() {
 }
 runNitroPlugins(nitroApp);
 
-function defineRenderHandler(render) {
-  const runtimeConfig = useRuntimeConfig();
-  return eventHandler(async (event) => {
-    const nitroApp = useNitroApp();
-    const ctx = { event, render, response: void 0 };
-    await nitroApp.hooks.callHook("render:before", ctx);
-    if (!ctx.response) {
-      if (event.path === `${runtimeConfig.app.baseURL}favicon.ico`) {
-        setResponseHeader(event, "Content-Type", "image/x-icon");
-        return send(
-          event,
-          "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
-        );
-      }
-      ctx.response = await ctx.render(event);
-      if (!ctx.response) {
-        const _currentStatus = getResponseStatus(event);
-        setResponseStatus(event, _currentStatus === 200 ? 500 : _currentStatus);
-        return send(
-          event,
-          "No response returned from render handler: " + event.path
-        );
-      }
-    }
-    await nitroApp.hooks.callHook("render:response", ctx.response, ctx);
-    if (ctx.response.headers) {
-      setResponseHeaders(event, ctx.response.headers);
-    }
-    if (ctx.response.statusCode || ctx.response.statusMessage) {
-      setResponseStatus(
-        event,
-        ctx.response.statusCode,
-        ctx.response.statusMessage
-      );
-    }
-    return ctx.response.body;
-  });
-}
-
-export { $fetch as $, getRequestHeaders as A, getRequestURL as B, createHooks as C, toRouteMatcher as D, createRouter$1 as E, defu as F, parseQuery as G, withTrailingSlash as H, withoutTrailingSlash as I, joinRelativeURL as a, useRuntimeConfig as b, getQuery as c, defineRenderHandler as d, createError$1 as e, getRouteRules as f, getRouteRulesForPath as g, getResponseStatusText as h, getResponseStatus as i, joinHeaders as j, destr as k, klona as l, hasProtocol as m, normalizeCookieHeader as n, isScriptProtocol as o, joinURL as p, parse as q, getRequestHeader as r, isEqual as s, sanitizeStatusCode as t, useNitroApp as u, getContext as v, withQuery as w, setCookie as x, getCookie as y, deleteCookie as z };
+export { $fetch as $, deleteCookie as A, getRequestHeaders as B, getRequestURL as C, baseURL as D, createHooks as E, getHeader as F, toRouteMatcher as G, createRouter$1 as H, defu as I, withoutTrailingSlash as J, withoutBase as K, withLeadingSlash as L, parseURL as M, appendHeader as N, parseQuery as O, withTrailingSlash as P, getQuery as a, buildAssetsURL as b, createError$1 as c, defineRenderHandler as d, getRouteRules as e, useRuntimeConfig as f, getRouteRulesForPath as g, getResponseStatusText as h, getResponseStatus as i, joinHeaders as j, destr as k, klona as l, hasProtocol as m, normalizeCookieHeader as n, isScriptProtocol as o, publicAssetsURL as p, joinURL as q, parse as r, getRequestHeader as s, isEqual as t, useNitroApp as u, sanitizeStatusCode as v, withQuery as w, getContext as x, setCookie as y, getCookie as z };
 //# sourceMappingURL=nitro.mjs.map
