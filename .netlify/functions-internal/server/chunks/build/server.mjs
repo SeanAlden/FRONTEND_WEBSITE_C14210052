@@ -638,6 +638,9 @@ const generateRouteKey$1 = (routeProps, override) => {
 function toArray(value) {
   return Array.isArray(value) ? value : [value];
 }
+const __nuxt_page_meta$w = {
+  middleware: ["auth"]
+};
 const __nuxt_page_meta$v = {
   middleware: ["auth"]
 };
@@ -684,7 +687,8 @@ const __nuxt_page_meta$h = {
   middleware: ["auth"]
 };
 const __nuxt_page_meta$g = {
-  middleware: ["auth"]
+  layout: false,
+  middleware: ["guest"]
 };
 const __nuxt_page_meta$f = {
   middleware: ["auth"]
@@ -740,103 +744,104 @@ const _routes = [
   {
     name: "analysis_pages-accuracy_page",
     path: "/analysis_pages/accuracy_page",
-    meta: __nuxt_page_meta$v || {},
+    meta: __nuxt_page_meta$w || {},
     component: () => import('./accuracy_page-BJ1A2fjF.mjs')
   },
   {
     name: "analysis_pages-decision_tree_page",
     path: "/analysis_pages/decision_tree_page",
-    meta: __nuxt_page_meta$u || {},
+    meta: __nuxt_page_meta$v || {},
     component: () => import('./decision_tree_page-BGIuRyZ8.mjs')
   },
   {
     name: "analysis_pages-entropy_gain_page",
     path: "/analysis_pages/entropy_gain_page",
-    meta: __nuxt_page_meta$t || {},
+    meta: __nuxt_page_meta$u || {},
     component: () => import('./entropy_gain_page-BaQ5dLDm.mjs')
   },
   {
     name: "analysis_pages-sales_count_page",
     path: "/analysis_pages/sales_count_page",
-    meta: __nuxt_page_meta$s || {},
+    meta: __nuxt_page_meta$t || {},
     component: () => import('./sales_count_page-CzdfKf_A.mjs')
   },
   {
     name: "analysis_pages-time_count_page",
     path: "/analysis_pages/time_count_page",
-    meta: __nuxt_page_meta$r || {},
+    meta: __nuxt_page_meta$s || {},
     component: () => import('./time_count_page-B9_Ea2k0.mjs')
   },
   {
     name: "analysis_pages-weight_count_page",
     path: "/analysis_pages/weight_count_page",
-    meta: __nuxt_page_meta$q || {},
+    meta: __nuxt_page_meta$r || {},
     component: () => import('./weight_count_page-CZXlGDXE.mjs')
   },
   {
     name: "category_pages-add_category",
     path: "/category_pages/add_category",
-    meta: __nuxt_page_meta$p || {},
+    meta: __nuxt_page_meta$q || {},
     component: () => import('./add_category-CvSQvpFQ.mjs')
   },
   {
     name: "category_pages-categories",
     path: "/category_pages/categories",
-    meta: __nuxt_page_meta$o || {},
+    meta: __nuxt_page_meta$p || {},
     component: () => import('./categories-jHLQdT2F.mjs')
   },
   {
     name: "category_pages-detail-id",
     path: "/category_pages/detail/:id()",
-    meta: __nuxt_page_meta$n || {},
+    meta: __nuxt_page_meta$o || {},
     component: () => import('./_id_-BxmgLa9Y.mjs')
   },
   {
     name: "category_pages-edit-id",
     path: "/category_pages/edit/:id()",
-    meta: __nuxt_page_meta$m || {},
+    meta: __nuxt_page_meta$n || {},
     component: () => import('./_id_-hxMuIAKN.mjs')
   },
   {
     name: "employee_pages-add_employee",
     path: "/employee_pages/add_employee",
-    meta: __nuxt_page_meta$l || {},
+    meta: __nuxt_page_meta$m || {},
     component: () => import('./add_employee-DClAMeMg.mjs')
   },
   {
     name: "employee_pages-detail-id",
     path: "/employee_pages/detail/:id()",
-    meta: __nuxt_page_meta$k || {},
+    meta: __nuxt_page_meta$l || {},
     component: () => import('./_id_-ChCQXOim.mjs')
   },
   {
     name: "employee_pages-edit-id",
     path: "/employee_pages/edit/:id()",
-    meta: __nuxt_page_meta$j || {},
+    meta: __nuxt_page_meta$k || {},
     component: () => import('./_id_-DoSSDjpO.mjs')
   },
   {
     name: "employee_pages-employees",
     path: "/employee_pages/employees",
-    meta: __nuxt_page_meta$i || {},
+    meta: __nuxt_page_meta$j || {},
     component: () => import('./employees-v6mROG_i.mjs')
   },
   {
     name: "employee_pages-registered_employees",
     path: "/employee_pages/registered_employees",
-    meta: __nuxt_page_meta$h || {},
+    meta: __nuxt_page_meta$i || {},
     component: () => import('./registered_employees-CyIO2pRd.mjs')
   },
   {
     name: "index",
     path: "/",
-    meta: __nuxt_page_meta$g || {},
+    meta: __nuxt_page_meta$h || {},
     component: () => import('./index-B0lgB8EW.mjs')
   },
   {
     name: "login",
     path: "/login",
-    component: () => import('./login-DLiERC7J.mjs')
+    meta: __nuxt_page_meta$g || {},
+    component: () => import('./login-Czkk8eH7.mjs')
   },
   {
     name: "notifications",
