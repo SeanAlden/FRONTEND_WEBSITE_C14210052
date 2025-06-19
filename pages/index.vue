@@ -2,7 +2,7 @@
   <div class="min-h-screen p-6 bg-gray-100">
     <h1 class="text-2xl font-bold">Dashboard</h1>
     <!-- <p class="text-gray-600">Hello, john doe</p> -->
-    <p class="text-gray-600">Hello, {{ user?.name || "Guest" }}</p>
+    <!-- <p class="text-gray-600">Hello, {{ user?.name || "Guest" }}</p> -->
 
     <!-- Dropdown untuk pilih bulan -->
     <!-- <div class="flex flex-wrap items-center mt-4 mb-4">
