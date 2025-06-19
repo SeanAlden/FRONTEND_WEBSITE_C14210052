@@ -22,18 +22,18 @@ export default defineNuxtConfig({
     "@nuxtjs/tailwindcss",
     "@pinia/nuxt",
     "@qirolab/nuxt-sanctum-authentication",
-    'nuxt-recaptcha',
-    "@nuxtjs/recaptcha",
-    // '@sidebase/nuxt-auth',
+    'nuxt3-recaptcha',
+    // "@nuxtjs/recaptcha",
+    // "@sidebase/nuxt-recaptcha",
+    '@sidebase/nuxt-auth',
   ],
 
   recaptcha: {
     siteKey: '6Lcda2UrAAAAAPnrnhuAlKNzwIp3A66ooOqNT77P', // ganti dengan milikmu
-    version: 'v3', // pakai v2 checkbox
+    version: "v3", // pakai v2 checkbox
     // size: 'normal', // atau 'compact'
-    // hideBadge: true // opsional
-        // language: 'id' // Optional
-
+    // hideBadge: true, // opsional
+    // language: 'id' // Optional
   },
 
   laravelSanctum: {

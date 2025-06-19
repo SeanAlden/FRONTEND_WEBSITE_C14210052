@@ -1,10 +1,10 @@
-import { ref, inject, hasInjectionContext, unref, getCurrentInstance, toRef, isRef, version, defineAsyncComponent, defineComponent, h, computed, provide, shallowReactive, watch, Suspense, Fragment, createApp, onErrorCaptured, onServerPrefetch, createVNode, resolveDynamicComponent, reactive, effectScope, shallowRef, isReadonly, isShallow, isReactive, toRaw, mergeProps, withCtx, getCurrentScope, nextTick, useSSRContext } from 'vue';
-import { w as withQuery, k as destr, l as klona, e as createError$1, m as hasProtocol, o as isScriptProtocol, p as joinURL, q as parse, r as getRequestHeader, s as isEqual, t as sanitizeStatusCode, v as getContext, x as setCookie, y as getCookie, z as deleteCookie, A as getRequestHeaders, B as getRequestURL, $ as $fetch$1, C as createHooks, D as toRouteMatcher, E as createRouter$1, F as defu } from '../_/nitro.mjs';
-import { b as baseURL } from '../routes/renderer.mjs';
+import { ref, hasInjectionContext, inject, getCurrentInstance, toRef, isRef, unref, watchEffect, watch, version, defineAsyncComponent, defineComponent, h, computed, provide, shallowReactive, Suspense, Fragment, createApp, onErrorCaptured, onServerPrefetch, createVNode, resolveDynamicComponent, reactive, effectScope, shallowRef, isReadonly, isShallow, isReactive, toRaw, readonly, mergeProps, withCtx, getCurrentScope, nextTick, useSSRContext } from 'vue';
+import { k as destr, l as klona, c as createError$1, m as hasProtocol, o as isScriptProtocol, q as joinURL, w as withQuery, r as parse, s as getRequestHeader, t as isEqual, v as sanitizeStatusCode, x as getContext, y as setCookie, z as getCookie, A as deleteCookie, B as getRequestHeaders$1, C as getRequestURL$1, $ as $fetch$1, D as baseURL, E as createHooks, F as getHeader, G as toRouteMatcher, H as createRouter$1, I as defu, J as withoutTrailingSlash, K as withoutBase, L as withLeadingSlash, M as parseURL, N as appendHeader } from '../_/nitro.mjs';
 import { createPinia, setActivePinia, shouldHydrate } from 'pinia';
 import { getActiveHead, CapoPlugin } from 'unhead';
-import { defineHeadPlugin } from '@unhead/shared';
+import { defineHeadPlugin, composableNames } from '@unhead/shared';
 import { useRoute as useRoute$1, RouterView, createMemoryHistory, createRouter, START_LOCATION } from 'vue-router';
+import getURL from 'requrl';
 import { createConsola as createConsola$1 } from 'consola/core';
 import mitt from 'mitt';
 import { ssrRenderSuspense, ssrRenderComponent, ssrRenderVNode } from 'vue/server-renderer';
@@ -13,9 +13,6 @@ import 'node:http';
 import 'node:https';
 import 'node:fs';
 import 'node:path';
-import 'vue-bundle-renderer/runtime';
-import 'devalue';
-import '@unhead/ssr';
 
 const basicReporter = {
   log(logObj) {
@@ -31,6 +28,9 @@ function createConsola(options = {}) {
 const consola = createConsola();
 consola.consola = consola;
 
+var __defProp = Object.defineProperty;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
 if (!globalThis.$fetch) {
   globalThis.$fetch = $fetch$1.create({
     baseURL: baseURL()
@@ -220,7 +220,7 @@ function defineNuxtPlugin(plugin2) {
 }
 const definePayloadPlugin = defineNuxtPlugin;
 function callWithNuxt(nuxt, setup, args) {
-  const fn = () => setup();
+  const fn = () => args ? setup(...args) : setup();
   const nuxtAppCtx = getNuxtAppCtx(nuxt._id);
   {
     return nuxt.vueApp.runWithContext(() => nuxtAppCtx.callAsync(nuxt, fn));
@@ -267,6 +267,20 @@ const useRoute = () => {
 function defineNuxtRouteMiddleware(middleware) {
   return middleware;
 }
+const addRouteMiddleware = (name, middleware, options = {}) => {
+  const nuxtApp = useNuxtApp();
+  const global2 = options.global || false;
+  const mw = middleware;
+  if (!mw) {
+    console.warn("[nuxt] No route middleware passed to `addRouteMiddleware`.", name);
+    return;
+  }
+  if (global2) {
+    nuxtApp._middleware.global.push(mw);
+  } else {
+    nuxtApp._middleware.named[name] = mw;
+  }
+};
 const isProcessingMiddleware = () => {
   try {
     if (useNuxtApp()._processingMiddleware) {
@@ -277,7 +291,7 @@ const isProcessingMiddleware = () => {
   }
   return false;
 };
-const URL_QUOTE_RE = /"/g;
+const URL_QUOTE_RE$1 = /"/g;
 const navigateTo = (to, options) => {
   if (!to) {
     to = "/";
@@ -303,8 +317,8 @@ const navigateTo = (to, options) => {
       const location2 = isExternal ? toPath : joinURL((/* @__PURE__ */ useRuntimeConfig()).app.baseURL, fullPath);
       const redirect = async function(response) {
         await nuxtApp.callHook("app:redirected");
-        const encodedLoc = location2.replace(URL_QUOTE_RE, "%22");
-        const encodedHeader = encodeURL(location2, isExternalHost);
+        const encodedLoc = location2.replace(URL_QUOTE_RE$1, "%22");
+        const encodedHeader = encodeURL$1(location2, isExternalHost);
         nuxtApp.ssrContext._renderResponse = {
           statusCode: sanitizeStatusCode((options == null ? void 0 : options.redirectCode) || 302, 302),
           body: `<!DOCTYPE html><html><head><meta http-equiv="refresh" content="0; url=${encodedLoc}"></head></html>`,
@@ -343,7 +357,7 @@ const navigateTo = (to, options) => {
 function resolveRouteObject(to) {
   return withQuery(to.path || "", to.query || {}) + (to.hash || "");
 }
-function encodeURL(location2, isExternalHost = false) {
+function encodeURL$1(location2, isExternalHost = false) {
   const url = new URL(location2, "http://localhost");
   if (!isExternalHost) {
     return url.pathname + url.search + url.hash;
@@ -426,6 +440,33 @@ function injectHead() {
   const head = inject(headSymbol);
   return head || getActiveHead();
 }
+function useHead(input, options = {}) {
+  const head = options.head || injectHead();
+  if (head) {
+    if (!head.ssr)
+      return clientUseHead(head, input, options);
+    return head.push(input, options);
+  }
+}
+function clientUseHead(head, input, options = {}) {
+  const deactivated = ref(false);
+  const resolvedInput = ref({});
+  watchEffect(() => {
+    resolvedInput.value = deactivated.value ? {} : resolveUnrefHeadInput(input);
+  });
+  const entry2 = head.push(resolvedInput.value, options);
+  watch(resolvedInput, (e) => {
+    entry2.patch(e);
+  });
+  getCurrentInstance();
+  return entry2;
+}
+const coreComposableNames = [
+  "injectHead"
+];
+({
+  "@unhead/vue": [...coreComposableNames, ...composableNames]
+});
 async function getRouteRules(arg) {
   const path = typeof arg === "string" ? arg : arg.path;
   {
@@ -597,9 +638,6 @@ const generateRouteKey$1 = (routeProps, override) => {
 function toArray(value) {
   return Array.isArray(value) ? value : [value];
 }
-const __nuxt_page_meta$w = {
-  middleware: ["auth"]
-};
 const __nuxt_page_meta$v = {
   middleware: ["auth"]
 };
@@ -646,8 +684,7 @@ const __nuxt_page_meta$h = {
   middleware: ["auth"]
 };
 const __nuxt_page_meta$g = {
-  layout: false,
-  middleware: ["guest"]
+  middleware: ["auth"]
 };
 const __nuxt_page_meta$f = {
   middleware: ["auth"]
@@ -703,104 +740,103 @@ const _routes = [
   {
     name: "analysis_pages-accuracy_page",
     path: "/analysis_pages/accuracy_page",
-    meta: __nuxt_page_meta$w || {},
-    component: () => import('./accuracy_page-Uta9UAxh.mjs')
+    meta: __nuxt_page_meta$v || {},
+    component: () => import('./accuracy_page-BJ1A2fjF.mjs')
   },
   {
     name: "analysis_pages-decision_tree_page",
     path: "/analysis_pages/decision_tree_page",
-    meta: __nuxt_page_meta$v || {},
-    component: () => import('./decision_tree_page-DwGcXVuc.mjs')
+    meta: __nuxt_page_meta$u || {},
+    component: () => import('./decision_tree_page-BGIuRyZ8.mjs')
   },
   {
     name: "analysis_pages-entropy_gain_page",
     path: "/analysis_pages/entropy_gain_page",
-    meta: __nuxt_page_meta$u || {},
+    meta: __nuxt_page_meta$t || {},
     component: () => import('./entropy_gain_page-BaQ5dLDm.mjs')
   },
   {
     name: "analysis_pages-sales_count_page",
     path: "/analysis_pages/sales_count_page",
-    meta: __nuxt_page_meta$t || {},
-    component: () => import('./sales_count_page-3CCpBihv.mjs')
+    meta: __nuxt_page_meta$s || {},
+    component: () => import('./sales_count_page-CzdfKf_A.mjs')
   },
   {
     name: "analysis_pages-time_count_page",
     path: "/analysis_pages/time_count_page",
-    meta: __nuxt_page_meta$s || {},
+    meta: __nuxt_page_meta$r || {},
     component: () => import('./time_count_page-B9_Ea2k0.mjs')
   },
   {
     name: "analysis_pages-weight_count_page",
     path: "/analysis_pages/weight_count_page",
-    meta: __nuxt_page_meta$r || {},
-    component: () => import('./weight_count_page-BKcSgQld.mjs')
+    meta: __nuxt_page_meta$q || {},
+    component: () => import('./weight_count_page-CZXlGDXE.mjs')
   },
   {
     name: "category_pages-add_category",
     path: "/category_pages/add_category",
-    meta: __nuxt_page_meta$q || {},
+    meta: __nuxt_page_meta$p || {},
     component: () => import('./add_category-CvSQvpFQ.mjs')
   },
   {
     name: "category_pages-categories",
     path: "/category_pages/categories",
-    meta: __nuxt_page_meta$p || {},
-    component: () => import('./categories-DHMmQmqt.mjs')
+    meta: __nuxt_page_meta$o || {},
+    component: () => import('./categories-jHLQdT2F.mjs')
   },
   {
     name: "category_pages-detail-id",
     path: "/category_pages/detail/:id()",
-    meta: __nuxt_page_meta$o || {},
-    component: () => import('./_id_-_L7-rNfu.mjs')
+    meta: __nuxt_page_meta$n || {},
+    component: () => import('./_id_-BxmgLa9Y.mjs')
   },
   {
     name: "category_pages-edit-id",
     path: "/category_pages/edit/:id()",
-    meta: __nuxt_page_meta$n || {},
+    meta: __nuxt_page_meta$m || {},
     component: () => import('./_id_-hxMuIAKN.mjs')
   },
   {
     name: "employee_pages-add_employee",
     path: "/employee_pages/add_employee",
-    meta: __nuxt_page_meta$m || {},
+    meta: __nuxt_page_meta$l || {},
     component: () => import('./add_employee-DClAMeMg.mjs')
   },
   {
     name: "employee_pages-detail-id",
     path: "/employee_pages/detail/:id()",
-    meta: __nuxt_page_meta$l || {},
-    component: () => import('./_id_-BBkRIQXh.mjs')
+    meta: __nuxt_page_meta$k || {},
+    component: () => import('./_id_-ChCQXOim.mjs')
   },
   {
     name: "employee_pages-edit-id",
     path: "/employee_pages/edit/:id()",
-    meta: __nuxt_page_meta$k || {},
-    component: () => import('./_id_-Dn69UH3H.mjs')
+    meta: __nuxt_page_meta$j || {},
+    component: () => import('./_id_-DoSSDjpO.mjs')
   },
   {
     name: "employee_pages-employees",
     path: "/employee_pages/employees",
-    meta: __nuxt_page_meta$j || {},
-    component: () => import('./employees-CZs2SFmv.mjs')
+    meta: __nuxt_page_meta$i || {},
+    component: () => import('./employees-v6mROG_i.mjs')
   },
   {
     name: "employee_pages-registered_employees",
     path: "/employee_pages/registered_employees",
-    meta: __nuxt_page_meta$i || {},
-    component: () => import('./registered_employees-JgFvKqxK.mjs')
+    meta: __nuxt_page_meta$h || {},
+    component: () => import('./registered_employees-CyIO2pRd.mjs')
   },
   {
     name: "index",
     path: "/",
-    meta: __nuxt_page_meta$h || {},
-    component: () => import('./index-C29bmo5U.mjs')
+    meta: __nuxt_page_meta$g || {},
+    component: () => import('./index-B0lgB8EW.mjs')
   },
   {
     name: "login",
     path: "/login",
-    meta: __nuxt_page_meta$g || {},
-    component: () => import('./login-CoQQFA37.mjs')
+    component: () => import('./login-DLiERC7J.mjs')
   },
   {
     name: "notifications",
@@ -818,19 +854,19 @@ const _routes = [
     name: "product_pages-deleted_products_history",
     path: "/product_pages/deleted_products_history",
     meta: __nuxt_page_meta$d || {},
-    component: () => import('./deleted_products_history-BAKQghIz.mjs')
+    component: () => import('./deleted_products_history-CqDuYxQ6.mjs')
   },
   {
     name: "product_pages-deleted_products",
     path: "/product_pages/deleted_products",
     meta: __nuxt_page_meta$c || {},
-    component: () => import('./deleted_products-wquNcHoH.mjs')
+    component: () => import('./deleted_products-BMsosZ5y.mjs')
   },
   {
     name: "product_pages-detail-id",
     path: "/product_pages/detail/:id()",
     meta: __nuxt_page_meta$b || {},
-    component: () => import('./_id_-DE1KxGvR.mjs')
+    component: () => import('./_id_-3gFtrSRD.mjs')
   },
   {
     name: "product_pages-edit-id",
@@ -842,13 +878,13 @@ const _routes = [
     name: "product_pages-entry_products",
     path: "/product_pages/entry_products",
     meta: __nuxt_page_meta$9 || {},
-    component: () => import('./entry_products-DG-9O_QQ.mjs')
+    component: () => import('./entry_products-CdJdu6GK.mjs')
   },
   {
     name: "product_pages-exit_products",
     path: "/product_pages/exit_products",
     meta: __nuxt_page_meta$8 || {},
-    component: () => import('./exit_products-BYSRHxVP.mjs')
+    component: () => import('./exit_products-BnZv7ugL.mjs')
   },
   {
     name: "product_pages-product_stocks_report",
@@ -860,43 +896,43 @@ const _routes = [
     name: "product_pages-products",
     path: "/product_pages/products",
     meta: __nuxt_page_meta$6 || {},
-    component: () => import('./products-DXk3XiIc.mjs')
+    component: () => import('./products-CBVlTIUC.mjs')
   },
   {
     name: "profile_pages-edit_password_page",
     path: "/profile_pages/edit_password_page",
     meta: __nuxt_page_meta$5 || {},
-    component: () => import('./edit_password_page-F-YXoYvV.mjs')
+    component: () => import('./edit_password_page-sx1T6zbH.mjs')
   },
   {
     name: "profile_pages-edit_profile_page",
     path: "/profile_pages/edit_profile_page",
     meta: __nuxt_page_meta$4 || {},
-    component: () => import('./edit_profile_page-sp1EpTBq.mjs')
+    component: () => import('./edit_profile_page-BNYxjIDc.mjs')
   },
   {
     name: "register",
     path: "/register",
     meta: __nuxt_page_meta$3 || {},
-    component: () => import('./register-Cd_qs9QR.mjs')
+    component: () => import('./register-TliiOgx9.mjs')
   },
   {
     name: "sales_report_pages-sales_reports",
     path: "/sales_report_pages/sales_reports",
     meta: __nuxt_page_meta$2 || {},
-    component: () => import('./sales_reports-BenUeGlu.mjs')
+    component: () => import('./sales_reports-B18doY7M.mjs')
   },
   {
     name: "transaction_pages-detail-id",
     path: "/transaction_pages/detail/:id()",
     meta: __nuxt_page_meta$1 || {},
-    component: () => import('./_id_-rmsqr3w3.mjs')
+    component: () => import('./_id_-CUBPkmYl.mjs')
   },
   {
     name: "transaction_pages-transactions",
     path: "/transaction_pages/transactions",
     meta: __nuxt_page_meta || {},
-    component: () => import('./transactions-Cw5Mrtb6.mjs')
+    component: () => import('./transactions-BqSjpzpp.mjs')
   }
 ];
 const _wrapInTransition = (props, children) => {
@@ -1023,10 +1059,13 @@ const globalMiddleware = [
   manifest_45route_45rule
 ];
 const namedMiddleware = {
-  auth: () => import('./auth-C86Deiz_.mjs'),
-  guest: () => import('./guest-C2bOh-L5.mjs'),
-  $auth: () => import('./auth-CeRC1K6O.mjs'),
-  $guest: () => import('./guest-BEqvMm29.mjs')
+  auth: () => import('./auth-YZHYmu_7.mjs'),
+  guest: () => import('./guest-Cch3DRyu.mjs'),
+  $auth: () => import('./auth-BN0DVmkv.mjs'),
+  $guest: () => import('./guest-CUn-jIZU.mjs'),
+  "sidebase-auth": () => Promise.resolve().then(function() {
+    return sidebaseAuth;
+  })
 };
 const plugin$1 = /* @__PURE__ */ defineNuxtPlugin({
   name: "nuxt:router",
@@ -1263,7 +1302,7 @@ function useRequestEvent(nuxtApp = useNuxtApp()) {
 }
 function useRequestHeaders(include) {
   const event = useRequestEvent();
-  const _headers = event ? getRequestHeaders(event) : {};
+  const _headers = event ? getRequestHeaders$1(event) : {};
   if (!include || !event) {
     return _headers;
   }
@@ -1337,7 +1376,7 @@ function writeServerCookie(event, name, value, opts = {}) {
 }
 function useRequestURL(opts) {
   {
-    return getRequestURL(useRequestEvent(), opts);
+    return getRequestURL$1(useRequestEvent(), opts);
   }
 }
 const plugin = /* @__PURE__ */ defineNuxtPlugin({
@@ -1358,6 +1397,607 @@ const plugin = /* @__PURE__ */ defineNuxtPlugin({
 });
 const components_plugin_KR1HBZs4kY = /* @__PURE__ */ defineNuxtPlugin({
   name: "nuxt:global-components"
+});
+function resolveApiUrlPath(endpointPath, runtimeConfig) {
+  if (isExternalUrl(endpointPath)) {
+    return endpointPath;
+  }
+  const baseURL2 = resolveApiBaseURL(runtimeConfig);
+  return joinURL(baseURL2, endpointPath);
+}
+function resolveApiBaseURL(runtimeConfig, returnOnlyPathname) {
+  const authRuntimeConfig = runtimeConfig.public.auth;
+  if (returnOnlyPathname === void 0) {
+    returnOnlyPathname = !runtimeConfig.public.auth.disableInternalRouting;
+  }
+  let baseURL2 = authRuntimeConfig.baseURL;
+  if (authRuntimeConfig.originEnvKey) {
+    const envBaseURL = process.env[authRuntimeConfig.originEnvKey];
+    if (envBaseURL) {
+      baseURL2 = envBaseURL;
+    }
+  }
+  if (returnOnlyPathname) {
+    baseURL2 = withLeadingSlash(parseURL(baseURL2).pathname);
+  }
+  return baseURL2;
+}
+function isExternalUrl(url) {
+  return url.startsWith("http://") || url.startsWith("https://");
+}
+function useTypedBackendConfig(runtimeConfig, type) {
+  const provider = runtimeConfig.public.auth.provider;
+  if (provider.type === type) {
+    return provider;
+  }
+  throw new Error("RuntimeError: Type must match at this point");
+}
+const ERROR_PREFIX = "[@sidebase/nuxt-auth]";
+function getRequestURL(includePath = true) {
+  var _a;
+  return getURL((_a = useRequestEvent()) == null ? void 0 : _a.node.req, includePath);
+}
+function getRequestURLWN(nuxt) {
+  return callWithNuxt(nuxt, getRequestURL);
+}
+async function determineCallbackUrl(authConfig, userCallbackUrl, inferFromRequest) {
+  if (userCallbackUrl) {
+    return await normalizeCallbackUrl(userCallbackUrl);
+  }
+  const authConfigCallbackUrl = typeof authConfig.globalAppMiddleware === "object" ? authConfig.globalAppMiddleware.addDefaultCallbackUrl : void 0;
+  if (typeof authConfigCallbackUrl === "string") {
+    return await normalizeCallbackUrl(authConfigCallbackUrl);
+  }
+  const shouldInferFromRequest = inferFromRequest !== false && (inferFromRequest === true || authConfigCallbackUrl === true || authConfigCallbackUrl === void 0 && authConfig.globalAppMiddleware === true);
+  if (shouldInferFromRequest) {
+    const nuxt = useNuxtApp();
+    return getRequestURLWN(nuxt);
+  }
+}
+function determineCallbackUrlForRouteMiddleware(authConfig, middlewareTo) {
+  const authConfigCallbackUrl = typeof authConfig.globalAppMiddleware === "object" ? authConfig.globalAppMiddleware.addDefaultCallbackUrl : void 0;
+  if (typeof authConfigCallbackUrl === "string") {
+    return authConfigCallbackUrl;
+  }
+  if (authConfigCallbackUrl === true || authConfigCallbackUrl === void 0 && authConfig.globalAppMiddleware === true) {
+    return middlewareTo.fullPath;
+  }
+}
+async function normalizeCallbackUrl(rawCallbackUrl) {
+  if (isExternalUrl(rawCallbackUrl)) {
+    return rawCallbackUrl;
+  }
+  const nuxt = useNuxtApp();
+  const router = await callWithNuxt(nuxt, useRouter);
+  const resolvedUserRoute = router.options.history.createHref(rawCallbackUrl);
+  return resolvedUserRoute;
+}
+async function _fetch(nuxt, path, fetchOptions) {
+  var _a, _b;
+  const runtimeConfigOrPromise = callWithNuxt(nuxt, useRuntimeConfig);
+  const runtimeConfig = "public" in runtimeConfigOrPromise ? runtimeConfigOrPromise : await runtimeConfigOrPromise;
+  const joinedPath = resolveApiUrlPath(path, runtimeConfig);
+  if (runtimeConfig.public.auth.disableInternalRouting === false) {
+    const currentPath = (_b = (_a = nuxt.ssrContext) == null ? void 0 : _a.event) == null ? void 0 : _b.path;
+    if (currentPath == null ? void 0 : currentPath.startsWith(joinedPath)) {
+      console.error(`${ERROR_PREFIX} Recursion detected at ${joinedPath}. Have you set the correct \`auth.baseURL\`?`);
+      throw new FetchConfigurationError("Server configuration error");
+    }
+  }
+  try {
+    return $fetch(joinedPath, fetchOptions);
+  } catch (error) {
+    let errorMessage = `${ERROR_PREFIX} Error while requesting ${joinedPath}.`;
+    if (runtimeConfig.public.auth.provider.type === "authjs") {
+      errorMessage += " Have you added the authentication handler server-endpoint `[...].ts`? Have you added the authentication handler in a non-default location (default is `~/server/api/auth/[...].ts`) and not updated the module-setting `auth.basePath`?";
+    }
+    errorMessage += " Error is:";
+    console.error(errorMessage);
+    console.error(error);
+    throw new FetchConfigurationError(
+      "Runtime error, check the console logs to debug, open an issue at https://github.com/sidebase/nuxt-auth/issues/new/choose if you continue to have this problem"
+    );
+  }
+}
+class FetchConfigurationError extends Error {
+}
+const isNonEmptyObject = (obj) => typeof obj === "object" && obj !== null && Object.keys(obj).length > 0;
+function navigateToAuthPageWN(nuxt, href, isInternalRouting) {
+  return callWithNuxt(nuxt, navigateToAuthPage, [nuxt, href, isInternalRouting]);
+}
+const URL_QUOTE_RE = /"/g;
+function navigateToAuthPage(nuxt, href, isInternalRouting = false) {
+  const router = useRouter();
+  {
+    if (nuxt.ssrContext) {
+      const isExternalHost = hasProtocol(href, { acceptRelative: true });
+      if (isExternalHost) {
+        const { protocol } = new URL(href, "http://localhost");
+        if (protocol && isScriptProtocol(protocol)) {
+          throw new Error(`Cannot navigate to a URL with '${protocol}' protocol.`);
+        }
+      }
+      const location = isExternalHost || isInternalRouting ? href : router.resolve(href).fullPath || "/";
+      return nuxt.callHook("app:redirected").then(() => {
+        const encodedLoc = location.replace(URL_QUOTE_RE, "%22");
+        const encodedHeader = encodeURL(location, isExternalHost);
+        nuxt.ssrContext._renderResponse = {
+          statusCode: 302,
+          body: `<!DOCTYPE html><html><head><meta http-equiv="refresh" content="0; url=${encodedLoc}"></head></html>`,
+          headers: { location: encodedHeader }
+        };
+      });
+    }
+  }
+  (void 0).location.href = href;
+  if (href.includes("#")) {
+    (void 0).location.reload();
+  }
+  const waitForNavigationWithFallbackToRouter = new Promise((resolve) => setTimeout(resolve, 60 * 1e3)).then(() => router.push(href));
+  return waitForNavigationWithFallbackToRouter;
+}
+function encodeURL(location, isExternalHost = false) {
+  const url = new URL(location, "http://localhost");
+  if (!isExternalHost) {
+    return url.pathname + url.search + url.hash;
+  }
+  if (location.startsWith("//")) {
+    return url.toString().replace(url.protocol, "");
+  }
+  return url.toString();
+}
+function makeCommonAuthState() {
+  const data = useState("auth:data", () => void 0);
+  const hasInitialSession = computed(() => !!data.value);
+  const lastRefreshedAt = useState("auth:lastRefreshedAt", () => {
+    if (hasInitialSession.value) {
+      return /* @__PURE__ */ new Date();
+    }
+    return void 0;
+  });
+  const loading = useState("auth:loading", () => false);
+  const status = computed(() => {
+    if (loading.value) {
+      return "loading";
+    }
+    if (data.value) {
+      return "authenticated";
+    }
+    return "unauthenticated";
+  });
+  return {
+    data,
+    loading,
+    lastRefreshedAt,
+    status
+  };
+}
+const useAuthState = () => makeCommonAuthState();
+async function getRequestHeaders(nuxt, includeCookie = true) {
+  const headers = await callWithNuxt(nuxt, () => useRequestHeaders(["cookie", "host"]));
+  if (includeCookie && headers.cookie) {
+    return headers;
+  }
+  return { host: headers.host };
+}
+async function getCsrfToken() {
+  const nuxt = useNuxtApp();
+  const headers = await getRequestHeaders(nuxt);
+  return _fetch(nuxt, "/csrf", { headers }).then((response) => response.csrfToken);
+}
+function getCsrfTokenWithNuxt(nuxt) {
+  return callWithNuxt(nuxt, getCsrfToken);
+}
+const signIn = async (provider, options, authorizationParams) => {
+  const nuxt = useNuxtApp();
+  const runtimeConfig = /* @__PURE__ */ useRuntimeConfig();
+  const configuredProviders = await getProviders();
+  if (!configuredProviders) {
+    const errorUrl = resolveApiUrlPath("error", runtimeConfig);
+    return navigateToAuthPageWN(nuxt, errorUrl, true);
+  }
+  const backendConfig = useTypedBackendConfig(runtimeConfig, "authjs");
+  if (typeof provider === "undefined") {
+    provider = backendConfig.defaultProvider;
+  }
+  const { redirect = true } = options ?? {};
+  const callbackUrl = await callWithNuxt(nuxt, () => determineCallbackUrl(runtimeConfig.public.auth, options == null ? void 0 : options.callbackUrl));
+  const signinUrl = resolveApiUrlPath("signin", runtimeConfig);
+  const queryParams = callbackUrl ? `?${new URLSearchParams({ callbackUrl })}` : "";
+  const hrefSignInAllProviderPage = `${signinUrl}${queryParams}`;
+  if (!provider) {
+    return navigateToAuthPageWN(nuxt, hrefSignInAllProviderPage, true);
+  }
+  const selectedProvider = configuredProviders[provider];
+  if (!selectedProvider) {
+    return navigateToAuthPageWN(nuxt, hrefSignInAllProviderPage, true);
+  }
+  const isCredentials = selectedProvider.type === "credentials";
+  const isEmail = selectedProvider.type === "email";
+  const isSupportingReturn = isCredentials || isEmail;
+  let action = "signin";
+  if (isCredentials) {
+    action = "callback";
+  }
+  const csrfToken = await callWithNuxt(nuxt, getCsrfToken);
+  const headers = {
+    "Content-Type": "application/x-www-form-urlencoded",
+    ...await getRequestHeaders(nuxt)
+  };
+  const body = new URLSearchParams({
+    ...options,
+    csrfToken,
+    callbackUrl,
+    json: true
+  });
+  const fetchSignIn = () => _fetch(nuxt, `/${action}/${provider}`, {
+    method: "post",
+    params: authorizationParams,
+    headers,
+    body
+  }).catch((error2) => error2.data);
+  const data = await callWithNuxt(nuxt, fetchSignIn);
+  if (redirect || !isSupportingReturn) {
+    const href = data.url ?? callbackUrl;
+    return navigateToAuthPageWN(nuxt, href);
+  }
+  const error = new URL(data.url).searchParams.get("error");
+  await getSessionWithNuxt(nuxt);
+  return {
+    error,
+    status: 200,
+    ok: true,
+    url: error ? null : data.url
+  };
+};
+async function getProviders() {
+  const nuxt = useNuxtApp();
+  const headers = await getRequestHeaders(nuxt, false);
+  return _fetch(
+    nuxt,
+    "/providers",
+    { headers }
+  );
+}
+async function getSession(getSessionOptions) {
+  const nuxt = useNuxtApp();
+  const callbackUrlFallback = await getRequestURLWN(nuxt);
+  const { required, callbackUrl, onUnauthenticated } = defu(getSessionOptions || {}, {
+    required: false,
+    callbackUrl: void 0,
+    onUnauthenticated: () => signIn(void 0, {
+      callbackUrl: (getSessionOptions == null ? void 0 : getSessionOptions.callbackUrl) || callbackUrlFallback
+    })
+  });
+  const { data, status, loading, lastRefreshedAt } = await callWithNuxt(nuxt, useAuthState);
+  const onError = () => {
+    loading.value = false;
+  };
+  const headers = await getRequestHeaders(nuxt);
+  return _fetch(nuxt, "/session", {
+    onResponse: ({ response }) => {
+      const sessionData = response._data;
+      {
+        const setCookieValues = response.headers.getSetCookie ? response.headers.getSetCookie() : [response.headers.get("set-cookie")];
+        if (setCookieValues && nuxt.ssrContext) {
+          for (const value of setCookieValues) {
+            if (!value) {
+              continue;
+            }
+            appendHeader(nuxt.ssrContext.event, "set-cookie", value);
+          }
+        }
+      }
+      data.value = isNonEmptyObject(sessionData) ? sessionData : null;
+      loading.value = false;
+      if (required && status.value === "unauthenticated") {
+        return onUnauthenticated();
+      }
+      return sessionData;
+    },
+    onRequest: ({ options }) => {
+      lastRefreshedAt.value = /* @__PURE__ */ new Date();
+      options.params = {
+        ...options.params,
+        callbackUrl: callbackUrl || callbackUrlFallback
+      };
+    },
+    onRequestError: onError,
+    onResponseError: onError,
+    headers
+  });
+}
+function getSessionWithNuxt(nuxt) {
+  return callWithNuxt(nuxt, getSession);
+}
+const signOut = async (options) => {
+  const nuxt = useNuxtApp();
+  const runtimeConfig = /* @__PURE__ */ useRuntimeConfig();
+  const { callbackUrl: userCallbackUrl, redirect = true } = options ?? {};
+  const csrfToken = await getCsrfTokenWithNuxt(nuxt);
+  const callbackUrl = await determineCallbackUrl(
+    runtimeConfig.public.auth,
+    userCallbackUrl,
+    true
+  );
+  if (!csrfToken) {
+    throw createError({ statusCode: 400, statusMessage: "Could not fetch CSRF Token for signing out" });
+  }
+  const signoutData = await _fetch(nuxt, "/signout", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+      ...await getRequestHeaders(nuxt)
+    },
+    onRequest: ({ options: options2 }) => {
+      options2.body = new URLSearchParams({
+        csrfToken,
+        callbackUrl,
+        json: "true"
+      });
+    }
+  }).catch((error) => error.data);
+  if (redirect) {
+    const url = signoutData.url ?? callbackUrl;
+    return navigateToAuthPageWN(nuxt, url);
+  }
+  await getSessionWithNuxt(nuxt);
+  return signoutData;
+};
+function useAuth() {
+  const {
+    data,
+    status,
+    lastRefreshedAt
+  } = useAuthState();
+  return {
+    status,
+    data: readonly(data),
+    lastRefreshedAt: readonly(lastRefreshedAt),
+    getSession,
+    getCsrfToken,
+    getProviders,
+    signIn,
+    signOut,
+    refresh: getSession
+  };
+}
+const authMiddleware = /* @__PURE__ */ defineNuxtRouteMiddleware((to) => {
+  const options = normalizeUserOptions(to.meta.auth);
+  if (!options) {
+    return;
+  }
+  const authConfig = (/* @__PURE__ */ useRuntimeConfig()).public.auth;
+  const { status, signIn: signIn2 } = useAuth();
+  const isGuestMode = options.unauthenticatedOnly;
+  const isAuthenticated = status.value === "authenticated";
+  if (isGuestMode && status.value === "unauthenticated") {
+    return;
+  } else if (isGuestMode && isAuthenticated) {
+    return navigateTo(options.navigateAuthenticatedTo);
+  } else if (isAuthenticated) {
+    return;
+  }
+  if (authConfig.provider.type === "local") {
+    const loginRoute = authConfig.provider.pages.login;
+    if (loginRoute && loginRoute === to.path) {
+      return;
+    }
+  }
+  const globalAppMiddleware = authConfig.globalAppMiddleware;
+  if (globalAppMiddleware === true || typeof globalAppMiddleware === "object" && globalAppMiddleware.allow404WithoutAuth) {
+    const matchedRoute = to.matched.length > 0;
+    if (!matchedRoute) {
+      return;
+    }
+  }
+  if (authConfig.provider.type === "authjs") {
+    const callbackUrl = determineCallbackUrlForRouteMiddleware(authConfig, to);
+    const signInOptions = {
+      error: "SessionRequired",
+      callbackUrl
+    };
+    return signIn2(void 0, signInOptions);
+  }
+  if (options.navigateUnauthenticatedTo) {
+    return navigateTo(options.navigateUnauthenticatedTo);
+  }
+  const loginPage = authConfig.provider.pages.login;
+  if (typeof loginPage !== "string") {
+    console.warn(`${ERROR_PREFIX} provider.pages.login is misconfigured`);
+    return;
+  }
+  const external = isExternalUrl(loginPage);
+  if (typeof globalAppMiddleware === "object" && globalAppMiddleware.addDefaultCallbackUrl) {
+    let redirectUrl = to.fullPath;
+    if (typeof globalAppMiddleware.addDefaultCallbackUrl === "string") {
+      redirectUrl = globalAppMiddleware.addDefaultCallbackUrl;
+    }
+    return navigateTo({
+      path: loginPage,
+      query: {
+        redirect: redirectUrl
+      }
+    }, { external });
+  }
+  return navigateTo(loginPage, { external });
+});
+function normalizeUserOptions(userOptions) {
+  if (typeof userOptions === "boolean" || userOptions === void 0) {
+    return userOptions !== false ? {
+      // Guest Mode off if `auth: true`
+      unauthenticatedOnly: false,
+      navigateAuthenticatedTo: "/",
+      navigateUnauthenticatedTo: void 0
+    } : void 0;
+  }
+  if (typeof userOptions === "object") {
+    if (userOptions.unauthenticatedOnly === void 0) {
+      userOptions.unauthenticatedOnly = true;
+    }
+    return {
+      unauthenticatedOnly: userOptions.unauthenticatedOnly,
+      navigateAuthenticatedTo: userOptions.navigateAuthenticatedTo ?? "/",
+      navigateUnauthenticatedTo: userOptions.navigateUnauthenticatedTo
+    };
+  }
+}
+const sidebaseAuth = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+  __proto__: null,
+  default: authMiddleware
+}, Symbol.toStringTag, { value: "Module" }));
+function withoutQuery(path) {
+  return path.split("?")[0];
+}
+let routeMatcher;
+function getNitroRouteRules(path) {
+  var _a;
+  const { nitro, app } = /* @__PURE__ */ useRuntimeConfig();
+  if (!routeMatcher) {
+    routeMatcher = toRouteMatcher(
+      createRouter$1({
+        routes: Object.fromEntries(
+          Object.entries((nitro == null ? void 0 : nitro.routeRules) || {}).map(([path2, rules]) => [withoutTrailingSlash(path2), rules])
+        )
+      })
+    );
+  }
+  const options = {};
+  const matches = routeMatcher.matchAll(
+    withoutBase(withoutTrailingSlash(withoutQuery(path)), app.baseURL)
+  ).reverse();
+  for (const match of matches) {
+    options.disableServerSideAuth ?? (options.disableServerSideAuth = (_a = match.auth) == null ? void 0 : _a.disableServerSideAuth);
+  }
+  return options;
+}
+class DefaultRefreshHandler {
+  constructor(config) {
+    /** Result of `useAuth` composable, mostly used for session data/refreshing */
+    __publicField(this, "auth");
+    /** Runtime config is mostly used for getting provider data */
+    __publicField(this, "runtimeConfig");
+    /** Refetch interval */
+    __publicField(this, "refetchIntervalTimer");
+    // TODO: find more Generic method to start a Timer for the Refresh Token
+    /** Refetch interval for local/refresh schema */
+    __publicField(this, "refreshTokenIntervalTimer");
+    /** Because passing `this.visibilityHandler` to `document.addEventHandler` loses `this` context */
+    __publicField(this, "boundVisibilityHandler");
+    this.config = config;
+    this.boundVisibilityHandler = this.visibilityHandler.bind(this);
+  }
+  init() {
+    var _a;
+    this.runtimeConfig = (/* @__PURE__ */ useRuntimeConfig()).public.auth;
+    this.auth = useAuth();
+    (void 0).addEventListener("visibilitychange", this.boundVisibilityHandler, false);
+    const { enablePeriodically } = this.config;
+    if (enablePeriodically !== false) {
+      const intervalTime = enablePeriodically === true ? 1e3 : enablePeriodically;
+      this.refetchIntervalTimer = setInterval(() => {
+        var _a2;
+        if ((_a2 = this.auth) == null ? void 0 : _a2.data.value) {
+          this.auth.refresh();
+        }
+      }, intervalTime);
+    }
+    const provider = this.runtimeConfig.provider;
+    if (provider.type === "local" && provider.refresh.isEnabled && ((_a = provider.refresh.token) == null ? void 0 : _a.maxAgeInSeconds)) {
+      const intervalTime = provider.refresh.token.maxAgeInSeconds * 1e3;
+      this.refreshTokenIntervalTimer = setInterval(() => {
+        var _a2;
+        if ((_a2 = this.auth) == null ? void 0 : _a2.refreshToken.value) {
+          this.auth.refresh();
+        }
+      }, intervalTime);
+    }
+  }
+  destroy() {
+    (void 0).removeEventListener("visibilitychange", this.boundVisibilityHandler, false);
+    clearInterval(this.refetchIntervalTimer);
+    if (this.refreshTokenIntervalTimer) {
+      clearInterval(this.refreshTokenIntervalTimer);
+    }
+    this.auth = void 0;
+    this.runtimeConfig = void 0;
+  }
+  visibilityHandler() {
+    var _a, _b;
+    if (((_a = this.config) == null ? void 0 : _a.enableOnWindowFocus) && (void 0).visibilityState === "visible" && ((_b = this.auth) == null ? void 0 : _b.data.value)) {
+      this.auth.refresh();
+    }
+  }
+}
+const _refreshHandler = new DefaultRefreshHandler({ "enablePeriodically": false, "enableOnWindowFocus": true });
+const plugin_I4dbrL2rYz = /* @__PURE__ */ defineNuxtPlugin(async (nuxtApp) => {
+  var _a;
+  let __temp, __restore;
+  const { data, lastRefreshedAt, loading } = useAuthState();
+  const { getSession: getSession2 } = useAuth();
+  const wholeRuntimeConfig = /* @__PURE__ */ useRuntimeConfig();
+  const runtimeConfig = wholeRuntimeConfig.public.auth;
+  const globalAppMiddleware = runtimeConfig.globalAppMiddleware;
+  const routeRules = getNitroRouteRules(nuxtApp._route.path);
+  {
+    runtimeConfig.baseURL = resolveApiBaseURL(wholeRuntimeConfig);
+  }
+  let nitroPrerender = false;
+  if (nuxtApp.ssrContext) {
+    nitroPrerender = getHeader(nuxtApp.ssrContext.event, "x-nitro-prerender") !== void 0;
+  }
+  let disableServerSideAuth = routeRules.disableServerSideAuth;
+  disableServerSideAuth ?? (disableServerSideAuth = runtimeConfig == null ? void 0 : runtimeConfig.disableServerSideAuth);
+  disableServerSideAuth ?? (disableServerSideAuth = false);
+  if (disableServerSideAuth) {
+    loading.value = true;
+  }
+  const isErrorUrl = ((_a = nuxtApp.ssrContext) == null ? void 0 : _a.error) === true;
+  const requireAuthOnErrorPage = globalAppMiddleware === true || typeof globalAppMiddleware === "object" && globalAppMiddleware.allow404WithoutAuth;
+  const shouldFetchSession = typeof data.value === "undefined" && !nitroPrerender && !disableServerSideAuth && !(isErrorUrl && requireAuthOnErrorPage);
+  if (shouldFetchSession) {
+    try {
+      ;
+      [__temp, __restore] = executeAsync(() => getSession2()), await __temp, __restore();
+      ;
+    } catch (e) {
+      if (!(e instanceof FetchConfigurationError)) {
+        throw e;
+      }
+    }
+  }
+  nuxtApp.hook("app:mounted", () => {
+    _refreshHandler.init();
+    if (disableServerSideAuth) {
+      getSession2();
+    }
+  });
+  const _unmount = nuxtApp.vueApp.unmount;
+  nuxtApp.vueApp.unmount = function() {
+    _refreshHandler.destroy();
+    lastRefreshedAt.value = void 0;
+    data.value = void 0;
+    _unmount();
+  };
+  if (globalAppMiddleware === true || typeof globalAppMiddleware === "object" && globalAppMiddleware.isEnabled) {
+    addRouteMiddleware("auth", authMiddleware, {
+      global: true
+    });
+  }
+});
+const recaptcha_erwWYdA8VO = /* @__PURE__ */ defineNuxtPlugin({
+  name: "nuxt-recaptcha",
+  setup() {
+    const config = /* @__PURE__ */ useRuntimeConfig();
+    useHead({
+      script: [
+        {
+          src: `https://www.google.com/recaptcha/api.js?render=${config.public.recaptcha.siteKey}`,
+          async: true
+        }
+      ]
+    });
+  }
 });
 const MODULE_NAME = "nuxt-sanctum-authentication";
 const MODULE_CONFIG_KEY = "laravelSanctum";
@@ -1588,11 +2228,13 @@ const plugins = [
   revive_payload_server_eJ33V7gbc6,
   plugin,
   components_plugin_KR1HBZs4kY,
+  plugin_I4dbrL2rYz,
+  recaptcha_erwWYdA8VO,
   plugin_wmlUyJB46B,
   emitter
 ];
 const layouts = {
-  default: defineAsyncComponent(() => import('./default-Jza9yT-U.mjs').then((m) => m.default || m))
+  default: defineAsyncComponent(() => import('./default-D66HUE77.mjs').then((m) => m.default || m))
 };
 const LayoutLoader = defineComponent({
   name: "LayoutLoader",
@@ -1812,6 +2454,15 @@ const _sfc_main$2 = {
   __ssrInlineRender: true,
   setup(__props) {
     axios.defaults.withCredentials = true;
+    useHead({
+      script: [
+        {
+          src: "https://www.google.com/recaptcha/api.js",
+          async: true,
+          defer: true
+        }
+      ]
+    });
     return (_ctx, _push, _parent, _attrs) => {
       const _component_NuxtLayout = __nuxt_component_0;
       const _component_NuxtPage = __nuxt_component_1;
@@ -1857,8 +2508,8 @@ const _sfc_main$1 = {
     const statusMessage = _error.statusMessage ?? (is404 ? "Page Not Found" : "Internal Server Error");
     const description = _error.message || _error.toString();
     const stack = void 0;
-    const _Error404 = defineAsyncComponent(() => import('./error-404-CRww_Usf.mjs'));
-    const _Error = defineAsyncComponent(() => import('./error-500-DGgJJjst.mjs'));
+    const _Error404 = defineAsyncComponent(() => import('./error-404--EIl7iVe.mjs'));
+    const _Error = defineAsyncComponent(() => import('./error-500-BVZAnAAM.mjs'));
     const ErrorTemplate = is404 ? _Error404 : _Error;
     return (_ctx, _push, _parent, _attrs) => {
       _push(ssrRenderComponent(unref(ErrorTemplate), mergeProps({ statusCode: unref(statusCode), statusMessage: unref(statusMessage), description: unref(description), stack: unref(stack) }, _attrs), null, _parent));
@@ -1939,5 +2590,5 @@ let entry;
 }
 const entry$1 = (ssrContext) => entry(ssrContext);
 
-export { useNuxtApp as a, resolveRouteObject as b, useRuntimeConfig as c, nuxtLinkDefaults as d, entry$1 as default, useCookie as e, defineNuxtRouteMiddleware as f, useSanctumOptions as g, createError as h, injectHead as i, createLogger as j, createFetchService as k, useCurrentUser as l, useTokenStorage as m, navigateTo as n, useRoute as o, extractNestedValue as p, getAuthUser as q, resolveUnrefHeadInput as r, useRouter as u };
+export { useRouter as a, useNuxtApp as b, useRuntimeConfig as c, nuxtLinkDefaults as d, entry$1 as default, useCookie as e, defineNuxtRouteMiddleware as f, useSanctumOptions as g, createError as h, createLogger as i, createFetchService as j, useCurrentUser as k, useTokenStorage as l, useRoute as m, navigateTo as n, extractNestedValue as o, getAuthUser as p, resolveRouteObject as r, useHead as u };
 //# sourceMappingURL=server.mjs.map

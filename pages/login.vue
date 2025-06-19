@@ -42,19 +42,11 @@
           />
         </div>
 
-        <div class="mb-4">
-          <!-- <NuxtRecaptcha 
-            v-if="recaptchaAvailable"
-            @success="onCaptchaVerified"
-            @error="onCaptchaError"
-            @expired="onCaptchaExpired"
-          /> -->
-          <Recaptcha
-            v-if="recaptchaAvailable"
-            @verify="onCaptchaVerified"
-            @expire="onCaptchaExpired"
-            @error="onCaptchaError"
-          />
+        <!-- Checkbox reCAPTCHA muncul otomatis karena pakai v2 -->
+        <div class="mb-4 text-xs text-center text-gray-500">
+          * This site is protected by reCAPTCHA and the Google
+          <a href="https://policies.google.com/privacy" class="underline" target="_blank">Privacy Policy</a> and
+          <a href="https://policies.google.com/terms" class="underline" target="_blank">Terms of Service</a> apply.
         </div>
 
         <button
@@ -69,57 +61,45 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue"; // <-- Import 'onMounted'
-
+import { ref, onMounted } from "vue";
 const router = useRouter();
 const email = ref("");
 const password = ref("");
-const cookie = useCookie("my_auth_token");
 const errorMessage = ref("");
 const successMessage = ref("");
+const cookie = useCookie("my_auth_token");
 
-// --- Tambahan untuk reCAPTCHA ---
-const { vueApp } = useNuxtApp(); // Akses instance Nuxt
-const captchaToken = ref(null); // Ref untuk menyimpan token captcha
-const recaptchaAvailable = ref(false); // Ref untuk menunda render captcha
+// reCAPTCHA v2 setup
+const { recaptchaLoaded, executeRecaptcha } = useRecaptcha();
+const recaptchaReady = ref(false);
 
-// Fungsi untuk menangani hasil captcha
-const onCaptchaVerified = (response) => {
-  console.log("reCAPTCHA verified:", response);
-  captchaToken.value = response;
-  errorMessage.value = ""; // Hapus pesan error jika ada
-};
-
-const onCaptchaError = (error) => {
-  console.error("reCAPTCHA error:", error);
-  errorMessage.value = "Terjadi kesalahan pada verifikasi reCAPTCHA.";
-  captchaToken.value = null;
-};
-
-const onCaptchaExpired = () => {
-  console.log("reCAPTCHA token expired");
-  captchaToken.value = null;
-};
-// --- Akhir Tambahan reCAPTCHA ---
-
-// Tunda render reCAPTCHA sampai komponen di-mount untuk menghindari hydration mismatch
-onMounted(() => {
-  recaptchaAvailable.value = true;
-});
-
-definePageMeta({
-  layout: false,
-  middleware: ["guest"],
+onMounted(async () => {
+  try {
+    await recaptchaLoaded(); // Tunggu hingga reCAPTCHA script siap
+    recaptchaReady.value = true;
+  } catch (e) {
+    console.error("Failed to load reCAPTCHA:", e);
+    errorMessage.value = "Gagal memuat reCAPTCHA.";
+  }
 });
 
 async function login() {
   errorMessage.value = "";
   successMessage.value = "";
 
-  // --- Validasi Captcha sebelum mengirim ke backend ---
-  if (!captchaToken.value) {
-    errorMessage.value = "Silakan verifikasi bahwa Anda bukan robot.";
-    return; // Hentikan fungsi jika captcha belum diisi
+  if (!recaptchaReady.value) {
+    errorMessage.value = "Captcha belum siap. Coba lagi beberapa saat.";
+    return;
+  }
+
+  let captchaToken = null;
+
+  try {
+    captchaToken = await executeRecaptcha(); // Token dari Google
+    if (!captchaToken) throw new Error("reCAPTCHA tidak valid");
+  } catch (err) {
+    errorMessage.value = "Verifikasi reCAPTCHA gagal. Coba lagi.";
+    return;
   }
 
   try {
@@ -128,34 +108,19 @@ async function login() {
       body: {
         email: email.value,
         password: password.value,
-        // Kirim token captcha ke backend dengan nama 'g-recaptcha-response'
-        "g-recaptcha-response": captchaToken.value,
+        "g-recaptcha-response": captchaToken,
       },
     });
-    console.log("Login success:", result);
+
     cookie.value = result.token;
     router.push("/");
   } catch (error) {
     console.error("Login failed:", error);
-    // Tangani pesan error dari backend
-    if (error.response && error.response.status === 422) {
-      // Jika error validasi, mungkin karena captcha salah
-      errorMessage.value =
-        "Verifikasi reCAPTCHA gagal atau tidak valid. Silakan coba lagi.";
-    } else {
-      errorMessage.value = "Login gagal. Periksa email dan password Anda.";
-    }
-
-    // Reset captcha di Nuxt setelah gagal login
-    // Ini akan memaksa user untuk mengisi ulang captcha
-    if (vueApp.recaptcha) {
-      vueApp.recaptcha.reset();
-    }
-    captchaToken.value = null;
-
-    setTimeout(() => {
-      errorMessage.value = "";
-    }, 5000);
+    errorMessage.value =
+      error?.response?.status === 422
+        ? "Verifikasi gagal. Coba lagi."
+        : "Login gagal. Email/password salah.";
+    setTimeout(() => (errorMessage.value = ""), 4000);
   }
 }
 </script>
