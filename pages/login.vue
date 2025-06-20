@@ -212,7 +212,7 @@ async function login() {
       body: {
         email: email.value,
         password: password.value,
-        // "g-recaptcha-response": token, // kirim ke backend
+        "g-recaptcha-response": token, // kirim ke backend
       },
     });
     // console.log("Login success:", result);
