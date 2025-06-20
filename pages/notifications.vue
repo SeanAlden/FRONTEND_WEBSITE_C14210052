@@ -1,7 +1,7 @@
 <template>
-  <div class="mx-auto max-w-5xl p-6">
-    <h1 class="mb-6 flex items-center gap-2 text-3xl font-bold text-gray-800">
-      <span class="inline-block rounded-full bg-blue-100 p-2 text-blue-600"> 🔔 </span>
+  <div class="max-w-5xl p-6 mx-auto">
+    <h1 class="flex items-center gap-2 mb-6 text-3xl font-bold text-gray-800">
+      <span class="inline-block p-2 text-blue-600 bg-blue-100 rounded-full"> 🔔 </span>
       Notifikasi
     </h1>
 
@@ -15,10 +15,10 @@
       <!-- <li
         v-for="notif in notifications"
         :key="notif.id"
-        class="rounded-lg border border-gray-200 bg-white p-5 shadow-md transition hover:shadow-lg"
+        class="p-5 transition bg-white border border-gray-200 rounded-lg shadow-md hover:shadow-lg"
       >
         <p class="font-medium text-gray-900">{{ notif.message }}</p>
-        <div class="mt-2 flex items-center justify-between text-sm text-gray-500">
+        <div class="flex items-center justify-between mt-2 text-sm text-gray-500">
           <span>{{ formatDate(notif.notification_time) }}</span>
           <span :class="badgeClass(notif.notification_type)">
             {{ notif.notification_type }}
@@ -28,12 +28,12 @@
       <li
         v-for="notif in notifications"
         :key="notif.id"
-        class="rounded-lg border border-gray-200 bg-white p-5 shadow-md transition hover:shadow-lg"
+        class="p-5 transition bg-white border border-gray-200 rounded-lg shadow-md hover:shadow-lg"
       >
         <!-- <li
         v-for="(notif: Notification) in notifications"
         :key="notif.id"
-        class="rounded-lg border border-gray-200 bg-white p-5 shadow-md transition hover:shadow-lg"
+        class="p-5 transition bg-white border border-gray-200 rounded-lg shadow-md hover:shadow-lg"
       > -->
         <div class="flex items-start justify-between">
           <p class="font-medium text-gray-900">{{ notif.message }}</p>
@@ -46,7 +46,7 @@
           </button>
         </div>
 
-        <div class="mt-2 flex items-center justify-between text-sm text-gray-500">
+        <div class="flex items-center justify-between mt-2 text-sm text-gray-500">
           <span>{{ formatDate(notif.notification_time) }}</span>
           <span :class="badgeClass(notif.notification_type)">
             {{ notif.notification_type }}
@@ -58,7 +58,93 @@
 </template>
 
 <script setup lang="ts">
-// import { ref, onMounted } from "vue";
+// // import { ref, onMounted } from "vue";
+// import axios from "axios";
+
+// definePageMeta({
+//   middleware: ["auth"],
+// });
+
+// interface Notification {
+//   id: number;
+//   message: string;
+//   notification_time: string;
+//   notification_type: string;
+//   created_at?: string;
+//   updated_at?: string;
+// }
+
+// const notifications = ref<Notification[]>([]);
+// const loading = ref(true);
+
+// onMounted(async () => {
+//   try {
+//     const res = await axios.get(useApi("/api/notifications"));
+//     // const data = await res.json();
+//     const data = res.data;
+//     notifications.value = data;
+//   } catch (error) {
+//     console.error("Gagal memuat notifikasi:", error);
+//   } finally {
+//     loading.value = false;
+//   }
+// });
+
+// // const formatDate = (datetime: string) => {
+// //   return new Date(datetime).toLocaleString("id-ID", {
+// //     dateStyle: "medium",
+// //     timeStyle: "short",
+// //   });
+// // };
+
+// const formatDate = (datetime: string) => {
+//   const date = new Date(datetime);
+//   date.setHours(date.getHours() + 7); // Tambahkan 7 jam
+//   return date.toLocaleString("id-ID", {
+//     dateStyle: "medium",
+//     timeStyle: "short",
+//   });
+// };
+
+// const badgeClass = (type: string) => {
+//   switch (type.toLowerCase()) {
+//     case "info":
+//       return "bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full text-xs font-semibold";
+//     case "warning":
+//       return "bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded-full text-xs font-semibold";
+//     case "error":
+//       return "bg-red-100 text-red-700 px-2 py-0.5 rounded-full text-xs font-semibold";
+//     case "success":
+//       return "bg-green-100 text-green-700 px-2 py-0.5 rounded-full text-xs font-semibold";
+//     default:
+//       return "bg-gray-100 text-gray-700 px-2 py-0.5 rounded-full text-xs font-semibold";
+//   }
+// };
+
+// const deleteNotification = async (id: number) => {
+//   const confirmDelete = confirm("Yakin ingin menghapus notifikasi ini?");
+//   if (!confirmDelete) return;
+
+//   try {
+//     const res = await fetch(useApi(`/api/notifications/${id}`), {
+//       method: "PUT",
+//     });
+
+//     if (!res.ok) {
+//       throw new Error("Gagal menghapus notifikasi.");
+//     }
+
+//     // Hapus dari list lokal setelah berhasil dihapus di backend
+//     notifications.value = notifications.value.filter(
+//       (notif: Notification) => notif.id !== id
+//     );
+//   } catch (error) {
+//     console.error("Error saat menghapus notifikasi:", error);
+//     alert("Terjadi kesalahan saat menghapus notifikasi.");
+//   }
+// };
+
+import { ref, onMounted } from "vue"; // Make sure to import ref and onMounted
 import axios from "axios";
 
 definePageMeta({
@@ -77,10 +163,11 @@ interface Notification {
 const notifications = ref<Notification[]>([]);
 const loading = ref(true);
 
-onMounted(async () => {
+// Function to fetch notifications
+const fetchNotifications = async () => {
+  loading.value = true;
   try {
     const res = await axios.get(useApi("/api/notifications"));
-    // const data = await res.json();
     const data = res.data;
     notifications.value = data;
   } catch (error) {
@@ -88,14 +175,11 @@ onMounted(async () => {
   } finally {
     loading.value = false;
   }
-});
+};
 
-// const formatDate = (datetime: string) => {
-//   return new Date(datetime).toLocaleString("id-ID", {
-//     dateStyle: "medium",
-//     timeStyle: "short",
-//   });
-// };
+onMounted(() => {
+  fetchNotifications(); // Call it when the component mounts
+});
 
 const formatDate = (datetime: string) => {
   const date = new Date(datetime);
@@ -134,10 +218,8 @@ const deleteNotification = async (id: number) => {
       throw new Error("Gagal menghapus notifikasi.");
     }
 
-    // Hapus dari list lokal setelah berhasil dihapus di backend
-    notifications.value = notifications.value.filter(
-      (notif: Notification) => notif.id !== id
-    );
+    // Re-fetch notifications after successful deletion
+    await fetchNotifications();
   } catch (error) {
     console.error("Error saat menghapus notifikasi:", error);
     alert("Terjadi kesalahan saat menghapus notifikasi.");
