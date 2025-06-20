@@ -26,8 +26,11 @@
             id="email"
             placeholder="Enter your email"
             class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+            :class="{ 'border-red-500': emailError }"
             required
+            @input="validateEmail"
           />
+          <p v-if="emailError" class="mt-1 text-xs text-red-500">{{ emailError }}</p>
         </div>
 
         <div class="mb-4">
@@ -38,24 +41,15 @@
             id="password"
             placeholder="Enter your password"
             class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+            :class="{ 'border-red-500': passwordError }"
             required
+            @input="validatePassword"
           />
+          <p v-if="passwordError" class="mt-1 text-xs text-red-500">{{ passwordError }}</p>
         </div>
 
         <div class="mb-4">
-          <!-- <NuxtRecaptcha 
-            v-if="recaptchaAvailable"
-            @success="onCaptchaVerified"
-            @error="onCaptchaError"
-            @expired="onCaptchaExpired"
-          /> -->
-          <!-- <Recaptcha
-            v-if="recaptchaAvailable"
-            @verify="onCaptchaVerified"
-            @expire="onCaptchaExpired"
-            @error="onCaptchaError"
-          /> -->
-        </div>
+          </div>
 
         <button
           type="submit"
@@ -69,105 +63,18 @@
 </template>
 
 <script setup>
-// import { ref, onMounted } from "vue"; // <-- Import 'onMounted'
-
-// const router = useRouter();
-// const email = ref("");
-// const password = ref("");
-// const cookie = useCookie("my_auth_token");
-// const errorMessage = ref("");
-// const successMessage = ref("");
-
-// // --- Tambahan untuk reCAPTCHA ---
-// const { vueApp } = useNuxtApp(); // Akses instance Nuxt
-// const captchaToken = ref(null); // Ref untuk menyimpan token captcha
-// const recaptchaAvailable = ref(false); // Ref untuk menunda render captcha
-
-// // Fungsi untuk menangani hasil captcha
-// const onCaptchaVerified = (response) => {
-//   console.log("reCAPTCHA verified:", response);
-//   captchaToken.value = response;
-//   errorMessage.value = ""; // Hapus pesan error jika ada
-// };
-
-// const onCaptchaError = (error) => {
-//   console.error("reCAPTCHA error:", error);
-//   errorMessage.value = "Terjadi kesalahan pada verifikasi reCAPTCHA.";
-//   captchaToken.value = null;
-// };
-
-// const onCaptchaExpired = () => {
-//   console.log("reCAPTCHA token expired");
-//   captchaToken.value = null;
-// };
-// // --- Akhir Tambahan reCAPTCHA ---
-
-// // Tunda render reCAPTCHA sampai komponen di-mount untuk menghindari hydration mismatch
-// onMounted(() => {
-//   recaptchaAvailable.value = true;
-// });
-
-// definePageMeta({
-//   layout: false,
-//   middleware: ["guest"],
-// });
-
-// async function login() {
-//   errorMessage.value = "";
-//   successMessage.value = "";
-
-//   // --- Validasi Captcha sebelum mengirim ke backend ---
-//   if (!captchaToken.value) {
-//     errorMessage.value = "Silakan verifikasi bahwa Anda bukan robot.";
-//     return; // Hentikan fungsi jika captcha belum diisi
-//   }
-
-//   try {
-//     const result = await $fetch(useApi("/api/auth/signin"), {
-//       method: "POST",
-//       body: {
-//         email: email.value,
-//         password: password.value,
-//         // Kirim token captcha ke backend dengan nama 'g-recaptcha-response'
-//         "g-recaptcha-response": captchaToken.value,
-//       },
-//     });
-//     console.log("Login success:", result);
-//     cookie.value = result.token;
-//     router.push("/");
-//   } catch (error) {
-//     console.error("Login failed:", error);
-//     // Tangani pesan error dari backend
-//     if (error.response && error.response.status === 422) {
-//       // Jika error validasi, mungkin karena captcha salah
-//       errorMessage.value =
-//         "Verifikasi reCAPTCHA gagal atau tidak valid. Silakan coba lagi.";
-//     } else {
-//       errorMessage.value = "Login gagal. Periksa email dan password Anda.";
-//     }
-
-//     // Reset captcha di Nuxt setelah gagal login
-//     // Ini akan memaksa user untuk mengisi ulang captcha
-//     if (vueApp.recaptcha) {
-//       vueApp.recaptcha.reset();
-//     }
-//     captchaToken.value = null;
-
-//     setTimeout(() => {
-//       errorMessage.value = "";
-//     }, 5000);
-//   }
-// }
-
 import { ref, onMounted } from "vue";
+import { useCookie, useRouter, useRuntimeConfig, useApi } from '#app'; // Adjust imports if useApi is a custom composable
 
 const email = ref("");
 const password = ref("");
 const errorMessage = ref("");
 const successMessage = ref("");
+const emailError = ref("");
+const passwordError = ref("");
+
 const cookie = useCookie("my_auth_token");
 const router = useRouter();
-
 const runtimeConfig = useRuntimeConfig();
 const captchaToken = ref("");
 
@@ -176,6 +83,28 @@ definePageMeta({
   middleware: ["guest"],
 });
 
+// --- Validation Functions ---
+const validateEmail = () => {
+  if (!email.value) {
+    emailError.value = "Email is required.";
+  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) {
+    emailError.value = "Please enter a valid email address.";
+  } else {
+    emailError.value = "";
+  }
+};
+
+const validatePassword = () => {
+  if (!password.value) {
+    passwordError.value = "Password is required.";
+  } else if (password.value.length < 6) {
+    passwordError.value = "Password must be at least 6 characters long.";
+  } else {
+    passwordError.value = "";
+  }
+};
+
+// --- reCAPTCHA Function (unchanged) ---
 async function getRecaptchaToken() {
   try {
     if (!window.grecaptcha) {
@@ -195,11 +124,21 @@ async function getRecaptchaToken() {
   }
 }
 
+// --- Login Function ---
 async function login() {
   errorMessage.value = "";
   successMessage.value = "";
 
-  // Ambil token sebelum login
+  // Run all validations before attempting login
+  validateEmail();
+  validatePassword();
+
+  if (emailError.value || passwordError.value) {
+    errorMessage.value = "Please correct the input errors.";
+    return; // Stop the login process if there are validation errors
+  }
+
+  // Get reCAPTCHA token
   const token = await getRecaptchaToken();
   if (!token) {
     errorMessage.value = "Verifikasi reCAPTCHA gagal. Coba lagi.";
@@ -212,12 +151,9 @@ async function login() {
       body: {
         email: email.value,
         password: password.value,
-        "g-recaptcha-response": token, // kirim ke backend
+        "g-recaptcha-response": token,
       },
     });
-    // console.log("Login success:", result);
-    // cookie.value = result.token;
-    // router.push("/");
     successMessage.value = "Login berhasil! Mengarahkan...";
     setTimeout(() => {
       cookie.value = result.token;
@@ -242,6 +178,7 @@ onMounted(() => {
   document.head.appendChild(script);
 });
 </script>
+
 <style>
 .grecaptcha-badge {
   visibility: visible !important;
