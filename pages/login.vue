@@ -146,7 +146,7 @@ async function login() {
   }
 
   try {
-    const result = await $fetch(useApi("/api/auth/signin"), {
+    const result = await $fetch(useApi("/api/auth/login"), {
       method: "POST",
       body: {
         email: email.value,
