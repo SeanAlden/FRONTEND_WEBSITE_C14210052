@@ -182,10 +182,9 @@ async function getRecaptchaToken() {
       throw new Error("reCAPTCHA belum dimuat.");
     }
 
-    const token = await window.grecaptcha.execute(
-      runtimeConfig.public.recaptchaSiteKey,
-      { action: "login" }
-    );
+    const token = await window.grecaptcha.execute(runtimeConfig.public.recaptchaSiteKey, {
+      action: "login",
+    });
 
     captchaToken.value = token;
     return token;
@@ -216,9 +215,14 @@ async function login() {
         // "g-recaptcha-response": token, // kirim ke backend
       },
     });
-    console.log("Login success:", result);
-    cookie.value = result.token;
-    router.push("/");
+    // console.log("Login success:", result);
+    // cookie.value = result.token;
+    // router.push("/");
+    successMessage.value = "Login berhasil! Mengarahkan...";
+    setTimeout(() => {
+      cookie.value = result.token;
+      window.location.href = "/";
+    }, 1000);
   } catch (error) {
     console.error("Login failed:", error);
     errorMessage.value =
@@ -237,7 +241,6 @@ onMounted(() => {
   script.async = true;
   document.head.appendChild(script);
 });
-
 </script>
 <style>
 .grecaptcha-badge {
