@@ -64,7 +64,7 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
-import { useCookie, useRouter, useRuntimeConfig, useApi } from '#app'; // Adjust imports if useApi is a custom composable
+import { useCookie, useRouter, useRuntimeConfig } from '#app'; // Adjust imports if useApi is a custom composable
 
 const email = ref("");
 const password = ref("");
