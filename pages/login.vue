@@ -151,7 +151,7 @@ async function login() {
       body: {
         email: email.value,
         password: password.value,
-        "g-recaptcha-response": token,
+        // "g-recaptcha-response": token,
       },
     });
     successMessage.value = "Login berhasil! Mengarahkan...";
