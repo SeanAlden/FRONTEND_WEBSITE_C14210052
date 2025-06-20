@@ -58,93 +58,7 @@
 </template>
 
 <script setup lang="ts">
-// // import { ref, onMounted } from "vue";
-// import axios from "axios";
-
-// definePageMeta({
-//   middleware: ["auth"],
-// });
-
-// interface Notification {
-//   id: number;
-//   message: string;
-//   notification_time: string;
-//   notification_type: string;
-//   created_at?: string;
-//   updated_at?: string;
-// }
-
-// const notifications = ref<Notification[]>([]);
-// const loading = ref(true);
-
-// onMounted(async () => {
-//   try {
-//     const res = await axios.get(useApi("/api/notifications"));
-//     // const data = await res.json();
-//     const data = res.data;
-//     notifications.value = data;
-//   } catch (error) {
-//     console.error("Gagal memuat notifikasi:", error);
-//   } finally {
-//     loading.value = false;
-//   }
-// });
-
-// // const formatDate = (datetime: string) => {
-// //   return new Date(datetime).toLocaleString("id-ID", {
-// //     dateStyle: "medium",
-// //     timeStyle: "short",
-// //   });
-// // };
-
-// const formatDate = (datetime: string) => {
-//   const date = new Date(datetime);
-//   date.setHours(date.getHours() + 7); // Tambahkan 7 jam
-//   return date.toLocaleString("id-ID", {
-//     dateStyle: "medium",
-//     timeStyle: "short",
-//   });
-// };
-
-// const badgeClass = (type: string) => {
-//   switch (type.toLowerCase()) {
-//     case "info":
-//       return "bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full text-xs font-semibold";
-//     case "warning":
-//       return "bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded-full text-xs font-semibold";
-//     case "error":
-//       return "bg-red-100 text-red-700 px-2 py-0.5 rounded-full text-xs font-semibold";
-//     case "success":
-//       return "bg-green-100 text-green-700 px-2 py-0.5 rounded-full text-xs font-semibold";
-//     default:
-//       return "bg-gray-100 text-gray-700 px-2 py-0.5 rounded-full text-xs font-semibold";
-//   }
-// };
-
-// const deleteNotification = async (id: number) => {
-//   const confirmDelete = confirm("Yakin ingin menghapus notifikasi ini?");
-//   if (!confirmDelete) return;
-
-//   try {
-//     const res = await fetch(useApi(`/api/notifications/${id}`), {
-//       method: "PUT",
-//     });
-
-//     if (!res.ok) {
-//       throw new Error("Gagal menghapus notifikasi.");
-//     }
-
-//     // Hapus dari list lokal setelah berhasil dihapus di backend
-//     notifications.value = notifications.value.filter(
-//       (notif: Notification) => notif.id !== id
-//     );
-//   } catch (error) {
-//     console.error("Error saat menghapus notifikasi:", error);
-//     alert("Terjadi kesalahan saat menghapus notifikasi.");
-//   }
-// };
-
-import { ref, onMounted } from "vue"; // Make sure to import ref and onMounted
+// import { ref, onMounted } from "vue";
 import axios from "axios";
 
 definePageMeta({
@@ -163,11 +77,10 @@ interface Notification {
 const notifications = ref<Notification[]>([]);
 const loading = ref(true);
 
-// Function to fetch notifications
-const fetchNotifications = async () => {
-  loading.value = true;
+onMounted(async () => {
   try {
     const res = await axios.get(useApi("/api/notifications"));
+    // const data = await res.json();
     const data = res.data;
     notifications.value = data;
   } catch (error) {
@@ -175,11 +88,14 @@ const fetchNotifications = async () => {
   } finally {
     loading.value = false;
   }
-};
-
-onMounted(() => {
-  fetchNotifications(); // Call it when the component mounts
 });
+
+// const formatDate = (datetime: string) => {
+//   return new Date(datetime).toLocaleString("id-ID", {
+//     dateStyle: "medium",
+//     timeStyle: "short",
+//   });
+// };
 
 const formatDate = (datetime: string) => {
   const date = new Date(datetime);
@@ -205,6 +121,29 @@ const badgeClass = (type: string) => {
   }
 };
 
+// const deleteNotification = async (id: number) => {
+//   const confirmDelete = confirm("Yakin ingin menghapus notifikasi ini?");
+//   if (!confirmDelete) return;
+
+//   try {
+//     const res = await fetch(useApi(`/api/notifications/${id}`), {
+//       method: "PUT",
+//     });
+
+//     if (!res.ok) {
+//       throw new Error("Gagal menghapus notifikasi.");
+//     }
+
+//     // Hapus dari list lokal setelah berhasil dihapus di backend
+//     notifications.value = notifications.value.filter(
+//       (notif: Notification) => notif.id !== id
+//     );
+//   } catch (error) {
+//     console.error("Error saat menghapus notifikasi:", error);
+//     alert("Terjadi kesalahan saat menghapus notifikasi.");
+//   }
+// };
+
 const deleteNotification = async (id: number) => {
   const confirmDelete = confirm("Yakin ingin menghapus notifikasi ini?");
   if (!confirmDelete) return;
@@ -218,8 +157,8 @@ const deleteNotification = async (id: number) => {
       throw new Error("Gagal menghapus notifikasi.");
     }
 
-    // Re-fetch notifications after successful deletion
-    await fetchNotifications();
+    // Reload the page after successful deletion
+    window.location.reload();
   } catch (error) {
     console.error("Error saat menghapus notifikasi:", error);
     alert("Terjadi kesalahan saat menghapus notifikasi.");
