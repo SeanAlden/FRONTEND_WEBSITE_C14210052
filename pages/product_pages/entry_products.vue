@@ -218,6 +218,7 @@ const saveEntry = async () => {
 
   closeModal();
   fetchEntries();
+  fetchProducts();
 };
 
 // Hapus entry
@@ -231,6 +232,7 @@ const deleteEntry = async (id) => {
 
   await fetch(useApi(`/api/entry-products/${id}`, { method: "DELETE" }));
   fetchEntries();
+  fetchProducts();
 };
 
 // const filteredEntry = computed(() => {

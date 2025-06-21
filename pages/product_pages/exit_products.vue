@@ -175,6 +175,7 @@ const saveExit = async () => {
   alert("Barang keluar berhasil disimpan!");
   closeModal();
   fetchExits();
+  fetchProducts();
 };
 
 // Hapus data barang keluar
@@ -183,6 +184,7 @@ const deleteExit = async (id) => {
 
   await fetch(useApi(`/api/exit-products/${id}`), { method: "DELETE" });
   fetchExits();
+  fetchProducts();
 };
 
 const filteredExit = computed(() => {
