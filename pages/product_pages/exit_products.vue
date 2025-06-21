@@ -172,7 +172,6 @@ const saveExit = async () => {
     return;
   }
 
-  alert("Barang keluar berhasil disimpan!");
   closeModal();
   fetchExits();
   fetchProducts();
@@ -322,7 +321,7 @@ onMounted(() => {
       <div v-if="!isLoading" class="overflow-x-auto whitespace-nowrap">
         <table class="min-w-full bg-white border border-gray-300 rounded-lg shadow-md">
           <thead class="bg-gray-100 border-b">
-            <tr>
+            <tr class="bg-gray-200">
               <th class="p-3 text-center border">#</th>
               <th class="p-3 text-center border">Foto</th>
               <th class="p-3 text-left border">Nama</th>
