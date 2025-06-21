@@ -56,47 +56,47 @@ const fetchEntries = async () => {
 };
 
 // Ambil daftar produk
-// const fetchProducts = async () => {
-//   isLoading.value = true; // Set loading to true
-//   try {
-//     const response = await axios.get(useApi(`/api/products`));
-//     // const data = await response.json();
-//     products.value = response.data.data;
-//   } catch (error) {
-//     alert("Terjadi kesalahan: " + error.message);
-//   } finally {
-//     // finally {
-//     //   isLoading.value = false; // Set loading to false after fetching
-//     // }
-//     setTimeout(() => {
-//       isLoading.value = false;
-//     }, 200); // delay sedikit agar animasi terlihat smooth
-//   }
-// };
-
-// Ambil daftar produk dan total stoknya
 const fetchProducts = async () => {
   isLoading.value = true; // Set loading to true
   try {
     const response = await axios.get(useApi(`/api/products`));
-    const productsData = response.data.data;
-
-    // Fetch total stock for each product
-    for (const product of productsData) {
-      const stockResponse = await axios.get(
-        useApi(`/api/products/product/${product.id}/total-stock`)
-      );
-      product.total_stock = stockResponse.data.stock;
-    }
-    products.value = productsData;
+    // const data = await response.json();
+    products.value = response.data.data;
   } catch (error) {
     alert("Terjadi kesalahan: " + error.message);
   } finally {
+    // finally {
+    //   isLoading.value = false; // Set loading to false after fetching
+    // }
     setTimeout(() => {
       isLoading.value = false;
     }, 200); // delay sedikit agar animasi terlihat smooth
   }
 };
+
+// Ambil daftar produk dan total stoknya
+// const fetchProducts = async () => {
+//   isLoading.value = true; // Set loading to true
+//   try {
+//     const response = await axios.get(useApi(`/api/products`));
+//     const productsData = response.data.data;
+
+//     // Fetch total stock for each product
+//     for (const product of productsData) {
+//       const stockResponse = await axios.get(
+//         useApi(`/api/products/product/${product.id}/total-stock`)
+//       );
+//       product.total_stock = stockResponse.data.stock;
+//     }
+//     products.value = productsData;
+//   } catch (error) {
+//     alert("Terjadi kesalahan: " + error.message);
+//   } finally {
+//     setTimeout(() => {
+//       isLoading.value = false;
+//     }, 200); // delay sedikit agar animasi terlihat smooth
+//   }
+// };
 
 // Ambil tanggal expired berdasarkan produk yang dipilih
 // const fetchExpDates = async () => {
