@@ -500,14 +500,14 @@ onMounted(() => {
         <!-- Dropdown Produk -->
         <label class="block mb-2 text-gray-700">Pilih Produk:</label>
         <select v-model="formData.product_id" class="w-full p-2 mb-4 border">
-          <!-- <option v-for="product in products" :key="product.id" :value="product.id">
-            {{ product.name }} ({{ product.code }}) - Rp
-            {{ product.price.toLocaleString() }}
-          </option> -->
           <option v-for="product in products" :key="product.id" :value="product.id">
             {{ product.name }} ({{ product.code }}) - Rp
-            {{ product.price.toLocaleString() }} ({{ product.total_stock }})
+            {{ product.price.toLocaleString() }}
           </option>
+          <!-- <option v-for="product in products" :key="product.id" :value="product.id">
+            {{ product.name }} ({{ product.code }}) - Rp
+            {{ product.price.toLocaleString() }} ({{ product.total_stock }})
+          </option> -->
         </select>
 
         <!-- Dropdown Expired Date -->
