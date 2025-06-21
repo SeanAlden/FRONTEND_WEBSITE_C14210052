@@ -56,18 +56,42 @@ const fetchEntries = async () => {
 };
 
 // Ambil daftar produk
+// const fetchProducts = async () => {
+//   isLoading.value = true; // Set loading to true
+//   try {
+//     const response = await axios.get(useApi(`/api/products`));
+//     // const data = await response.json();
+//     products.value = response.data.data;
+//   } catch (error) {
+//     alert("Terjadi kesalahan: " + error.message);
+//   } finally {
+//     // finally {
+//     //   isLoading.value = false; // Set loading to false after fetching
+//     // }
+//     setTimeout(() => {
+//       isLoading.value = false;
+//     }, 200); // delay sedikit agar animasi terlihat smooth
+//   }
+// };
+
+// Ambil daftar produk dan total stoknya
 const fetchProducts = async () => {
   isLoading.value = true; // Set loading to true
   try {
     const response = await axios.get(useApi(`/api/products`));
-    // const data = await response.json();
-    products.value = response.data.data;
+    const productsData = response.data.data;
+
+    // Fetch total stock for each product
+    for (const product of productsData) {
+      const stockResponse = await axios.get(
+        useApi(`/api/products/product/${product.id}/total-stock`)
+      );
+      product.total_stock = stockResponse.data.stock;
+    }
+    products.value = productsData;
   } catch (error) {
     alert("Terjadi kesalahan: " + error.message);
   } finally {
-    // finally {
-    //   isLoading.value = false; // Set loading to false after fetching
-    // }
     setTimeout(() => {
       isLoading.value = false;
     }, 200); // delay sedikit agar animasi terlihat smooth
@@ -75,13 +99,35 @@ const fetchProducts = async () => {
 };
 
 // Ambil tanggal expired berdasarkan produk yang dipilih
+// const fetchExpDates = async () => {
+//   if (!formData.value.product_id) return;
+//   const response = await axios.get(
+//     useApi(`/api/products/product/${formData.value.product_id}/exp-dates`)
+//   );
+//   // const data = await response.json();
+//   expDates.value = response.data.data;
+// };
+
+// Ambil tanggal expired berdasarkan produk yang dipilih dan stok per tanggal
 const fetchExpDates = async () => {
   if (!formData.value.product_id) return;
   const response = await axios.get(
     useApi(`/api/products/product/${formData.value.product_id}/exp-dates`)
   );
-  // const data = await response.json();
-  expDates.value = response.data.data;
+  const fetchedExpDates = response.data.data;
+
+  // Fetch stock for each exp_date
+  const expDatesWithStock = [];
+  for (const expDate of fetchedExpDates) {
+    const stockResponse = await axios.get(
+      useApi(`/api/products/product/${formData.value.product_id}/stock/${expDate}`)
+    );
+    expDatesWithStock.push({
+      date: expDate,
+      stock: stockResponse.data.stock,
+    });
+  }
+  expDates.value = expDatesWithStock;
 };
 
 // Watcher: update tanggal expired saat produk berubah
@@ -352,7 +398,9 @@ onMounted(() => {
                 <!-- <img :src="entry.product.image" alt="Product Image" class="object-cover w-12 h-12 mx-auto rounded" /> -->
                 <img
                   :src="
-                    entry.product.photo ? useApi(`/public/storage/${entry.product.photo}`) : fallbackImage
+                    entry.product.photo
+                      ? useApi(`/public/storage/${entry.product.photo}`)
+                      : fallbackImage
                   "
                   @error="onImageError"
                   class="w-20 h-20 object-fit"
@@ -450,17 +498,24 @@ onMounted(() => {
         <!-- Dropdown Produk -->
         <label class="block mb-2 text-gray-700">Pilih Produk:</label>
         <select v-model="formData.product_id" class="w-full p-2 mb-4 border">
-          <option v-for="product in products" :key="product.id" :value="product.id">
+          <!-- <option v-for="product in products" :key="product.id" :value="product.id">
             {{ product.name }} ({{ product.code }}) - Rp
             {{ product.price.toLocaleString() }}
+          </option> -->
+          <option v-for="product in products" :key="product.id" :value="product.id">
+            {{ product.name }} ({{ product.code }}) - Rp
+            {{ product.price.toLocaleString() }} ({{ product.total_stock }})
           </option>
         </select>
 
         <!-- Dropdown Expired Date -->
         <label class="block mb-2 text-gray-700">Tanggal Expired:</label>
         <select v-model="formData.exp_date" class="w-full p-2 mb-4 border">
-          <option v-for="exp in expDates" :key="exp" :value="exp">
+          <!-- <option v-for="exp in expDates" :key="exp" :value="exp">
             {{ exp }}
+          </option> -->
+          <option v-for="exp in expDates" :key="exp.date" :value="exp.date">
+            {{ exp.date }} ({{ exp.stock }})
           </option>
         </select>
 
