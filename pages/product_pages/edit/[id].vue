@@ -116,7 +116,7 @@ const handleFileUpload = (event) => {
 
 // Fungsi untuk menambah stok berdasarkan tanggal expired
 const addExpStock = () => {
-  expStockList.value.push({ exp_date: "", stock: "" });
+  expStockList.value.push({ exp_date: "0", stock: "" });
 };
 
 // Fungsi untuk menghapus entri stok tertentu

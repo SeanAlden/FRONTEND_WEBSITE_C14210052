@@ -17,7 +17,7 @@ const form = reactive({
   price: "",
   description: "",
   photo: null,
-  stocks: [{ stock: "", exp_date: "" }], // Awal dengan satu input stok
+  stocks: [{ stock: "0", exp_date: "" }], // Awal dengan satu input stok
 });
 
 const nameInputRef = ref(null);
