@@ -61,7 +61,7 @@ const isExpiringSoon = (expDate) => {
   const expirationDate = new Date(expDate);
   const timeDiff = expirationDate - today;
   const daysRemaining = timeDiff / (1000 * 60 * 60 * 24);
-  return daysRemaining <= 90 && daysRemaining > 0;
+  return daysRemaining <= 30 && daysRemaining > 0;
 };
 
 const isExpiredOrToday = (expDate) => {
