@@ -162,7 +162,7 @@ async function login() {
   } catch (error) {
     console.error("Login failed:", error);
     errorMessage.value =
-      "Login gagal. Periksa email, password, atau verifikasi reCAPTCHA.";
+      "Login gagal. Periksa kembali email, dan password Anda";
 
     setTimeout(() => {
       errorMessage.value = "";
