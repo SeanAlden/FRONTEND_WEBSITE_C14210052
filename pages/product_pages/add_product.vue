@@ -235,7 +235,7 @@ onMounted(() => {
         v-model="form.name"
         rows="1"
         required
-        class="w-full resize-none overflow-hidden border p-2"
+        class="w-full p-2 overflow-hidden border resize-none"
         @input="adjustHeight($event.target)"
       ></textarea>
 
@@ -245,7 +245,7 @@ onMounted(() => {
         v-model="form.code"
         rows="1"
         required
-        class="w-full resize-none overflow-hidden border p-2"
+        class="w-full p-2 overflow-hidden border resize-none"
         @input="
           adjustHeight($event.target);
           validateProductCode();
@@ -256,7 +256,7 @@ onMounted(() => {
 
       <!-- Kategori -->
       <label>Kategori:</label>
-      <select v-model="form.category_id" required class="w-full border p-2">
+      <select v-model="form.category_id" required class="w-full p-2 border">
         <option value="">Pilih Kategori</option>
         <option v-for="cat in categories" :key="cat.id" :value="cat.id">
           {{ cat.name }}
@@ -265,23 +265,24 @@ onMounted(() => {
 
       <!-- Harga -->
       <label>Harga:</label>
-      <input v-model="form.price" type="number" required class="w-full border p-2" />
+      <input v-model="form.price" type="number" required class="w-full p-2 border" />
 
       <!-- Stok & Tanggal Kadaluarsa -->
-      <label>Stok & Tanggal Kadaluarsa:</label>
-      <div v-for="(stock, index) in form.stocks" :key="index" class="mb-2 flex gap-2">
+      <!-- <label>Stok & Tanggal Kadaluarsa:</label> -->
+      <label>Tanggal Kadaluarsa:</label>
+      <div v-for="(stock, index) in form.stocks" :key="index" class="flex gap-2 mb-2">
         <!-- <input
           v-model="stock.stock"
           type="number"
           placeholder="Jumlah Stok"
           required
-          class="w-1/2 border p-2"
+          class="w-1/2 p-2 border"
         /> -->
-        <input v-model="stock.exp_date" type="date" required class="w-1/2 border p-2" />
+        <input v-model="stock.exp_date" type="date" required class="w-1/2 p-2 border" />
         <button
           type="button"
           @click="removeStockField(index)"
-          class="rounded bg-red-500 p-2 text-white"
+          class="p-2 text-white bg-red-500 rounded"
           v-if="form.stocks.length > 1"
         >
           ✕
@@ -290,7 +291,7 @@ onMounted(() => {
       <button
         type="button"
         @click="addStockField"
-        class="mb-4 rounded bg-blue-500 p-2 text-white"
+        class="p-2 mb-4 text-white bg-blue-500 rounded"
       >
         + Tambah Stok
       </button>
@@ -301,27 +302,27 @@ onMounted(() => {
         ref="textareaRef"
         v-model="form.description"
         required
-        class="w-full resize-none overflow-hidden border p-2"
+        class="w-full p-2 overflow-hidden border resize-none"
         @input="adjustHeight($event.target)"
       ></textarea>
 
       <!-- Foto Produk -->
       <label>Foto Produk:</label>
-      <input type="file" @change="handleFileUpload" class="w-full border p-2" />
+      <input type="file" @change="handleFileUpload" class="w-full p-2 border" />
 
       <p
         v-if="errorMessage"
-        class="mt-2 rounded border border-red-400 bg-red-100 p-2 text-red-500"
+        class="p-2 mt-2 text-red-500 bg-red-100 border border-red-400 rounded"
       >
         {{ errorMessage }}
       </p>
 
-      <div class="mb-4 flex justify-start">
-        <button @click="goBack" type="button" class="mr-2 rounded bg-gray-500 px-4 py-2 text-white hover:bg-gray-600">
+      <div class="flex justify-start mb-4">
+        <button @click="goBack" type="button" class="px-4 py-2 mr-2 text-white bg-gray-500 rounded hover:bg-gray-600">
           Kembali
         </button>
         
-        <button type="submit" class="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600">
+        <button type="submit" class="px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600">
           Tambah Produk
         </button>
       </div>

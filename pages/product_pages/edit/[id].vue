@@ -296,7 +296,7 @@ onMounted(async () => {
       <textarea
         v-model="product.name"
         required
-        class="w-full resize-none overflow-hidden border p-2"
+        class="w-full p-2 overflow-hidden border resize-none"
         rows="1"
       ></textarea>
 
@@ -305,13 +305,13 @@ onMounted(async () => {
       <textarea
         v-model="product.code"
         required
-        class="w-full resize-none overflow-hidden border p-2"
+        class="w-full p-2 overflow-hidden border resize-none"
         rows="1"
       ></textarea>
 
       <!-- Kategori -->
       <label>Kategori:</label>
-      <select v-model="product.category_id" required class="w-full border p-2">
+      <select v-model="product.category_id" required class="w-full p-2 border">
         <option v-for="cat in categories" :key="cat.id" :value="String(cat.id)">
           {{ cat.name }}
         </option>
@@ -323,25 +323,25 @@ onMounted(async () => {
         v-model.lazy="product.price"
         type="number"
         required
-        class="w-full border p-2"
+        class="w-full p-2 border"
       />
 
       <!-- Stok berdasarkan tanggal expired -->
       <div>
-        <label>Stok per Tanggal Expired:</label>
+        <label>Tanggal Expired & Stoknya:</label>
         <div
           v-for="(item, index) in expStockList"
           :key="index"
-          class="mb-2 flex items-center gap-2"
+          class="flex items-center gap-2 mb-2"
         >
-          <input v-model="item.exp_date" type="date" required class="border p-2" />
-          <!-- <input v-model="item.stock" type="number" required class="w-24 border p-2" /> -->
-					<span class="inline-block w-24 select-none border p-2">{{ item.stock }}</span>			
-          <!-- <p class="w-24 border p-2">{{ item.stock || 10 }}</p> -->
+          <input v-model="item.exp_date" type="date" required class="p-2 border" />
+          <!-- <input v-model="item.stock" type="number" required class="w-24 p-2 border" /> -->
+					<span class="inline-block w-24 p-2 border select-none">{{ item.stock }}</span>			
+          <!-- <p class="w-24 p-2 border">{{ item.stock || 10 }}</p> -->
           <button
             type="button"
             @click="removeExpStock(index)"
-            class="rounded bg-red-500 p-1 text-white"
+            class="p-1 text-white bg-red-500 rounded"
           >
             Hapus
           </button>
@@ -349,7 +349,7 @@ onMounted(async () => {
         <button
           type="button"
           @click="addExpStock"
-          class="mt-2 rounded bg-green-500 p-2 text-white"
+          class="p-2 mt-2 text-white bg-green-500 rounded"
         >
           Tambah Stok Expired
         </button>
@@ -360,7 +360,7 @@ onMounted(async () => {
       <textarea
         v-model="product.description"
         placeholder="Deskripsi"
-        class="w-full border p-2"
+        class="w-full p-2 border"
         rows="3"
         style="resize: none; overflow-y: hidden"
         ref="descTextarea"
@@ -374,18 +374,18 @@ onMounted(async () => {
         <img
           :src="productImage"
           alt="Foto Produk"
-          class="h-40 w-40 rounded border object-cover"
+          class="object-cover w-40 h-40 border rounded"
         />
         <!-- <img
           :src="product.photo ? useApi(`/public/storage/${product.photo}`) : fallbackImage"
           @error="onImageError"
         /> -->
       </div>
-      <input type="file" @change="handleFileUpload" class="w-full border p-2" />
+      <input type="file" @change="handleFileUpload" class="w-full p-2 border" />
 
       <p
         v-if="errorMessage"
-        class="mt-2 rounded border border-red-400 bg-red-100 p-2 text-red-500"
+        class="p-2 mt-2 text-red-500 bg-red-100 border border-red-400 rounded"
       >
         {{ errorMessage }}
       </p>
@@ -394,14 +394,14 @@ onMounted(async () => {
         <button
           @click="goBack"
           type="button"
-          class="mr-2 rounded bg-gray-500 px-4 py-2 text-white hover:bg-gray-600"
+          class="px-4 py-2 mr-2 text-white bg-gray-500 rounded hover:bg-gray-600"
         >
           Kembali
         </button>
 
         <button
           type="submit"
-          class="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
+          class="px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600"
         >
           Simpan Perubahan
         </button>
