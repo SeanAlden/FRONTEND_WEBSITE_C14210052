@@ -71,5 +71,18 @@ export default defineNuxtConfig({
       // Add your reCAPTCHA site key here for client-side access
       recaptchaSiteKey: '6Ld49WUrAAAAACh3Gor5p1UIfdJicTljcR8aO3gJ',
     }
+  },
+  app: {
+    head: {
+      title: "Asia Raya Cashier",
+      charset: 'utf-8',
+      viewport: 'width=device-width, initial-scale=1',
+      link: [
+        {
+          rel: 'shortcut icon',
+          href: 'public/assets/icons/icon.png'
+        }
+      ]
+    }
   }
 })
