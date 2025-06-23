@@ -80,7 +80,7 @@ export default defineNuxtConfig({
       link: [
         {
           rel: 'shortcut icon',
-          href: 'public/assets/icons/icon.png'
+          href: '/assets/icons/icon.png'
         }
       ]
     }
