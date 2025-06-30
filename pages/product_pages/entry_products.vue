@@ -753,109 +753,110 @@ onMounted(() => {
       v-if="showModal"
       class="fixed inset-0 flex items-center justify-center bg-gray-600 bg-opacity-50"
     >
-      <div
-        v-if="showAddExpDateModal"
-        class="fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-60"
-      >
-        <div class="w-1/3 p-6 bg-white rounded-lg shadow-xl">
-          <h2 class="mb-4 text-xl font-bold">Tambah Tanggal Expired Baru</h2>
+      <div class="w-1/3 p-6 bg-white rounded shadow-lg">
+        <h2 class="mb-4 text-xl font-bold">Pilih Barang Masuk</h2>
 
-          <div
-            v-if="addExpDateError"
-            class="p-3 mb-4 text-red-700 bg-red-100 border border-red-400 rounded"
-          >
-            {{ addExpDateError }}
-          </div>
-          <div
-            v-if="addExpDateSuccess"
-            class="p-3 mb-4 text-green-700 bg-green-100 border border-green-400 rounded"
-          >
-            {{ addExpDateSuccess }}
-          </div>
+        <!-- Dropdown Produk -->
+        <label class="block mb-2 text-gray-700">Pilih Produk:</label>
+        <select v-model="formData.product_id" class="w-full p-2 mb-4 border">
+          <option v-for="product in products" :key="product.id" :value="product.id">
+            {{ product.name }} ({{ product.code }}) - Rp
+            {{ product.price.toLocaleString() }}
+          </option>
+          <!-- <option v-for="product in products" :key="product.id" :value="product.id">
+            {{ product.name }} ({{ product.code }}) - Rp
+            {{ product.price.toLocaleString() }} ({{ product.total_stock }})
+          </option> -->
+        </select>
 
-          <label class="block mb-2 text-sm font-medium text-gray-700"
-            >Pilih Produk:</label
-          >
-          <select
-            v-model="newExpDateData.product_id"
-            class="w-full p-2 mb-4 border border-gray-300 rounded-md"
-          >
-            <option :value="null" disabled>-- Pilih Produk --</option>
-            <option v-for="product in products" :key="product.id" :value="product.id">
-              {{ product.name }} ({{ product.code }})
-            </option>
-          </select>
+        <!-- Dropdown Expired Date -->
+        <label class="block mb-2 text-gray-700">Tanggal Expired:</label>
+        <select v-model="formData.exp_date" class="w-full p-2 mb-4 border">
+          <!-- <option v-for="exp in expDates" :key="exp" :value="exp">
+            {{ exp }}
+          </option> -->
+          <option v-for="exp in expDates" :key="exp.date" :value="exp.date">
+            {{ exp.date }} ({{ exp.stock }})
+          </option>
+        </select>
 
-          <label class="block mb-2 text-sm font-medium text-gray-700"
-            >Tanggal Expired Baru:</label
-          >
-          <input
-            type="date"
-            v-model="newExpDateData.new_exp_date"
-            class="w-full p-2 mb-6 border border-gray-300 rounded-md"
-          />
+        <!-- Input Jumlah -->
+        <label class="block mb-2 text-gray-700">Jumlah Stok:</label>
+        <input
+          type="number"
+          v-model="formData.added_stock"
+          class="w-full p-2 mb-4 border"
+          min="1"
+        />
 
-          <div class="flex justify-end gap-3">
-            <button
-              @click="closeAddExpDateModal"
-              class="px-4 py-2 text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300"
-            >
-              Batal
-            </button>
-            <button
-              @click="saveNewExpDate"
-              class="px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700"
-            >
-              Simpan
-            </button>
-          </div>
+        <div class="flex justify-end">
+          <button
+            @click="closeModal"
+            class="px-4 py-2 mr-2 text-white bg-gray-400 rounded"
+          >
+            Batal
+          </button>
+          <button @click="saveEntry" class="px-4 py-2 text-white bg-blue-600 rounded">
+            Simpan
+          </button>
         </div>
       </div>
     </div>
 
-    <div class="w-1/3 p-6 bg-white rounded shadow-lg">
-      <h2 class="mb-4 text-xl font-bold">Pilih Barang Masuk</h2>
+    <div
+      v-if="showAddExpDateModal"
+      class="fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-60"
+    >
+      <div class="w-1/3 p-6 bg-white rounded-lg shadow-xl">
+        <h2 class="mb-4 text-xl font-bold">Tambah Tanggal Expired Baru</h2>
 
-      <!-- Dropdown Produk -->
-      <label class="block mb-2 text-gray-700">Pilih Produk:</label>
-      <select v-model="formData.product_id" class="w-full p-2 mb-4 border">
-        <option v-for="product in products" :key="product.id" :value="product.id">
-          {{ product.name }} ({{ product.code }}) - Rp
-          {{ product.price.toLocaleString() }}
-        </option>
-        <!-- <option v-for="product in products" :key="product.id" :value="product.id">
-            {{ product.name }} ({{ product.code }}) - Rp
-            {{ product.price.toLocaleString() }} ({{ product.total_stock }})
-          </option> -->
-      </select>
+        <div
+          v-if="addExpDateError"
+          class="p-3 mb-4 text-red-700 bg-red-100 border border-red-400 rounded"
+        >
+          {{ addExpDateError }}
+        </div>
+        <div
+          v-if="addExpDateSuccess"
+          class="p-3 mb-4 text-green-700 bg-green-100 border border-green-400 rounded"
+        >
+          {{ addExpDateSuccess }}
+        </div>
 
-      <!-- Dropdown Expired Date -->
-      <label class="block mb-2 text-gray-700">Tanggal Expired:</label>
-      <select v-model="formData.exp_date" class="w-full p-2 mb-4 border">
-        <!-- <option v-for="exp in expDates" :key="exp" :value="exp">
-            {{ exp }}
-          </option> -->
-        <option v-for="exp in expDates" :key="exp.date" :value="exp.date">
-          {{ exp.date }} ({{ exp.stock }})
-        </option>
-      </select>
+        <label class="block mb-2 text-sm font-medium text-gray-700">Pilih Produk:</label>
+        <select
+          v-model="newExpDateData.product_id"
+          class="w-full p-2 mb-4 border border-gray-300 rounded-md"
+        >
+          <option :value="null" disabled>-- Pilih Produk --</option>
+          <option v-for="product in products" :key="product.id" :value="product.id">
+            {{ product.name }} ({{ product.code }})
+          </option>
+        </select>
 
-      <!-- Input Jumlah -->
-      <label class="block mb-2 text-gray-700">Jumlah Stok:</label>
-      <input
-        type="number"
-        v-model="formData.added_stock"
-        class="w-full p-2 mb-4 border"
-        min="1"
-      />
+        <label class="block mb-2 text-sm font-medium text-gray-700"
+          >Tanggal Expired Baru:</label
+        >
+        <input
+          type="date"
+          v-model="newExpDateData.new_exp_date"
+          class="w-full p-2 mb-6 border border-gray-300 rounded-md"
+        />
 
-      <div class="flex justify-end">
-        <button @click="closeModal" class="px-4 py-2 mr-2 text-white bg-gray-400 rounded">
-          Batal
-        </button>
-        <button @click="saveEntry" class="px-4 py-2 text-white bg-blue-600 rounded">
-          Simpan
-        </button>
+        <div class="flex justify-end gap-3">
+          <button
+            @click="closeAddExpDateModal"
+            class="px-4 py-2 text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300"
+          >
+            Batal
+          </button>
+          <button
+            @click="saveNewExpDate"
+            class="px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700"
+          >
+            Simpan
+          </button>
+        </div>
       </div>
     </div>
   </div>
