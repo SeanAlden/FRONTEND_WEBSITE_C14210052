@@ -811,56 +811,51 @@ onMounted(() => {
           </div>
         </div>
       </div>
+    </div>
 
+    <div class="w-1/3 p-6 bg-white rounded shadow-lg">
+      <h2 class="mb-4 text-xl font-bold">Pilih Barang Masuk</h2>
 
-			
-      <div class="w-1/3 p-6 bg-white rounded shadow-lg">
-        <h2 class="mb-4 text-xl font-bold">Pilih Barang Masuk</h2>
-
-        <!-- Dropdown Produk -->
-        <label class="block mb-2 text-gray-700">Pilih Produk:</label>
-        <select v-model="formData.product_id" class="w-full p-2 mb-4 border">
-          <option v-for="product in products" :key="product.id" :value="product.id">
-            {{ product.name }} ({{ product.code }}) - Rp
-            {{ product.price.toLocaleString() }}
-          </option>
-          <!-- <option v-for="product in products" :key="product.id" :value="product.id">
+      <!-- Dropdown Produk -->
+      <label class="block mb-2 text-gray-700">Pilih Produk:</label>
+      <select v-model="formData.product_id" class="w-full p-2 mb-4 border">
+        <option v-for="product in products" :key="product.id" :value="product.id">
+          {{ product.name }} ({{ product.code }}) - Rp
+          {{ product.price.toLocaleString() }}
+        </option>
+        <!-- <option v-for="product in products" :key="product.id" :value="product.id">
             {{ product.name }} ({{ product.code }}) - Rp
             {{ product.price.toLocaleString() }} ({{ product.total_stock }})
           </option> -->
-        </select>
+      </select>
 
-        <!-- Dropdown Expired Date -->
-        <label class="block mb-2 text-gray-700">Tanggal Expired:</label>
-        <select v-model="formData.exp_date" class="w-full p-2 mb-4 border">
-          <!-- <option v-for="exp in expDates" :key="exp" :value="exp">
+      <!-- Dropdown Expired Date -->
+      <label class="block mb-2 text-gray-700">Tanggal Expired:</label>
+      <select v-model="formData.exp_date" class="w-full p-2 mb-4 border">
+        <!-- <option v-for="exp in expDates" :key="exp" :value="exp">
             {{ exp }}
           </option> -->
-          <option v-for="exp in expDates" :key="exp.date" :value="exp.date">
-            {{ exp.date }} ({{ exp.stock }})
-          </option>
-        </select>
+        <option v-for="exp in expDates" :key="exp.date" :value="exp.date">
+          {{ exp.date }} ({{ exp.stock }})
+        </option>
+      </select>
 
-        <!-- Input Jumlah -->
-        <label class="block mb-2 text-gray-700">Jumlah Stok:</label>
-        <input
-          type="number"
-          v-model="formData.added_stock"
-          class="w-full p-2 mb-4 border"
-          min="1"
-        />
+      <!-- Input Jumlah -->
+      <label class="block mb-2 text-gray-700">Jumlah Stok:</label>
+      <input
+        type="number"
+        v-model="formData.added_stock"
+        class="w-full p-2 mb-4 border"
+        min="1"
+      />
 
-        <div class="flex justify-end">
-          <button
-            @click="closeModal"
-            class="px-4 py-2 mr-2 text-white bg-gray-400 rounded"
-          >
-            Batal
-          </button>
-          <button @click="saveEntry" class="px-4 py-2 text-white bg-blue-600 rounded">
-            Simpan
-          </button>
-        </div>
+      <div class="flex justify-end">
+        <button @click="closeModal" class="px-4 py-2 mr-2 text-white bg-gray-400 rounded">
+          Batal
+        </button>
+        <button @click="saveEntry" class="px-4 py-2 text-white bg-blue-600 rounded">
+          Simpan
+        </button>
       </div>
     </div>
   </div>
