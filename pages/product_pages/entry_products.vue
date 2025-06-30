@@ -1,122 +1,388 @@
 <script setup>
-import axios from "axios";
-import { ref, computed, onMounted, watch } from "vue";
+// import axios from "axios";
+// import { ref, computed, onMounted, watch } from "vue";
 
-definePageMeta({
-  middleware: ["auth"],
-});
+// definePageMeta({
+//   middleware: ["auth"],
+// });
 
-// const BASE_URL = "http://localhost:8000";
+// // const BASE_URL = "http://localhost:8000";
 
-// Data utama
-const entryProducts = ref([]);
-const products = ref([]);
-const expDates = ref([]);
-const showModal = ref(false);
-const selectedProduct = ref(null);
-const formData = ref({ product_id: "", exp_date: "", added_stock: 0 });
-const searchQuery = ref("");
-const itemsPerPageOptions = [5, 10, 20, 50];
-const itemsPerPage = ref(5);
-const currentPage = ref(1);
-const isLoading = ref(true); // State untuk loading
+// // Data utama
+// const entryProducts = ref([]);
+// const products = ref([]);
+// const expDates = ref([]);
+// const showModal = ref(false);
+// const selectedProduct = ref(null);
+// const formData = ref({ product_id: "", exp_date: "", added_stock: 0 });
+// const searchQuery = ref("");
+// const itemsPerPageOptions = [5, 10, 20, 50];
+// const itemsPerPage = ref(5);
+// const currentPage = ref(1);
+// const isLoading = ref(true); // State untuk loading
 
-const fallbackImage = "/assets/images/avatar.png";
+// const fallbackImage = "/assets/images/avatar.png";
 
-// const totalProductStock = ref(0);
-// const totalExpStock = ref(0);
+// // const totalProductStock = ref(0);
+// // const totalExpStock = ref(0);
 
-// Ambil total stok produk berdasarkan product_id
-// const fetchTotalStock = async () => {
-//   if (!formData.value.product_id) return;
+// // Ambil total stok produk berdasarkan product_id
+// // const fetchTotalStock = async () => {
+// //   if (!formData.value.product_id) return;
 
-//   const response = await fetch(
-//     `${BASE_URL}/api/product/${formData.value.product_id}/total-stock`
-//   );
-//   const data = await response.json();
-//   totalProductStock.value = data.stock || 0;
+// //   const response = await fetch(
+// //     `${BASE_URL}/api/product/${formData.value.product_id}/total-stock`
+// //   );
+// //   const data = await response.json();
+// //   totalProductStock.value = data.stock || 0;
+// // };
+
+// // Ambil total stok berdasarkan tanggal expired
+// // const fetchExpStock = async () => {
+// //   if (!formData.value.product_id || !formData.value.exp_date) return;
+
+// //   const response = await fetch(
+// //     `${BASE_URL}/api/product/${formData.value.product_id}/stock/${formData.value.exp_date}`
+// //   );
+// //   const data = await response.json();
+// //   totalExpStock.value = data.stock || 0;
+// // };
+
+// // Ambil data barang masuk
+// const fetchEntries = async () => {
+//   const response = await axios.get(useApi(`/api/entry-products`));
+//   // const data = await response.json();
+//   entryProducts.value = response.data.data;
 // };
 
-// Ambil total stok berdasarkan tanggal expired
-// const fetchExpStock = async () => {
-//   if (!formData.value.product_id || !formData.value.exp_date) return;
-
-//   const response = await fetch(
-//     `${BASE_URL}/api/product/${formData.value.product_id}/stock/${formData.value.exp_date}`
-//   );
-//   const data = await response.json();
-//   totalExpStock.value = data.stock || 0;
-// };
-
-// Ambil data barang masuk
-const fetchEntries = async () => {
-  const response = await axios.get(useApi(`/api/entry-products`));
-  // const data = await response.json();
-  entryProducts.value = response.data.data;
-};
-
-// Ambil daftar produk
-const fetchProducts = async () => {
-  isLoading.value = true; // Set loading to true
-  try {
-    const response = await axios.get(useApi(`/api/products`));
-    // const data = await response.json();
-    products.value = response.data.data;
-  } catch (error) {
-    alert("Terjadi kesalahan: " + error.message);
-  } finally {
-    // finally {
-    //   isLoading.value = false; // Set loading to false after fetching
-    // }
-    setTimeout(() => {
-      isLoading.value = false;
-    }, 200); // delay sedikit agar animasi terlihat smooth
-  }
-};
-
-// Ambil daftar produk dan total stoknya
+// // Ambil daftar produk
 // const fetchProducts = async () => {
 //   isLoading.value = true; // Set loading to true
 //   try {
 //     const response = await axios.get(useApi(`/api/products`));
-//     const productsData = response.data.data;
-
-//     // Fetch total stock for each product
-//     for (const product of productsData) {
-//       const stockResponse = await axios.get(
-//         useApi(`/api/products/product/${product.id}/total-stock`)
-//       );
-//       product.total_stock = stockResponse.data.stock;
-//     }
-//     products.value = productsData;
+//     // const data = await response.json();
+//     products.value = response.data.data;
 //   } catch (error) {
 //     alert("Terjadi kesalahan: " + error.message);
 //   } finally {
+//     // finally {
+//     //   isLoading.value = false; // Set loading to false after fetching
+//     // }
 //     setTimeout(() => {
 //       isLoading.value = false;
 //     }, 200); // delay sedikit agar animasi terlihat smooth
 //   }
 // };
 
-// Ambil tanggal expired berdasarkan produk yang dipilih
+// // Ambil daftar produk dan total stoknya
+// // const fetchProducts = async () => {
+// //   isLoading.value = true; // Set loading to true
+// //   try {
+// //     const response = await axios.get(useApi(`/api/products`));
+// //     const productsData = response.data.data;
+
+// //     // Fetch total stock for each product
+// //     for (const product of productsData) {
+// //       const stockResponse = await axios.get(
+// //         useApi(`/api/products/product/${product.id}/total-stock`)
+// //       );
+// //       product.total_stock = stockResponse.data.stock;
+// //     }
+// //     products.value = productsData;
+// //   } catch (error) {
+// //     alert("Terjadi kesalahan: " + error.message);
+// //   } finally {
+// //     setTimeout(() => {
+// //       isLoading.value = false;
+// //     }, 200); // delay sedikit agar animasi terlihat smooth
+// //   }
+// // };
+
+// // Ambil tanggal expired berdasarkan produk yang dipilih
+// // const fetchExpDates = async () => {
+// //   if (!formData.value.product_id) return;
+// //   const response = await axios.get(
+// //     useApi(`/api/products/product/${formData.value.product_id}/exp-dates`)
+// //   );
+// //   // const data = await response.json();
+// //   expDates.value = response.data.data;
+// // };
+
+// // Ambil tanggal expired berdasarkan produk yang dipilih dan stok per tanggal
 // const fetchExpDates = async () => {
 //   if (!formData.value.product_id) return;
 //   const response = await axios.get(
 //     useApi(`/api/products/product/${formData.value.product_id}/exp-dates`)
 //   );
-//   // const data = await response.json();
-//   expDates.value = response.data.data;
+//   const fetchedExpDates = response.data.data;
+
+//   // Fetch stock for each exp_date
+//   const expDatesWithStock = [];
+//   for (const expDate of fetchedExpDates) {
+//     const stockResponse = await axios.get(
+//       useApi(`/api/products/product/${formData.value.product_id}/stock/${expDate}`)
+//     );
+//     expDatesWithStock.push({
+//       date: expDate,
+//       stock: stockResponse.data.stock,
+//     });
+//   }
+//   expDates.value = expDatesWithStock;
 // };
 
-// Ambil tanggal expired berdasarkan produk yang dipilih dan stok per tanggal
+// // Watcher: update tanggal expired saat produk berubah
+// watch(() => formData.value.product_id, fetchExpDates);
+// // watch(
+// //   () => formData.value.product_id,
+// //   async () => {
+// //     await fetchTotalStock();
+// //     await fetchExpDates(); // Ambil tanggal expired setelah memilih produk
+// //   }
+// // );
+
+// // Watcher untuk update stok expired date ketika tanggal berubah
+// // watch(() => formData.value.exp_date, fetchExpStock);
+// // watch(
+// //   () => formData.value.exp_date,
+// //   async () => {
+// //     if (formData.value.product_id && formData.value.exp_date) {
+// //       await fetchExpStock();
+// //     }
+// //   }
+// // );
+
+// // Tampilkan modal tambah
+// const openModal = async (entry = null) => {
+//   showModal.value = true;
+//   selectedProduct.value = entry;
+
+//   formData.value = entry
+//     ? { ...entry, product_id: entry.product.id }
+//     : { product_id: "", exp_date: "", added_stock: 0 };
+
+//   // if (entry) {
+//   //   // Jika mengedit, isi form dengan data yang ada
+//   //   formData.value = { ...entry, product_id: entry.product.id };
+//   // } else {
+//   //   // Jika menambahkan baru, kosongkan form
+//   //   formData.value = { product_id: "", exp_date: "", added_stock: 0 };
+//   // }
+
+//   // Jika ada produk yang dipilih, ambil stok total & tanggal expired
+//   // if (formData.value.product_id) {
+//   //   await fetchTotalStock();
+//   //   await fetchExpDates();
+
+//   //   // Jika ada tanggal expired, ambil stok per tanggal tersebut
+//   //   if (formData.value.exp_date) {
+//   //     await fetchExpStock();
+//   //   }
+//   // }
+// };
+
+// // Tutup modal
+// const closeModal = () => {
+//   showModal.value = false;
+// };
+
+// // Simpan entry barang masuk
+// // const saveEntry = async () => {
+// //   const url = selectedProduct.value
+// //     ? `${BASE_URL}/api/entry-products/${selectedProduct.value.id}`
+// //     : `${BASE_URL}/api/entry-products/store`;
+
+// //   const method = selectedProduct.value ? "PUT" : "POST";
+
+// //   await fetch(url, {
+// //     method,
+// //     headers: { "Content-Type": "application/json" },
+// //     body: JSON.stringify(formData.value),
+// //   });
+
+// //   closeModal();
+// //   fetchEntries();
+// // };
+
+// const saveEntry = async () => {
+//   const url = selectedProduct.value
+//     ? useApi(`/api/entry-products/${selectedProduct.value.id}`)
+//     : useApi(`/api/entry-products/store`);
+
+//   const method = selectedProduct.value ? "PUT" : "POST";
+
+//   await fetch(url, {
+//     method,
+//     headers: { "Content-Type": "application/json" },
+//     body: JSON.stringify(formData.value),
+//   });
+
+//   closeModal();
+//   fetchEntries();
+//   fetchProducts();
+// };
+
+// // Hapus entry
+// // const deleteEntry = async (id) => {
+// //   await fetch(`${BASE_URL}/api/entry-products/${id}`, { method: "DELETE" });
+// //   fetchEntries();
+// // };
+
+// const deleteEntry = async (id) => {
+//   if (!confirm("Apakah Anda yakin ingin menghapus data ini?")) return;
+
+//   await fetch(useApi(`/api/entry-products/${id}`, { method: "DELETE" }));
+//   fetchEntries();
+//   fetchProducts();
+// };
+
+// // const filteredEntry = computed(() => {
+// //   return entryProducts.value.filter((entry) =>
+// //     entry.product.name.toLowerCase().includes(searchQuery.value.toLowerCase())
+// //   );
+// // });
+
+// const filteredEntry = computed(() => {
+//   return entryProducts.value.filter((entry) => {
+//     const query = searchQuery.value.toLowerCase();
+//     return (
+//       entry.product.name.toLowerCase().includes(query) ||
+//       entry.product.code.toLowerCase().includes(query) ||
+//       entry.product.price.toString().includes(query) ||
+//       entry.exp_date.toString().includes(query) ||
+//       entry.added_stock.toString().includes(query) ||
+//       entry.previous_stock.toString().includes(query) ||
+//       entry.current_stock.toString().includes(query) ||
+//       entry.created_at.toString().includes(query)
+//     );
+//   });
+// });
+
+// const paginatedEntry = computed(() => {
+//   const start = (currentPage.value - 1) * itemsPerPage.value;
+//   return filteredEntry.value.slice(start, start + itemsPerPage.value);
+// });
+
+// const totalPages = computed(() => {
+//   return Math.ceil(filteredEntry.value.length / itemsPerPage.value);
+// });
+
+// const generatePagination = computed(() => {
+//   const total = totalPages.value;
+//   const current = currentPage.value;
+//   const pages = [];
+
+//   if (total <= 7) {
+//     return Array.from({ length: total }, (_, i) => i + 1);
+//   }
+
+//   if (current <= 4) {
+//     pages.push(1, 2, 3, 4, 5, "...", total);
+//   } else if (current >= total - 3) {
+//     pages.push(1, "...", total - 4, total - 3, total - 2, total - 1, total);
+//   } else {
+//     pages.push(1, "...", current - 1, current, current + 1, "...", total);
+//   }
+
+//   return pages;
+// });
+
+// const changePage = (page) => {
+//   if (page >= 1 && page <= totalPages.value && page !== "...") {
+//     currentPage.value = page;
+//   }
+// };
+
+// const formatDate = (dateString) => {
+//   const date = new Date(dateString);
+//   return date.toLocaleString("id-ID", { dateStyle: "medium", timeStyle: "short" });
+// };
+
+// const formatPrice = (price) => {
+//   return new Intl.NumberFormat("id-ID", {
+//     style: "currency",
+//     currency: "IDR",
+//     minimumFractionDigits: 0,
+//   }).format(price);
+// };
+
+// const onImageError = (event) => {
+//   event.target.src = fallbackImage;
+// };
+
+// watch(itemsPerPage, () => {
+//   currentPage.value = 1;
+//   fetchEntries();
+// });
+
+// // Load data saat komponen dipasang
+// onMounted(() => {
+//   fetchEntries();
+//   fetchProducts();
+// });
+
+import axios from "axios";
+import { ref, reactive, computed, onMounted, watch } from "vue";
+
+definePageMeta({
+  middleware: ["auth"],
+});
+
+// Data utama
+const entryProducts = ref([]);
+const products = ref([]);
+const expDates = ref([]);
+const showModal = ref(false); // Modal untuk tambah/edit stok masuk
+const selectedProduct = ref(null);
+const formData = ref({ product_id: "", exp_date: "", added_stock: 0 });
+const searchQuery = ref("");
+const itemsPerPageOptions = [5, 10, 20, 50];
+const itemsPerPage = ref(5);
+const currentPage = ref(1);
+const isLoading = ref(true);
+
+const fallbackImage = "/assets/images/avatar.png";
+
+// BARU: State untuk modal tambah tanggal expired
+const showAddExpDateModal = ref(false);
+const newExpDateData = reactive({
+  product_id: null,
+  new_exp_date: "",
+});
+const addExpDateError = ref("");
+const addExpDateSuccess = ref("");
+
+// Ambil data barang masuk
+const fetchEntries = async () => {
+  const response = await axios.get(useApi(`/api/entry-products`));
+  entryProducts.value = response.data.data;
+};
+
+// Ambil daftar produk
+const fetchProducts = async () => {
+  isLoading.value = true;
+  try {
+    const response = await axios.get(useApi(`/api/products`));
+    products.value = response.data.data;
+  } catch (error) {
+    alert("Terjadi kesalahan saat mengambil data produk: " + error.message);
+  } finally {
+    setTimeout(() => {
+      isLoading.value = false;
+    }, 200);
+  }
+};
+
+// Ambil tanggal expired berdasarkan produk yang dipilih
 const fetchExpDates = async () => {
-  if (!formData.value.product_id) return;
+  if (!formData.value.product_id) {
+    expDates.value = [];
+    return;
+  }
   const response = await axios.get(
     useApi(`/api/products/product/${formData.value.product_id}/exp-dates`)
   );
   const fetchedExpDates = response.data.data;
 
-  // Fetch stock for each exp_date
   const expDatesWithStock = [];
   for (const expDate of fetchedExpDates) {
     const stockResponse = await axios.get(
@@ -130,78 +396,70 @@ const fetchExpDates = async () => {
   expDates.value = expDatesWithStock;
 };
 
-// Watcher: update tanggal expired saat produk berubah
+// Watcher untuk modal utama
 watch(() => formData.value.product_id, fetchExpDates);
-// watch(
-//   () => formData.value.product_id,
-//   async () => {
-//     await fetchTotalStock();
-//     await fetchExpDates(); // Ambil tanggal expired setelah memilih produk
-//   }
-// );
 
-// Watcher untuk update stok expired date ketika tanggal berubah
-// watch(() => formData.value.exp_date, fetchExpStock);
-// watch(
-//   () => formData.value.exp_date,
-//   async () => {
-//     if (formData.value.product_id && formData.value.exp_date) {
-//       await fetchExpStock();
-//     }
-//   }
-// );
-
-// Tampilkan modal tambah
+// Tampilkan modal tambah/edit stok
 const openModal = async (entry = null) => {
   showModal.value = true;
   selectedProduct.value = entry;
-
   formData.value = entry
     ? { ...entry, product_id: entry.product.id }
-    : { product_id: "", exp_date: "", added_stock: 0 };
-
-  // if (entry) {
-  //   // Jika mengedit, isi form dengan data yang ada
-  //   formData.value = { ...entry, product_id: entry.product.id };
-  // } else {
-  //   // Jika menambahkan baru, kosongkan form
-  //   formData.value = { product_id: "", exp_date: "", added_stock: 0 };
-  // }
-
-  // Jika ada produk yang dipilih, ambil stok total & tanggal expired
-  // if (formData.value.product_id) {
-  //   await fetchTotalStock();
-  //   await fetchExpDates();
-
-  //   // Jika ada tanggal expired, ambil stok per tanggal tersebut
-  //   if (formData.value.exp_date) {
-  //     await fetchExpStock();
-  //   }
-  // }
+    : { product_id: "", exp_date: "", added_stock: 1 };
+  if (entry) {
+    await fetchExpDates(); // Pre-load exp dates for editing
+  }
 };
 
-// Tutup modal
 const closeModal = () => {
   showModal.value = false;
 };
 
-// Simpan entry barang masuk
-// const saveEntry = async () => {
-//   const url = selectedProduct.value
-//     ? `${BASE_URL}/api/entry-products/${selectedProduct.value.id}`
-//     : `${BASE_URL}/api/entry-products/store`;
+// BARU: Logika untuk membuka dan menutup modal tambah tanggal expired
+const openAddExpDateModal = () => {
+  addExpDateError.value = "";
+  addExpDateSuccess.value = "";
+  newExpDateData.product_id = null;
+  newExpDateData.new_exp_date = "";
+  showAddExpDateModal.value = true;
+};
 
-//   const method = selectedProduct.value ? "PUT" : "POST";
+const closeAddExpDateModal = () => {
+  showAddExpDateModal.value = false;
+};
 
-//   await fetch(url, {
-//     method,
-//     headers: { "Content-Type": "application/json" },
-//     body: JSON.stringify(formData.value),
-//   });
+// BARU: Fungsi untuk menyimpan tanggal expired baru
+const saveNewExpDate = async () => {
+  addExpDateError.value = "";
+  addExpDateSuccess.value = "";
 
-//   closeModal();
-//   fetchEntries();
-// };
+  if (!newExpDateData.product_id || !newExpDateData.new_exp_date) {
+    addExpDateError.value = "Produk dan tanggal expired harus diisi.";
+    return;
+  }
+
+  try {
+    const response = await axios.post(
+      useApi(`/api/products/${newExpDateData.product_id}/add-exp-date`),
+      {
+        exp_date: newExpDateData.new_exp_date,
+      }
+    );
+
+    if (response.data.success) {
+      addExpDateSuccess.value = response.data.message;
+      setTimeout(() => {
+        closeAddExpDateModal();
+      }, 1500); // Tutup modal setelah 1.5 detik
+    }
+  } catch (error) {
+    if (error.response && error.response.data && error.response.data.message) {
+      addExpDateError.value = error.response.data.message;
+    } else {
+      addExpDateError.value = "Gagal menambahkan tanggal expired.";
+    }
+  }
+};
 
 const saveEntry = async () => {
   const url = selectedProduct.value
@@ -221,26 +479,14 @@ const saveEntry = async () => {
   fetchProducts();
 };
 
-// Hapus entry
-// const deleteEntry = async (id) => {
-//   await fetch(`${BASE_URL}/api/entry-products/${id}`, { method: "DELETE" });
-//   fetchEntries();
-// };
-
 const deleteEntry = async (id) => {
   if (!confirm("Apakah Anda yakin ingin menghapus data ini?")) return;
-
-  await fetch(useApi(`/api/entry-products/${id}`, { method: "DELETE" }));
+  await fetch(useApi(`/api/entry-products/${id}`), { method: "DELETE" });
   fetchEntries();
   fetchProducts();
 };
 
-// const filteredEntry = computed(() => {
-//   return entryProducts.value.filter((entry) =>
-//     entry.product.name.toLowerCase().includes(searchQuery.value.toLowerCase())
-//   );
-// });
-
+// ... (sisa script computed properties dan functions lainnya tidak perlu diubah) ...
 const filteredEntry = computed(() => {
   return entryProducts.value.filter((entry) => {
     const query = searchQuery.value.toLowerCase();
@@ -314,7 +560,6 @@ watch(itemsPerPage, () => {
   fetchEntries();
 });
 
-// Load data saat komponen dipasang
 onMounted(() => {
   fetchEntries();
   fetchProducts();
@@ -326,12 +571,26 @@ onMounted(() => {
     <!-- Tombol Tambah -->
     <div class="flex items-center justify-between mb-4">
       <h1 class="text-2xl font-bold">Barang Masuk</h1>
-      <button
+      <!-- <button
         @click="openModal()"
         class="px-4 py-2 text-white bg-blue-600 rounded shadow hover:bg-blue-700"
       >
         + Tambah
-      </button>
+      </button> -->
+      <div class="flex gap-2">
+        <button
+          @click="openAddExpDateModal()"
+          class="px-4 py-2 text-white bg-green-600 rounded shadow hover:bg-green-700"
+        >
+          Tambah Tanggal Expired
+        </button>
+        <button
+          @click="openModal()"
+          class="px-4 py-2 text-white bg-blue-600 rounded shadow hover:bg-blue-700"
+        >
+          + Tambah Barang Masuk
+        </button>
+      </div>
     </div>
 
     <div class="flex items-center justify-between mb-4">
@@ -494,6 +753,67 @@ onMounted(() => {
       v-if="showModal"
       class="fixed inset-0 flex items-center justify-center bg-gray-600 bg-opacity-50"
     >
+      <div
+        v-if="showAddExpDateModal"
+        class="fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-60"
+      >
+        <div class="w-1/3 p-6 bg-white rounded-lg shadow-xl">
+          <h2 class="mb-4 text-xl font-bold">Tambah Tanggal Expired Baru</h2>
+
+          <div
+            v-if="addExpDateError"
+            class="p-3 mb-4 text-red-700 bg-red-100 border border-red-400 rounded"
+          >
+            {{ addExpDateError }}
+          </div>
+          <div
+            v-if="addExpDateSuccess"
+            class="p-3 mb-4 text-green-700 bg-green-100 border border-green-400 rounded"
+          >
+            {{ addExpDateSuccess }}
+          </div>
+
+          <label class="block mb-2 text-sm font-medium text-gray-700"
+            >Pilih Produk:</label
+          >
+          <select
+            v-model="newExpDateData.product_id"
+            class="w-full p-2 mb-4 border border-gray-300 rounded-md"
+          >
+            <option :value="null" disabled>-- Pilih Produk --</option>
+            <option v-for="product in products" :key="product.id" :value="product.id">
+              {{ product.name }} ({{ product.code }})
+            </option>
+          </select>
+
+          <label class="block mb-2 text-sm font-medium text-gray-700"
+            >Tanggal Expired Baru:</label
+          >
+          <input
+            type="date"
+            v-model="newExpDateData.new_exp_date"
+            class="w-full p-2 mb-6 border border-gray-300 rounded-md"
+          />
+
+          <div class="flex justify-end gap-3">
+            <button
+              @click="closeAddExpDateModal"
+              class="px-4 py-2 text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300"
+            >
+              Batal
+            </button>
+            <button
+              @click="saveNewExpDate"
+              class="px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700"
+            >
+              Simpan
+            </button>
+          </div>
+        </div>
+      </div>
+
+
+			
       <div class="w-1/3 p-6 bg-white rounded shadow-lg">
         <h2 class="mb-4 text-xl font-bold">Pilih Barang Masuk</h2>
 
