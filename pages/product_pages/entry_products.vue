@@ -582,13 +582,13 @@ onMounted(() => {
           @click="openAddExpDateModal()"
           class="px-4 py-2 text-white bg-green-600 rounded shadow hover:bg-green-700"
         >
-          Tambah Tanggal Expired
+          + Tambah Tanggal Expired
         </button>
         <button
           @click="openModal()"
           class="px-4 py-2 text-white bg-blue-600 rounded shadow hover:bg-blue-700"
         >
-          + Tambah Barang Masuk
+          + Tambah Stok Barang Masuk
         </button>
       </div>
     </div>

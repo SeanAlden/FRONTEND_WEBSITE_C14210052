@@ -280,7 +280,7 @@ onMounted(() => {
         @click="openModal()"
         class="px-4 py-2 text-white bg-blue-600 rounded shadow hover:bg-blue-700"
       >
-        + Tambah
+        + Tambah Stok Barang Keluar
       </button>
     </div>
 
