@@ -950,7 +950,7 @@ onMounted(() => {
                 <img
                   :src="
                     exit.product.photo
-                      ? useApi(`/storage/${exit.product.photo}`)
+                      ? useApi(`/public/storage/${exit.product.photo}`)
                       : fallbackImage
                   "
                   @error="onImageError"
