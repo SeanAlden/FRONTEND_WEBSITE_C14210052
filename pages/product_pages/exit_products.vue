@@ -518,9 +518,9 @@ const fetchExpDates = async () => {
   // Hanya tampilkan tanggal yang memiliki stok atau yang sedang diedit
   expDates.value = expDatesWithStock.filter(item => {
     if (selectedProduct.value) {
-        return item.stock > 0 || item.date === selectedProduct.value.exp_date;
+        return item.stock >= 0 || item.date === selectedProduct.value.exp_date;
     }
-    return item.stock > 0;
+    return item.stock >= 0;
   });
 };
 
