@@ -11,23 +11,20 @@ const searchQuery = ref("");
 const itemsPerPageOptions = [5, 10, 20, 50];
 const itemsPerPage = ref(5);
 const currentPage = ref(1);
-const isLoading = ref(true); // State untuk loading
+const isLoading = ref(true);
 
 const fallbackImage = "/assets/images/avatar.png";
 
 const fetchProducts = async () => {
-  isLoading.value = true; // Set loading to true
+  isLoading.value = true;
   try {
     const res = await axios.get(useApi(`/api/products`));
-    // const data = await res.json();
+
     products.value = res.data.data;
   } catch (error) {
     alert("Terjadi kesalahan: " + error.message);
   } finally {
-    isLoading.value = false; // Set loading to false after fetching
-    // setTimeout(() => {
-    //   isLoading.value = false;
-    // }, 200); // delay sedikit agar animasi terlihat smooth
+    isLoading.value = false;
   }
 };
 
@@ -70,10 +67,6 @@ const isExpiredOrToday = (expDate) => {
   const expirationDate = new Date(expDate);
   return expirationDate <= today;
 };
-
-// const getTotalStock = (stocks) => {
-//   return stocks.reduce((total, stock) => total + stock.stock, 0);
-// };
 
 const getTotalStock = (stocks) => {
   return stocks.reduce((total, stock) => total + parseInt(stock.stock, 10), 0);
@@ -215,9 +208,11 @@ onMounted(fetchProducts);
               >
                 <img
                   :src="
-                      product.photo ? useApi(`/public/storage/${product.photo}`) : fallbackImage
-                    "
-                    @error="onImageError"
+                    product.photo
+                      ? useApi(`/public/storage/${product.photo}`)
+                      : fallbackImage
+                  "
+                  @error="onImageError"
                   class="w-20 h-20 object-fit"
                 />
               </td>

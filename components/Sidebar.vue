@@ -106,13 +106,13 @@
           <span v-if="isSidebarOpen">Employees</span>
         </NuxtLink>
 
-        <NuxtLink
+        <!-- <NuxtLink
           to="/analysis_pages/sales_count_page"
           class="flex items-center p-3 hover:bg-gray-700"
         >
           <img src="/assets/icons/analysis.png" class="w-6 h-6 mr-3" />
           <span v-if="isSidebarOpen">Analisis C4.5</span>
-        </NuxtLink>
+        </NuxtLink> -->
       </nav>
     </div>
   </div>
