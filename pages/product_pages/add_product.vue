@@ -268,9 +268,9 @@ onMounted(() => {
       <input v-model="form.price" type="number" required class="w-full p-2 border" />
 
       <!-- Stok & Tanggal Kadaluarsa -->
-      <!-- <label>Stok & Tanggal Kadaluarsa:</label> -->
+      <label>Stok & Tanggal Kadaluarsa:</label>
       <!-- <label>Tanggal Kadaluarsa:</label> -->
-      <!-- <div v-for="(stock, index) in form.stocks" :key="index" class="flex gap-2 mb-2"> -->
+      <div v-for="(stock, index) in form.stocks" :key="index" class="flex gap-2 mb-2">
         <!-- <input
           v-model="stock.stock"
           type="number"
@@ -278,23 +278,23 @@ onMounted(() => {
           required
           class="w-1/2 p-2 border"
         /> -->
-        <!-- <input v-model="stock.exp_date" type="date" required class="w-1/2 p-2 border" /> -->
-        <!-- <button
+        <input v-model="stock.exp_date" type="date" required class="w-1/2 p-2 border" />
+        <button
           type="button"
           @click="removeStockField(index)"
           class="p-2 text-white bg-red-500 rounded"
           v-if="form.stocks.length > 1"
         >
           ✕
-        </button> -->
-      <!-- </div> -->
-      <!-- <button
+        </button>
+      </div>
+      <button
         type="button"
         @click="addStockField"
         class="p-2 mb-4 text-white bg-blue-500 rounded"
       >
         + Tambah Stok
-      </button> -->
+      </button>
 
       <!-- Deskripsi -->
       <label>Deskripsi:</label>
