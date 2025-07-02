@@ -327,7 +327,7 @@ onMounted(async () => {
       />
 
       <!-- Stok berdasarkan tanggal expired -->
-      <div>
+      <!-- <div>
         <label>Tanggal Expired & Stoknya:</label>
         <div
           v-for="(item, index) in expStockList"
@@ -335,9 +335,7 @@ onMounted(async () => {
           class="flex items-center gap-2 mb-2"
         >
           <input v-model="item.exp_date" type="date" required class="p-2 border" />
-          <!-- <input v-model="item.stock" type="number" required class="w-24 p-2 border" /> -->
 					<span class="inline-block w-24 p-2 border select-none">{{ item.stock }}</span>			
-          <!-- <p class="w-24 p-2 border">{{ item.stock || 10 }}</p> -->
           <button
             type="button"
             @click="removeExpStock(index)"
@@ -353,7 +351,7 @@ onMounted(async () => {
         >
           Tambah Stok Expired
         </button>
-      </div>
+      </div> -->
 
       <!-- Deskripsi -->
       <label>Deskripsi:</label>
