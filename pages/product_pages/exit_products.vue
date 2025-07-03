@@ -516,9 +516,9 @@ const fetchExpDates = async () => {
     });
   }
   // Hanya tampilkan tanggal yang memiliki stok atau yang sedang diedit
-  expDates.value = expDatesWithStock.filter(item => {
+  expDates.value = expDatesWithStock.filter((item) => {
     if (selectedProduct.value) {
-        return item.stock >= 0 || item.date === selectedProduct.value.exp_date;
+      return item.stock >= 0 || item.date === selectedProduct.value.exp_date;
     }
     return item.stock >= 0;
   });
@@ -528,26 +528,34 @@ const fetchExpDates = async () => {
 watch(() => formData.value.product_id, fetchExpDates);
 
 // Awasi perubahan tanggal, lalu simpan detail stoknya
-watch(() => formData.value.exp_date, (newDate) => {
-  if (newDate) {
-    selectedStockItem.value = expDates.value.find(item => item.date === newDate) || null;
-  } else {
-    selectedStockItem.value = null;
+watch(
+  () => formData.value.exp_date,
+  (newDate) => {
+    if (newDate) {
+      selectedStockItem.value =
+        expDates.value.find((item) => item.date === newDate) || null;
+    } else {
+      selectedStockItem.value = null;
+    }
   }
-});
+);
 
 // Buka modal
 const openModal = (exit = null) => {
   showModal.value = true;
   selectedProduct.value = exit;
   selectedStockItem.value = null; // Reset
-  
+
   formData.value = exit
-    ? { product_id: exit.product.id, exp_date: exit.exp_date, removed_stock: exit.removed_stock }
+    ? {
+        product_id: exit.product.id,
+        exp_date: exit.exp_date,
+        removed_stock: exit.removed_stock,
+      }
     : { product_id: "", exp_date: "", removed_stock: 1 };
-  
+
   if (exit) {
-      fetchExpDates(); // Panggil fetchExpDates jika sedang edit
+    fetchExpDates(); // Panggil fetchExpDates jika sedang edit
   }
 };
 
@@ -570,15 +578,15 @@ const saveExit = async () => {
 
   try {
     const response = await axios({
-        method: method,
-        url: url,
-        data: formData.value
+      method: method,
+      url: url,
+      data: formData.value,
     });
 
     if (response.data.success) {
-        closeModal();
-        fetchExits();
-        fetchProducts();
+      closeModal();
+      fetchExits();
+      fetchProducts();
     }
   } catch (error) {
     alert(error.response?.data?.message || "Terjadi kesalahan saat menyimpan data!");
@@ -587,22 +595,25 @@ const saveExit = async () => {
 
 // Fungsi untuk menghapus tanggal expired
 const deleteExpDate = async () => {
-    if (!selectedStockItem.value) return;
+  if (!selectedStockItem.value) return;
 
-    const { product_id, exp_date } = formData.value;
+  const { product_id, exp_date } = formData.value;
 
-    if (confirm(`Anda yakin ingin menghapus data expired tanggal ${exp_date} untuk produk ini? Stok akan dihapus permanen.`)) {
-        try {
-            await axios.delete(useApi(`/api/products/${product_id}/exp-date/${exp_date}`));
-            alert('Tanggal expired berhasil dihapus.');
-            closeModal();
-            // Data tidak perlu di-fetch ulang karena sudah tidak relevan
-        } catch (error) {
-            alert(error.response?.data?.message || 'Gagal menghapus tanggal expired.');
-        }
+  if (
+    confirm(
+      `Anda yakin ingin menghapus data expired tanggal ${exp_date} untuk produk ini? Stok akan dihapus permanen.`
+    )
+  ) {
+    try {
+      await axios.delete(useApi(`/api/products/${product_id}/exp-date/${exp_date}`));
+      alert("Tanggal expired berhasil dihapus.");
+      closeModal();
+      // Data tidak perlu di-fetch ulang karena sudah tidak relevan
+    } catch (error) {
+      alert(error.response?.data?.message || "Gagal menghapus tanggal expired.");
     }
+  }
 };
-
 
 // Hapus riwayat barang keluar
 const deleteExit = async (id) => {
@@ -884,7 +895,7 @@ onMounted(() => {
       </div>
     </div>
   </div> -->
-	<div class="container p-6 mx-auto">
+  <div class="container p-6 mx-auto">
     <div class="flex items-center justify-between mb-4">
       <h1 class="text-2xl font-bold">Barang Keluar</h1>
       <button
@@ -944,7 +955,7 @@ onMounted(() => {
               class="border-b hover:bg-gray-50"
             >
               <td class="p-3 border">{{ exit.product.code }}</td>
-              <td
+              <!-- <td
                 class="flex min-h-[120px] min-w-[120px] items-center justify-center border p-2"
               >
                 <img
@@ -956,6 +967,19 @@ onMounted(() => {
                   @error="onImageError"
                   class="object-contain w-20 h-20"
                 />
+              </td> -->
+              <td class="p-2 border">
+                <div class="flex items-center justify-center w-full h-full">
+                  <img
+                    :src="
+                      entry.product.photo
+                        ? useApi(`/public/storage/${entry.product.photo}`)
+                        : fallbackImage
+                    "
+                    @error="onImageError"
+                    class="object-cover w-20 h-20 rounded"
+                  />
+                </div>
               </td>
               <td class="p-3 border">{{ exit.product.name }}</td>
               <td class="p-3 text-center border">
@@ -1037,7 +1061,11 @@ onMounted(() => {
         <h2 class="mb-4 text-xl font-bold">Pilih Barang Keluar</h2>
 
         <label class="block mb-2 text-gray-700">Pilih Produk:</label>
-        <select v-model="formData.product_id" :disabled="selectedProduct" class="w-full p-2 mb-4 border disabled:bg-gray-200">
+        <select
+          v-model="formData.product_id"
+          :disabled="selectedProduct"
+          class="w-full p-2 mb-4 border disabled:bg-gray-200"
+        >
           <option value="" disabled>-- Pilih Produk --</option>
           <option v-for="product in products" :key="product.id" :value="product.id">
             {{ product.name }} ({{ product.code }})
@@ -1045,35 +1073,45 @@ onMounted(() => {
         </select>
 
         <label class="block mb-2 text-gray-700">Tanggal Expired:</label>
-        <select v-model="formData.exp_date" :disabled="!formData.product_id || selectedProduct" class="w-full p-2 mb-4 border disabled:bg-gray-200">
+        <select
+          v-model="formData.exp_date"
+          :disabled="!formData.product_id || selectedProduct"
+          class="w-full p-2 mb-4 border disabled:bg-gray-200"
+        >
           <option value="" disabled>-- Pilih Tanggal --</option>
           <option v-for="exp in expDates" :key="exp.date" :value="exp.date">
             {{ exp.date }} (Stok: {{ exp.stock }})
           </option>
         </select>
-        
+
         <div v-if="selectedStockItem">
+          <div v-if="selectedStockItem.stock > 0">
+            <label class="block mb-2 text-gray-700">Jumlah Stok Keluar:</label>
+            <input
+              type="number"
+              v-model="formData.removed_stock"
+              class="w-full p-2 mb-4 border"
+              min="1"
+              :max="selectedStockItem.stock"
+            />
+          </div>
 
-            <div v-if="selectedStockItem.stock > 0">
-                <label class="block mb-2 text-gray-700">Jumlah Stok Keluar:</label>
-                <input
-                    type="number"
-                    v-model="formData.removed_stock"
-                    class="w-full p-2 mb-4 border"
-                    min="1"
-                    :max="selectedStockItem.stock"
-                />
-            </div>
-
-            <div v-else class="p-4 my-4 text-center bg-yellow-100 border-l-4 border-yellow-500">
-                <p class="font-bold">Stok untuk tanggal ini sudah habis (0).</p>
-                <p class="text-sm">Anda dapat menghapus data tanggal expired ini dari daftar pilihan.</p>
-                <button @click="deleteExpDate" class="px-4 py-2 mt-3 text-white bg-red-600 rounded shadow-md hover:bg-red-700">
-                    Hapus Tanggal Expired Ini
-                </button>
-            </div>
+          <div
+            v-else
+            class="p-4 my-4 text-center bg-yellow-100 border-l-4 border-yellow-500"
+          >
+            <p class="font-bold">Stok untuk tanggal ini sudah habis (0).</p>
+            <p class="text-sm">
+              Anda dapat menghapus data tanggal expired ini dari daftar pilihan.
+            </p>
+            <button
+              @click="deleteExpDate"
+              class="px-4 py-2 mt-3 text-white bg-red-600 rounded shadow-md hover:bg-red-700"
+            >
+              Hapus Tanggal Expired Ini
+            </button>
+          </div>
         </div>
-
 
         <div class="flex justify-end">
           <button
@@ -1082,10 +1120,11 @@ onMounted(() => {
           >
             Batal
           </button>
-          <button 
+          <button
             v-if="selectedStockItem && selectedStockItem.stock > 0"
-            @click="saveExit" 
-            class="px-4 py-2 text-white bg-blue-600 rounded">
+            @click="saveExit"
+            class="px-4 py-2 text-white bg-blue-600 rounded"
+          >
             Simpan
           </button>
         </div>
