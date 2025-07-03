@@ -32,31 +32,6 @@ const token = useCookie("my_auth_token");
 const fallbackImage = "/assets/images/avatar.png";
 
 // Fungsi untuk mengekspor ke PDF
-// const exportToPDF = () => {
-//   const doc = new jsPDF();
-//   doc.setFontSize(12);
-
-//   // Menambahkan judul
-//   doc.text("Data Transaksi", 14, 16);
-
-//   // Menambahkan header tabel
-//   const headers = ["Kode Transaksi", "Nama", "Total Transaksi", "Waktu", "Status"];
-//   const data = paginatedTransactions.value.map((transaction) => [
-//     transaction.transaction_code,
-//     transaction.mergedDetails[0].name,
-//     formatPrice(transaction.total_payment),
-//     formatDate(transaction.transaction_date),
-//     transaction.status,
-//   ]);
-//   // Menambahkan header dan data ke PDF
-//   doc.autoTable({
-//     head: [headers],
-//     body: data,
-//   });
-//   // Menyimpan PDF
-//   doc.save("data_transaksi.pdf");
-// };
-
 const exportToPDF = () => {
   const doc = new jsPDF();
 
@@ -65,7 +40,6 @@ const exportToPDF = () => {
   doc.text("Data Transaksi", 14, 15);
 
   // Siapkan data untuk tabel PDF
-  // const rows = paginatedTransactions.value.map((transaction) => [
   const rows = transactions.value.map((transaction) => [
     transaction.transaction_code,
     formatPrice(transaction.gross_amount),
@@ -166,86 +140,6 @@ onMounted(async () => {
     isLoading.value = false;
   }
 });
-
-// Computed property untuk filter transaksi berdasarkan tanggal atau bulan-tahun
-// const filteredTransactions = computed(() => {
-//   return transactions.value
-//     .filter((transaction) => {
-//       const transactionDate = new Date(transaction.transaction_date);
-//       const formattedDate = transactionDate.toISOString().split("T")[0]; // Format YYYY-MM-DD
-//       const formattedMonthYear = transactionDate.toISOString().slice(0, 7); // Format YYYY-MM
-
-//       if (filterDate.value && formattedDate !== filterDate.value) {
-//         return false;
-//       }
-//       if (filterMonthYear.value && formattedMonthYear !== filterMonthYear.value) {
-//         return false;
-//       }
-//       if (
-//         searchQuery.value &&
-//         !transaction.mergedDetails.some(
-//           (detail) =>
-//             detail.price.toString().includes(searchQuery.value.toLowerCase()) ||
-//             transaction.transaction_code
-//               .toLowerCase()
-//               .includes(searchQuery.value.toLowerCase()) ||
-//             detail.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-//             detail.code.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-//             detail.code.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-//             detail.quantity.toString().includes(searchQuery.value.toLowerCase()) ||
-//             transaction.gross_amount
-//               .toString()
-//               .includes(searchQuery.value.toLowerCase()) ||
-//             transaction.status.toLowerCase().includes(searchQuery.value.toLowerCase())
-//         )
-//       ) {
-//         return false;
-//       }
-//       return true;
-//     })
-//     .sort((a, b) => new Date(b.transaction_date) - new Date(a.transaction_date)); // Mengurutkan dari terbaru ke terlama
-// });
-
-// const filteredTransactions = computed(() => {
-//   return transactions.value
-//     .filter((transaction) => {
-//       const transactionDate = new Date(transaction.transaction_date);
-
-//       // Tambahkan 7 jam ke waktu transaksi (7 jam = 25200000 milidetik)
-//       const adjustedDate = new Date(transactionDate.getTime() + 7 * 60 * 60 * 1000);
-
-//       const formattedDate = adjustedDate.toISOString().split("T")[0]; // Format YYYY-MM-DD
-//       const formattedMonthYear = adjustedDate.toISOString().slice(0, 7); // Format YYYY-MM
-
-//       if (filterDate.value && formattedDate !== filterDate.value) {
-//         return false;
-//       }
-//       if (filterMonthYear.value && formattedMonthYear !== filterMonthYear.value) {
-//         return false;
-//       }
-//       if (
-//         searchQuery.value &&
-//         !transaction.mergedDetails.some(
-//           (detail) =>
-//             detail.price.toString().includes(searchQuery.value.toLowerCase()) ||
-//             transaction.transaction_code
-//               .toLowerCase()
-//               .includes(searchQuery.value.toLowerCase()) ||
-//             detail.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-//             detail.code.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-//             detail.quantity.toString().includes(searchQuery.value.toLowerCase()) ||
-//             transaction.gross_amount
-//               .toString()
-//               .includes(searchQuery.value.toLowerCase()) ||
-//             transaction.status.toLowerCase().includes(searchQuery.value.toLowerCase())
-//         )
-//       ) {
-//         return false;
-//       }
-//       return true;
-//     })
-//     .sort((a, b) => new Date(b.transaction_date) - new Date(a.transaction_date)); // Mengurutkan dari terbaru ke terlama
-// });
 
 // Update the filteredTransactions computed property
 const filteredTransactions = computed(() => {
@@ -407,24 +301,12 @@ watch(itemsPerPage, () => {
       </button>
     </div>
 
-    <!-- <div class="flex flex-wrap gap-4 mb-4"> -->
-    <!-- Reset Filter -->
-    <!-- <button @click="resetFilters" class="px-4 py-2 text-white bg-gray-500 rounded-md"> -->
-    <!-- Reset Filter -->
-    <!-- </button> -->
-    <!-- </div> -->
-
     <!-- Filter Form -->
     <div class="flex flex-col gap-4 mb-4 lg:flex-row lg:items-end lg:justify-between">
       <!-- Items Per Page -->
       <div class="flex flex-col">
         <div class="flex items-center">
           <label class="mr-2">Show</label>
-          <!-- <select v-model="itemsPerPage" class="p-1 border rounded">
-            <option value="10">10</option>
-            <option value="20">20</option>
-            <option value="50">50</option>
-          </select> -->
           <select v-model="itemsPerPage" id="itemsPerPage">
             <option v-for="option in itemsPerPageOptions" :key="option" :value="option">
               {{ option }}
@@ -433,29 +315,6 @@ watch(itemsPerPage, () => {
           <span class="ml-2">entries</span>
         </div>
       </div>
-
-      <!-- Centered Date Filters -->
-      <!-- <div class="flex flex-col gap-4 sm:flex-row lg:mx-auto">
-        <div>
-          <label class="block text-sm font-medium text-gray-700">Filter Tanggal:</label>
-          <input
-            type="date"
-            v-model="filterDate"
-            class="p-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500"
-          />
-        </div>
-
-        <div>
-          <label class="block text-sm font-medium text-gray-700"
-            >Filter Bulan-Tahun:</label
-          >
-          <input
-            type="month"
-            v-model="filterMonthYear"
-            class="p-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500"
-          />
-        </div>
-      </div> -->
 
       <!-- Centered Date Filters -->
       <div class="flex flex-col gap-4 sm:flex-row lg:mx-auto">
@@ -502,8 +361,6 @@ watch(itemsPerPage, () => {
     </div>
 
     <div class="flex items-center justify-center py-10" v-if="isLoading">
-      <!-- <p>Loading...</p> -->
-      <!-- Ganti dengan spinner jika perlu -->
       <div
         class="w-16 h-16 ease-linear border-8 border-t-8 border-gray-200 rounded-full loader"
       ></div>
@@ -515,67 +372,17 @@ watch(itemsPerPage, () => {
         v-if="!isLoading"
         class="overflow-x-auto bg-white rounded-lg shadow-md whitespace-nowrap"
       >
-        <!-- <table class="min-w-full bg-white border border-gray-500"> -->
         <table class="min-w-full bg-white border border-collapse border-black">
           <thead class="text-white bg-gray-800">
             <tr>
               <th class="px-4 py-3 text-left border border-black">Kode Transaksi</th>
-              <!-- <th class="px-4 py-3 text-left border border-black">Kode Produk</th> -->
               <th class="px-4 py-3 text-left border border-black">Foto</th>
               <th class="px-4 py-3 text-left border border-black">Nama</th>
-              <!-- <th class="px-4 py-3 text-left border border-black">Harga</th>
-            <th class="px-4 py-3 text-left border border-black">Kuantitas</th>
-            <th class="px-4 py-3 text-left border border-black">Total Harga</th> -->
               <th class="px-4 py-3 text-left border border-black">Total Transaksi</th>
               <th class="px-4 py-3 text-left border border-black">Waktu</th>
               <th class="px-4 py-3 text-left border border-black">Status</th>
             </tr>
           </thead>
-          <!-- <tbody class="bg-white">
-          <tr
-            v-for="transaction in paginatedTransactions"
-            :key="transaction.id"
-            class="transition duration-200 cursor-pointer hover:bg-gray-200"
-            @click="goToTransactionDetail(transaction.id)"
-          >
-            <td class="px-4 py-3 border border-black">
-              {{ transaction.transaction_code }}
-            </td>
-            <td class="px-4 py-3 border border-black">
-              <img
-                :src="
-                  'http://localhost:8000/storage/' + transaction.mergedDetails[0].photo
-                "
-                alt="Foto Produk"
-                class="w-12 h-12 rounded-md"
-              />
-            </td>
-            <td class="px-4 py-3 border border-black">
-              {{ transaction.mergedDetails[0].name }}
-              <div
-                v-if="transaction.mergedDetails.length > 1"
-                class="text-xs text-blue-500 cursor-pointer hover:underline"
-              >
-                <div>
-                  Klik untuk lihat +{{ transaction.mergedDetails.length - 1 }} produk
-                  lainnya
-                </div>
-              </div>
-            </td>
-
-            <td class="px-4 py-3 border border-black">
-              {{ formatPrice(transaction.total_payment) }}
-            </td>
-            <td class="px-4 py-3 border border-black">
-              {{ formatDate(transaction.transaction_date) }}
-            </td>
-            <td class="px-4 py-3 border border-black">
-              <span :class="['font-bold', getStatusClass(transaction.status)]">
-                {{ transaction.status }}
-              </span>
-            </td>
-          </tr>
-        </tbody> -->
 
           <tbody class="bg-white">
             <tr v-for="transaction in paginatedTransactions" :key="transaction.id">
@@ -585,7 +392,7 @@ watch(itemsPerPage, () => {
               </td>
 
               <!-- Kolom foto produk -->
-              <td
+              <!-- <td
                 class="px-4 py-3 transition duration-200 border border-black cursor-pointer hover:bg-gray-200"
                 @click="goToTransactionDetail(transaction.id)"
               >
@@ -594,6 +401,22 @@ watch(itemsPerPage, () => {
                       transaction.mergedDetails[0].photo ? useApi(`/public/storage/${transaction.mergedDetails[0].photo}`) : fallbackImage
                     "
                     @error="onImageError"
+                  alt="Foto Produk"
+                  class="w-12 h-12 rounded-md"
+                />
+              </td> -->
+
+              <td
+                class="flex items-center justify-center px-4 py-3 transition duration-200 border border-black cursor-pointer hover:bg-gray-200"
+                @click="goToTransactionDetail(transaction.id)"
+              >
+                <img
+                  :src="
+                    transaction.mergedDetails[0].photo
+                      ? useApi(`/public/storage/${transaction.mergedDetails[0].photo}`)
+                      : fallbackImage
+                  "
+                  @error="onImageError"
                   alt="Foto Produk"
                   class="w-12 h-12 rounded-md"
                 />
