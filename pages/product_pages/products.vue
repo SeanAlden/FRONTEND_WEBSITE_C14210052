@@ -203,7 +203,7 @@ onMounted(fetchProducts);
             <tr v-for="product in paginatedProducts" :key="product.id">
               <td class="p-2 border">{{ product.code }}</td>
               <!-- <td class="flex items-center justify-center p-2 border"> -->
-              <td
+              <!-- <td
                 class="flex min-h-[100px] min-w-[100px] items-center justify-center border p-2"
               >
                 <img
@@ -215,6 +215,19 @@ onMounted(fetchProducts);
                   @error="onImageError"
                   class="w-20 h-20 object-fit"
                 />
+              </td> -->
+              <td class="p-2 border">
+                <div class="flex items-center justify-center w-full h-full">
+                  <img
+                    :src="
+                      product.photo
+                        ? useApi(`/public/storage/${product.photo}`)
+                        : fallbackImage
+                    "
+                    @error="onImageError"
+                    class="object-cover w-20 h-20 rounded"
+                  />
+                </div>
               </td>
               <!-- <td class="flex min-h-[120px] min-w-[120px] items-center justify-center border p-2">
                 <img
