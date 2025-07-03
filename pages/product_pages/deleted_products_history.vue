@@ -216,7 +216,7 @@ onMounted(fetchProducts);
                 <div class="flex items-center justify-center w-full h-full">
                   <img
                     :src="
-                      product.photo
+                      item.product.photo
                         ? useApi(`/public/storage/${item.product.photo}`)
                         : fallbackImage
                     "
