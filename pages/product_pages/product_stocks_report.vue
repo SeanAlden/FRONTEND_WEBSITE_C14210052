@@ -101,14 +101,27 @@
                     alt="Foto Produk"
                     class="object-cover w-12 h-12 rounded"
                   /> -->
-									<img
+									<!-- <img
                     :src="
                     item.photo ? item.photo : fallbackImage
                   "
                   @error="onImageError"
                     alt="Foto Produk"
                     class="object-cover w-12 h-12 rounded"
+                  /> -->
+									  <td class="p-2 border">
+                <div class="flex min-h-[100px] min-w-[100px] items-center justify-center w-full h-full">
+                  <img
+                    :src="
+                      item.photo
+                        ? item.photo
+                        : fallbackImage
+                    "
+                    @error="onImageError"
+                    class="object-cover w-20 h-20 rounded"
                   />
+                </div>
+              </td>
                 </td>
                 <td class="px-4 py-2 text-center border">
                   {{ formatPrice(item.price) }}
