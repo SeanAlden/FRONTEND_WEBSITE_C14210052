@@ -217,7 +217,7 @@ onMounted(fetchProducts);
                   <img
                     :src="
                       product.photo
-                        ? useApi(`/public/storage/${product.photo}`)
+                        ? useApi(`/public/storage/${item.product.photo}`)
                         : fallbackImage
                     "
                     @error="onImageError"
