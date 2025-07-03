@@ -39,7 +39,7 @@ const fetchProducts = async () => {
     const res = await axios.get(useApi(`/api/nonactive-history`));
     products.value = res.data.data.map((item) => {
       // Pastikan untuk mengonversi product_stock ke integer
-      item.details.forEach(detail => {
+      item.details.forEach((detail) => {
         detail.product_stock = parseInt(detail.product_stock, 10); // Konversi ke integer
       });
       return item;
@@ -201,7 +201,7 @@ onMounted(fetchProducts);
               <!-- <td class="p-2 border">{{ index + 1 }}</td> -->
               <td class="p-2 border">{{ item.product.code }}</td>
               <!-- <td class="flex items-center justify-center p-2 border"> -->
-              <td
+              <!-- <td
                 class="flex min-h-[100px] min-w-[100px] items-center justify-center border p-2"
               >
                 <img
@@ -211,6 +211,19 @@ onMounted(fetchProducts);
                   @error="onImageError"
                   class="w-20 h-20 object-fit"
                 />
+              </td> -->
+              <td class="p-2 border">
+                <div class="flex items-center justify-center w-full h-full">
+                  <img
+                    :src="
+                      product.photo
+                        ? useApi(`/public/storage/${product.photo}`)
+                        : fallbackImage
+                    "
+                    @error="onImageError"
+                    class="object-cover w-20 h-20 rounded"
+                  />
+                </div>
               </td>
               <td class="p-2 border">
                 <NuxtLink
