@@ -972,8 +972,8 @@ onMounted(() => {
                 <div class="flex items-center justify-center w-full h-full">
                   <img
                     :src="
-                      entry.product.photo
-                        ? useApi(`/public/storage/${entry.product.photo}`)
+                      exit.product.photo
+                        ? useApi(`/public/storage/${exit.product.photo}`)
                         : fallbackImage
                     "
                     @error="onImageError"
