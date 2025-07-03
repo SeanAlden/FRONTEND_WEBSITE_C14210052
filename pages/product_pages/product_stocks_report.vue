@@ -2,7 +2,6 @@
   <div class="container p-6 mx-auto">
     <h1 class="mb-6 text-2xl font-bold text-center">Laporan Barang Masuk-Keluar</h1>
 
-    <!-- FILTER SECTION -->
     <div class="flex flex-wrap items-center justify-center gap-4 mb-6">
       <div>
         <label class="font-semibold">Filter Tanggal:</label>
@@ -29,15 +28,9 @@
       </button>
     </div>
 
-    <!-- SEARCH SECTION -->
     <div class="flex items-center justify-between mb-4">
       <div>
         <label class="mr-2">Show</label>
-        <!-- <select v-model="itemsPerPage" class="p-1 border rounded">
-          <option value="10">10</option>
-          <option value="20">20</option>
-          <option value="50">50</option>
-        </select> -->
         <select v-model="itemsPerPage" id="itemsPerPage">
           <option v-for="option in itemsPerPageOptions" :key="option" :value="option">
             {{ option }}
@@ -56,8 +49,6 @@
     </div>
 
     <div class="flex items-center justify-center py-10" v-if="isLoading">
-      <!-- <p>Loading...</p> -->
-      <!-- Ganti dengan spinner jika perlu -->
       <div
         class="w-16 h-16 ease-linear border-8 border-t-8 border-gray-200 rounded-full loader"
       ></div>
@@ -92,36 +83,21 @@
               <tr v-for="(item, index) in group" :key="index" class="hover:bg-gray-100">
                 <td class="px-4 py-2 border" v-if="index === 0">{{ item.code }}</td>
                 <td class="px-4 py-2 border" v-if="index !== 0"></td>
-                <td class="px-4 py-2 border">
-                  <!-- <img
-                    :src="
-                    item.photo ? useApi(`/public/storage/${item.photo}`) : fallbackImage
-                  "
-                  @error="onImageError"
-                    alt="Foto Produk"
-                    class="object-cover w-12 h-12 rounded"
-                  /> -->
-									<!-- <img
-                    :src="
-                    item.photo ? item.photo : fallbackImage
-                  "
-                  @error="onImageError"
-                    alt="Foto Produk"
-                    class="object-cover w-12 h-12 rounded"
-                  /> -->
-									  <td class="p-2 border">
-                <div class="flex min-h-[100px] min-w-[100px] items-center justify-center w-full h-full">
+                <!-- <td class="px-4 py-2 border">
                   <img
-                    :src="
-                      item.photo
-                        ? item.photo
-                        : fallbackImage
-                    "
+                    :src="item.photo ? item.photo : fallbackImage"
                     @error="onImageError"
-                    class="object-cover w-20 h-20 rounded"
+                    alt="Foto Produk"
+                    class="object-cover w-12 h-12 rounded"
                   />
-                </div>
-              </td>
+                </td> -->
+                <td class="flex items-center justify-center px-4 py-2 border">
+                  <img
+                    :src="item.photo ? item.photo : fallbackImage"
+                    @error="onImageError"
+                    alt="Foto Produk"
+                    class="object-cover w-12 h-12 rounded"
+                  />
                 </td>
                 <td class="px-4 py-2 text-center border">
                   {{ formatPrice(item.price) }}
@@ -130,7 +106,6 @@
                 <td class="px-4 py-2 font-bold text-center border">
                   {{ item.previous_stock }}
                 </td>
-                <!-- <td class="px-4 py-2 font-bold text-center border">{{ item.quantity }}</td> -->
                 <td class="px-4 py-2 font-bold text-center border">
                   <span
                     :class="
@@ -222,42 +197,12 @@ const searchQuery = ref("");
 const currentPage = ref(1);
 const itemsPerPageOptions = [5, 10, 20, 50];
 const itemsPerPage = ref(5);
-const isLoading = ref(true); // State untuk loading
+const isLoading = ref(true);
 
 const fallbackImage = "/assets/images/avatar.png";
 
-// const fetchStockReport = async () => {
-//   isLoading.value = true; // Set loading to true
-//   try {
-//     const response = await axios.get(useApi("/api/product-stocks-report"));
-//     // const data = await response.json();
-//     const data = response.data;
-//     if (data.success) {
-//       productStocks.value = data.data.map((item) => ({
-//         id: item.id,
-//         name: item.name,
-//         code: item.code,
-//         photo: item.photo
-//           ? useApi(`/storage/${item.photo}`)
-//           : '/assets/images/avatar.png',
-//         price: item.price,
-//         exp_date: item.exp_date,
-//         previous_stock: item.previous_stock,
-//         quantity: item.quantity,
-//         current_stock: item.current_stock,
-//         timestamp: item.timestamp,
-//         condition: item.current_stock > item.previous_stock ? "Masuk" : "Keluar",
-//       }));
-//     }
-//   } catch (error) {
-//     console.error("Error fetching stock report:", error);
-//   } finally {
-//     isLoading.value = false;
-//   }
-// };
-
 const fetchStockReport = async () => {
-  isLoading.value = true; // Set loading to true
+  isLoading.value = true;
   try {
     const response = await axios.get(useApi("/api/product-stocks-report"));
     const data = response.data;
@@ -271,9 +216,9 @@ const fetchStockReport = async () => {
           : "/assets/images/avatar.png",
         price: item.price,
         exp_date: item.exp_date,
-        previous_stock: parseInt(item.previous_stock, 10), // Konversi ke integer
-        quantity: parseInt(item.quantity, 10), // Konversi ke integer
-        current_stock: parseInt(item.current_stock, 10), // Konversi ke integer
+        previous_stock: parseInt(item.previous_stock, 10),
+        quantity: parseInt(item.quantity, 10),
+        current_stock: parseInt(item.current_stock, 10),
         timestamp: item.timestamp,
         condition:
           parseInt(item.current_stock, 10) > parseInt(item.previous_stock, 10)
