@@ -407,7 +407,7 @@ watch(itemsPerPage, () => {
               </td> -->
 
               <td
-                class="flex items-center justify-center px-4 py-3 transition duration-200 border border-black cursor-pointer hover:bg-gray-200"
+                class="flex items-center justify-center px-4 py-3 transition duration-200 border cursor-pointer hover:bg-gray-200"
                 @click="goToTransactionDetail(transaction.id)"
               >
                 <img
