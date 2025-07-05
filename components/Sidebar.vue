@@ -105,57 +105,13 @@
           <img src="/assets/icons/employee.png" class="w-6 h-6 mr-3" />
           <span v-if="isSidebarOpen">Employees</span>
         </NuxtLink>
-
-        <!-- <NuxtLink
-          to="/analysis_pages/sales_count_page"
-          class="flex items-center p-3 hover:bg-gray-700"
-        >
-          <img src="/assets/icons/analysis.png" class="w-6 h-6 mr-3" />
-          <span v-if="isSidebarOpen">Analisis C4.5</span>
-        </NuxtLink> -->
+        
       </nav>
     </div>
   </div>
 </template>
 
 <script setup>
-// import { ref, onMounted, onUnmounted } from "vue";
-
-// const isSidebarOpen = ref(true);
-// const isProductsOpen = ref(false);
-
-// const toggleSidebar = () => {
-//   isSidebarOpen.value = !isSidebarOpen.value;
-//   if (!isSidebarOpen.value) isProductsOpen.value = false;
-// };
-
-// const toggleProductsDropdown = () => {
-//   if (!isSidebarOpen.value) {
-//     isSidebarOpen.value = true;
-//     isProductsOpen.value = true;
-//   } else {
-//     isProductsOpen.value = !isProductsOpen.value;
-//   }
-// };
-
-// // Auto-collapse on small screen
-// const handleResize = () => {
-//   if (window.innerWidth < 768) {
-//     isSidebarOpen.value = false;
-//     isProductsOpen.value = false;
-//   } else {
-//     isSidebarOpen.value = true;
-//   }
-// };
-
-// onMounted(() => {
-//   handleResize();
-//   window.addEventListener("resize", handleResize);
-// });
-
-// onUnmounted(() => {
-//   window.removeEventListener("resize", handleResize);
-// });
 
 import { defineProps, defineEmits, ref, watch } from "vue";
 const props = defineProps({ isSidebarOpen: Boolean });

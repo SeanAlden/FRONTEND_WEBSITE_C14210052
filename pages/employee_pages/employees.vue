@@ -169,12 +169,12 @@ const searchQuery = ref("");
 const itemsPerPageOptions = [5, 10, 20, 50];
 const itemsPerPage = ref(5);
 const currentPage = ref(1);
-const isLoading = ref(true); // State untuk loading
+const isLoading = ref(true); 
 
 const fallbackImage = "/assets/images/photo_default.png";
 
 const fetchEmployees = async () => {
-  isLoading.value = true; // Set loading to true
+  isLoading.value = true; 
   try {
     const response = await axios.get(useApi("/api/employees"));
     employees.value = response.data.data;
@@ -204,10 +204,10 @@ const filteredProducts = computed(() => {
   return employees.value.filter((employee) => {
     const query = searchQuery.value.toLowerCase();
     return (
-      employee.code.toLowerCase().includes(query) || // Pencarian berdasarkan kode
-      employee.employee_name.toLowerCase().includes(query) || // Pencarian berdasarkan kode
-      employee.employee_position.toLowerCase().includes(query) || // Pencarian berdasarkan kode
-      employee.employee_contact.toLowerCase().includes(query) // Pencarian berdasarkan kode
+      employee.code.toLowerCase().includes(query) || 
+      employee.employee_name.toLowerCase().includes(query) || 
+      employee.employee_position.toLowerCase().includes(query) || 
+      employee.employee_contact.toLowerCase().includes(query) 
     );
   });
 });

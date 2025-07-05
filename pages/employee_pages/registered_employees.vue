@@ -131,24 +131,9 @@ const isLoading = ref(true); // State untuk loading
 
 const fallbackImage = "/assets/images/photo_default.png";
 
-// ✅ Fetch langsung saat setup, tidak perlu onMounted
-// const { data, error } = await useFetch("http://127.0.0.1:8000/api/auth/users");
-// if (error.value) {
-//   console.error("Fetch error:", error.value);
-// } else if (data.value && data.value.data) {
-//   cashiers.value = data.value.data.filter((user) => user.usertype === "cashier");
-// }
-
 const fetchUsers = async () => {
-  isLoading.value = true; // Set loading to true
+  isLoading.value = true; 
   try {
-    // const { data, error } = await useFetch("http://127.0.0.1:8000/api/auth/users");
-    // // cashiers.value = response.data.data;
-    // if (error.value) {
-    //   console.error("Fetch error:", error.value);
-    // } else if (data.value && data.value.data) {
-    //   cashiers.value = data.value.data.filter((user) => user.usertype === "cashier");
-    // }
     const response = await axios.get(useApi("/api/auth/users"));
     // Sesuaikan dengan struktur response API Anda
     cashiers.value = response.data.data.filter((user) => user.usertype === "employee");
@@ -159,7 +144,6 @@ const fetchUsers = async () => {
   }
 };
 
-// ✅ Filter berdasarkan query pencarian
 const filteredCashiers = computed(() => {
   const query = searchQuery.value.toLowerCase();
   return cashiers.value.filter((user) => {
@@ -171,7 +155,6 @@ const filteredCashiers = computed(() => {
   });
 });
 
-// ✅ Pagination
 const paginatedCashiers = computed(() => {
   const start = (currentPage.value - 1) * itemsPerPage.value;
   return filteredCashiers.value.slice(start, start + itemsPerPage.value);
@@ -211,7 +194,6 @@ const onImageError = (event) => {
   event.target.src = fallbackImage;
 };
 
-// Reset ke halaman 1 jika jumlah item per halaman berubah
 watch(itemsPerPage, () => {
   currentPage.value = 1;
 });

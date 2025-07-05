@@ -1,5 +1,3 @@
-// utils/formatters.js
-
 export function formatCurrency(value) {
     if (typeof value !== "number") return "-";
     return new Intl.NumberFormat("id-ID", {

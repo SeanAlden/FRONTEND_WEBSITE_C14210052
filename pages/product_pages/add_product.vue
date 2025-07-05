@@ -204,7 +204,7 @@ const addProduct = async () => {
 };
 
 const goBack = () => {
-  router.back(); // Fungsi untuk kembali ke halaman sebelumnya
+  router.back(); 
 };
 
 // Sesuaikan tinggi textarea secara otomatis
@@ -219,7 +219,7 @@ const adjustHeight = (element) => {
 
 onMounted(() => {
   fetchCategories();
-  fetchExistingProducts(); // Ambil daftar produk saat halaman dimuat
+  fetchExistingProducts(); 
 });
 </script>
 

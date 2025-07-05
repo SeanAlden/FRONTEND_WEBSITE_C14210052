@@ -136,9 +136,9 @@ const employee_position = ref("");
 const employee_birth = ref("");
 const employee_contact = ref("");
 const employee_description = ref("");
-const nameTextarea = ref(null); // Referensi untuk nametextarea
-const codeTextarea = ref(null); // Referensi untuk codetextarea
-const descTextarea = ref(null); // Referensi untuk desctextarea
+const nameTextarea = ref(null); 
+const codeTextarea = ref(null); 
+const descTextarea = ref(null); 
 
 const fallbackImage = "/assets/images/photo_default.png";
 
@@ -171,7 +171,7 @@ const onFileChange = (event) => {
 };
 
 const goBack = () => {
-  router.back(); // Fungsi untuk kembali ke halaman sebelumnya
+  router.back(); 
 };
 
 const updateEmployee = async () => {
@@ -185,14 +185,14 @@ const updateEmployee = async () => {
   if (employee_photo.value) {
     formData.append("employee_photo", employee_photo.value);
   }
-  formData.append("_method", "PUT"); // Laravel membutuhkan ini
+  formData.append("_method", "PUT"); 
 
   try {
     await axios.post(useApi(`/api/employees/${id}`), formData, {
       headers: { "Content-Type": "multipart/form-data" },
     });
     alert("Karyawan berhasil diperbarui!");
-    router.back(); // Kembali ke halaman sebelumnya setelah update
+    router.back(); 
   } catch (error) {
     console.error("Error updating employee:", error);
   }
@@ -201,16 +201,16 @@ const updateEmployee = async () => {
 // Fungsi untuk auto resize desctextarea
 const descAutoResize = () => {
   if (descTextarea.value) {
-    descTextarea.value.style.height = "auto"; // Reset tinggi sebelum menyesuaikan
-    descTextarea.value.style.height = `${descTextarea.value.scrollHeight}px`; // Sesuaikan dengan konten
+    descTextarea.value.style.height = "auto"; 
+    descTextarea.value.style.height = `${descTextarea.value.scrollHeight}px`; 
   }
 };
 
 // Fungsi untuk auto resize nametextarea
 const nameAutoResize = () => {
   if (nameTextarea.value) {
-    nameTextarea.value.style.height = "auto"; // Reset tinggi sebelum menyesuaikan
-    nameTextarea.value.style.height = nameTextarea.value.scrollHeight + "px"; // Sesuaikan dengan konten
+    nameTextarea.value.style.height = "auto"; 
+    nameTextarea.value.style.height = nameTextarea.value.scrollHeight + "px"; 
   }
 };
 

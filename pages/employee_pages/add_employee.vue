@@ -200,11 +200,10 @@ const addEmployee = async () => {
 };
 
 const goBack = () => {
-  router.back(); // Fungsi untuk kembali ke halaman sebelumnya
+  router.back(); 
 };
 
 onMounted(() => {
-  // autoResize(); // Pastikan textarea sudah sesuai saat pertama kali dirender
   adjustNameHeight();
   adjustDescHeight();
 });

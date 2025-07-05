@@ -1,91 +1,8 @@
 <script setup>
-// import { ref, onMounted } from "vue";
-// import { useRoute, useRouter } from "vue-router";
-// import useApi from "@/composables/useApi";
-
-// const { getCategoryById } = useApi();
-// const route = useRoute();
-// const router = useRouter();
-
-// const category = ref(null);
-// const isLoading = ref(true);
-
-// onMounted(async () => {
-//   try {
-//     const categoryData = await getCategoryById(route.params.id);
-//     if (!categoryData) {
-//       alert("Kategori tidak ditemukan.");
-//       router.push("/category_pages/categories");
-//       return;
-//     }
-
-//     // Proses total stok untuk setiap produk
-//     categoryData.products.forEach(product => {
-//       product.totalStock = product.stocks?.reduce((total, stock) => total + stock.stock, 0) || 0;
-//     });
-
-//     category.value = categoryData;
-//   } catch (error) {
-//     console.error("Error fetching category details:", error);
-//   } finally {
-//     isLoading.value = false;
-//   }
-// });
-
-// import { ref, onMounted } from "vue";
-// import { useRoute, useRouter } from "vue-router";
-// // import useApi from "@/composables/useApi";
-
-// definePageMeta({
-//   middleware: ["auth"],
-// });
-
-// // const { getCategoryById } = useApi();
-// const route = useRoute();
-// const router = useRouter();
-
-// const category = ref(null);
-// const isLoading = ref(true);
-
-// // Fungsi getCategoryById dipindah dari useApi.js
-// const getCategoryById = async (id) => {
-//   try {
-//     const response = await fetch(useApi(`/api/categories/${id}`));
-//     if (!response.ok) throw new Error("Gagal mengambil data kategori");
-//     return await response.json();
-//   } catch (error) {
-//     console.error(`Error fetching category with ID ${id}:`, error);
-//     return null;
-//   }
-// };
-
-// const formatPrice = (price) => {
-//   return new Intl.NumberFormat("id-ID", {
-//     style: "currency",
-//     currency: "IDR",
-//     minimumFractionDigits: 0,
-//   }).format(price);
-// };
-
-// onMounted(async () => {
-//   try {
-//     const categoryData = await getCategoryById(route.params.id);
-//     if (!categoryData) {
-//       alert("Kategori tidak ditemukan.");
-//       router.push("/category_pages/categories");
-//       return;
-//     }
-//     category.value = categoryData;
-//   } catch (error) {
-//     console.error("Error fetching category details:", error);
-//   } finally {
-//     isLoading.value = false;
-//   }
-// });
 
 import { ref, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import axios from "axios"; // impor axios
+import axios from "axios"; 
 
 definePageMeta({
   middleware: ["auth"],
@@ -98,12 +15,6 @@ const category = ref(null);
 const isLoading = ref(true);
 
 const fallbackImage = "/assets/images/avatar.png";
-
-// Gunakan useApi sebagai base URL (jika sudah dikonfigurasi)
-// const useApi = (path) => {
-//   const baseUrl = "https://your-api-base-url.com"; // Ganti dengan base URL yang sesuai
-//   return `${baseUrl}${path}`;
-// };
 
 const getCategoryById = async (id) => {
   try {

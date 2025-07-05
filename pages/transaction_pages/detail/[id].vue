@@ -4,9 +4,6 @@ import { useRoute, useRouter } from "vue-router";
 import axios from "axios";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
-
-// import { jsPDF } from "jspdf";
-// import "jspdf-autotable"; // Impor plugin autotable
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 
@@ -531,9 +528,6 @@ const latestStatus = () => {
       </div> -->
 
       <!-- Modal Timeline -->
-      <!-- Modal Timeline -->
-      <!-- Modal Timeline -->
-      <!-- Modal Timeline -->
       <div
         v-if="showStatusModal"
         class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40"
@@ -597,5 +591,5 @@ const latestStatus = () => {
 </template>
 
 <style scoped>
-/* Jika mau efek fade untuk modal */
+
 </style>

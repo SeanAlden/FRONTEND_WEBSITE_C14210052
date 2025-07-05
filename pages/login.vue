@@ -64,7 +64,7 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
-import { useCookie, useRouter, useRuntimeConfig } from '#app'; // Adjust imports if useApi is a custom composable
+import { useCookie, useRouter, useRuntimeConfig } from '#app'; 
 
 const email = ref("");
 const password = ref("");
@@ -151,7 +151,6 @@ async function login() {
       body: {
         email: email.value,
         password: password.value,
-        // "g-recaptcha-response": token,
       },
     });
     successMessage.value = "Login berhasil! Mengarahkan...";

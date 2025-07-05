@@ -191,11 +191,11 @@ export default {
 
     let chartInstance = null;
 
-    // ✅ Tambahan: State untuk user login
+    // State untuk user login
     const user = ref(null);
     const token = useCookie("my_auth_token");
 
-    // ✅ Tambahan: Ambil data user
+    // Ambil data user
     const fetchUser = async () => {
       try {
         const res = await axios.get(useApi("/api/user"), {
@@ -222,7 +222,7 @@ export default {
           useApi(`/api/dashboard?month=${currentMonth.value}&year=${currentYear.value}`),
           {
             headers: {
-              Authorization: `Bearer ${token.value}`, // ✅ Pakai token untuk semua request
+              Authorization: `Bearer ${token.value}`, // Pakai token untuk semua request
             },
           }
         );
@@ -284,7 +284,7 @@ export default {
       }).format(price);
     };
 
-    // ✅ Jalankan fetch user dan dashboard saat mounted
+    // Jalankan fetch user dan dashboard saat mounted
     onMounted(() => {
       fetchUser();
       fetchData();

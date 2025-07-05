@@ -1,5 +1,5 @@
 <template>
-  <div class="flex min-h-screen bg-gray-100 text-gray-900">
+  <div class="flex min-h-screen text-gray-900 bg-gray-100">
     <!-- Header -->
     <Header />
 
@@ -13,13 +13,8 @@
     <div
       :class="['flex-1 transition-all duration-300', isSidebarOpen ? 'ml-64' : 'ml-16']"
     >
-      <div class="mt-16 p-6">
+      <div class="p-6 mt-16">
         <slot />
-        <!-- <LogoutModal
-          :show="isLogoutModalOpen"
-          @confirm="confirmLogout"
-          @cancel="isLogoutModalOpen = false"
-        /> -->
       </div>
     </div>
   </div>

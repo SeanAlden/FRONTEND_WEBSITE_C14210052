@@ -34,7 +34,7 @@ const fallbackImage = "/assets/images/avatar.png";
 // };
 
 const fetchProducts = async () => {
-  isLoading.value = true; // Set loading to true
+  isLoading.value = true; 
   try {
     const res = await axios.get(useApi(`/api/nonactive-history`));
     products.value = res.data.data.map((item) => {
@@ -49,7 +49,7 @@ const fetchProducts = async () => {
   } finally {
     setTimeout(() => {
       isLoading.value = false;
-    }, 200); // delay sedikit agar animasi terlihat smooth
+    }, 200); 
   }
 };
 
