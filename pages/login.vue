@@ -1,31 +1,31 @@
 <template>
-  <div class="flex items-center justify-center min-h-screen bg-gray-100">
-    <div class="w-full max-w-md p-8 bg-white rounded-lg shadow-md">
-      <h2 class="mb-6 text-2xl font-semibold text-center text-gray-800">Login</h2>
+  <div class="flex min-h-screen items-center justify-center bg-gray-100">
+    <div class="w-full max-w-md rounded-lg bg-white p-8 shadow-md">
+      <h2 class="mb-6 text-center text-2xl font-semibold text-gray-800">Login</h2>
 
       <form @submit.prevent="login">
         <div
           v-if="errorMessage"
-          class="p-3 mb-4 text-sm text-red-700 bg-red-100 border border-red-200 rounded-lg"
+          class="mb-4 rounded-lg border border-red-200 bg-red-100 p-3 text-sm text-red-700"
         >
           {{ errorMessage }}
         </div>
 
         <div
           v-if="successMessage"
-          class="p-3 mb-4 text-sm text-green-700 bg-green-100 border border-green-200 rounded-lg"
+          class="mb-4 rounded-lg border border-green-200 bg-green-100 p-3 text-sm text-green-700"
         >
           {{ successMessage }}
         </div>
 
         <div class="mb-4">
-          <label class="block mb-1 text-gray-700" for="email">Email</label>
+          <label class="mb-1 block text-gray-700" for="email">Email</label>
           <input
             v-model="email"
             type="email"
             id="email"
             placeholder="Enter your email"
-            class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+            class="w-full rounded-lg border px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
             :class="{ 'border-red-500': emailError }"
             required
             @input="validateEmail"
@@ -34,13 +34,13 @@
         </div>
 
         <div class="mb-4">
-          <label class="block mb-1 text-gray-700" for="password">Password</label>
+          <label class="mb-1 block text-gray-700" for="password">Password</label>
           <input
             v-model="password"
             type="password"
             id="password"
             placeholder="Enter your password"
-            class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+            class="w-full rounded-lg border px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
             :class="{ 'border-red-500': passwordError }"
             required
             @input="validatePassword"
@@ -53,7 +53,7 @@
 
         <button
           type="submit"
-          class="bg-[#0004FF] hover:bg-blue-800 px-4 py-2 rounded-lg w-full font-semibold text-white transition duration-300"
+          class="w-full rounded-lg bg-[#0004FF] px-4 py-2 font-semibold text-white transition duration-300 hover:bg-blue-800"
         >
           Login
         </button>
@@ -146,7 +146,7 @@ async function login() {
   }
 
   try {
-    const result = await $fetch(useApi("/api/auth/login"), {
+    const result = await $fetch(useApi("/api/auth/signin"), {
       method: "POST",
       body: {
         email: email.value,
