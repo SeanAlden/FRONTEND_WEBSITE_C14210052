@@ -200,13 +200,13 @@ onMounted(async () => {
         >
           <input v-model="item.exp_date" type="date" required class="border p-2" />
 					<span class="inline-block w-24 select-none border p-2">{{ item.stock }}</span>			
-          <button
+          <!-- <button
             type="button"
             @click="removeExpStock(index)"
             class="rounded bg-red-500 p-1 text-white"
           >
             Hapus
-          </button>
+          </button> -->
         </div>
         <!-- <button
           type="button"
