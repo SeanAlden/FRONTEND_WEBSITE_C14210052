@@ -105,14 +105,20 @@
           <img src="/assets/icons/employee.png" class="w-6 h-6 mr-3" />
           <span v-if="isSidebarOpen">Employees</span>
         </NuxtLink>
-        
+
+        <NuxtLink
+          to="/employee_pages/employees"
+          class="flex items-center p-3 hover:bg-gray-700"
+        >
+          <img src="/assets/icons/analysis.png" class="w-6 h-6 mr-3" />
+          <span v-if="isSidebarOpen">Prediction</span>
+        </NuxtLink>
       </nav>
     </div>
   </div>
 </template>
 
 <script setup>
-
 import { defineProps, defineEmits, ref, watch } from "vue";
 const props = defineProps({ isSidebarOpen: Boolean });
 const emit = defineEmits(["toggle-sidebar"]);
