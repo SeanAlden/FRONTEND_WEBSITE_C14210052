@@ -107,7 +107,7 @@
         </NuxtLink>
 
         <NuxtLink
-          to="/employee_pages/employees"
+          to="/analysis_pages/sales_count_page.vue"
           class="flex items-center p-3 hover:bg-gray-700"
         >
           <img src="/assets/icons/analysis.png" class="w-6 h-6 mr-3" />
