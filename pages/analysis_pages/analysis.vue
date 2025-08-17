@@ -40,44 +40,66 @@
         <h2 class="mb-2 text-xl font-semibold">Information Gain</h2>
         <ul class="pl-6 list-disc">
           <li v-for="(gain, attr) in result.information_gain" :key="attr">
-            <strong>{{ attr }}</strong>: {{ gain }}
+            <strong>{{ attr }}</strong
+            >: {{ gain }}
           </li>
         </ul>
       </section>
 
       <section>
         <h2 class="mb-2 text-xl font-semibold">Decision Tree</h2>
-        <pre class="p-4 text-green-400 whitespace-pre-wrap bg-gray-900 rounded">{{ result.decision_tree }}</pre>
+        <pre class="p-4 text-green-400 whitespace-pre-wrap bg-gray-900 rounded">{{
+          result.decision_tree
+        }}</pre>
       </section>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import { useFetch } from '#app'
-import { useApi } from '../../composables/useApi';
-import axios from 'axios';
+// import { ref, onMounted } from 'vue'
+// import { useFetch } from '#app'
+// import { useApi } from '../../composables/useApi';
+// import axios from 'axios';
 
-const result = ref(null)
-const loading = ref(true)
-const error = ref(null)
+// const result = ref(null)
+// const loading = ref(true)
+// const error = ref(null)
+
+// onMounted(async () => {
+//   try {
+//     const { data, error: fetchError } = await axios.get(useApi('/api/analysis/classify-products'))
+
+//     if (fetchError.value) {
+//       throw new Error(fetchError.value.message || 'Gagal memuat data')
+//     }
+
+//     result.value = data.value
+//   } catch (err) {
+//     error.value = err.message
+//   } finally {
+//     loading.value = false
+//   }
+// })
+
+import { ref, onMounted } from "vue";
+import { useApi } from "../../composables/useApi";
+import axios from "axios";
+
+const result = ref(null);
+const loading = ref(true);
+const error = ref(null);
 
 onMounted(async () => {
   try {
-    const { data, error: fetchError } = await axios.get(useApi('/api/analysis/classify-products'))
-
-    if (fetchError.value) {
-      throw new Error(fetchError.value.message || 'Gagal memuat data')
-    }
-
-    result.value = data.value
+    const response = await axios.get(useApi("/api/analysis/classify-products"));
+    result.value = response.data;
   } catch (err) {
-    error.value = err.message
+    error.value = err.response?.data?.message || err.message || "Terjadi kesalahan";
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-})
+});
 </script>
 
 <style scoped>
