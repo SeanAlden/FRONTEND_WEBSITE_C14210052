@@ -65,7 +65,7 @@ const error = ref(null)
 
 onMounted(async () => {
   try {
-    const { data, error: fetchError } = await axios.get(useApi('/api/classify-products'))
+    const { data, error: fetchError } = await axios.get(useApi('/api/analysis/classify-products'))
 
     if (fetchError.value) {
       throw new Error(fetchError.value.message || 'Gagal memuat data')
