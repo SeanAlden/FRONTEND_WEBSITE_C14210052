@@ -56,6 +56,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useFetch } from '#app'
+import { useApi } from '../../composables/useApi';
 
 const result = ref(null)
 const loading = ref(true)
