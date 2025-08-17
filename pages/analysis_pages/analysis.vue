@@ -57,6 +57,7 @@
 import { ref, onMounted } from 'vue'
 import { useFetch } from '#app'
 import { useApi } from '../../composables/useApi';
+import axios from 'axios';
 
 const result = ref(null)
 const loading = ref(true)
