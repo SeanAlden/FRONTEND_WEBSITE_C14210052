@@ -63,7 +63,7 @@ const error = ref(null)
 
 onMounted(async () => {
   try {
-    const { data, error: fetchError } = await useFetch('/api/classify-products')
+    const { data, error: fetchError } = await useApi('/api/classify-products')
 
     if (fetchError.value) {
       throw new Error(fetchError.value.message || 'Gagal memuat data')
