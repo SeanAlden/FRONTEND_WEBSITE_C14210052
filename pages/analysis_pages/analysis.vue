@@ -70,7 +70,7 @@ import { ref, onMounted } from "vue";
 import { useApi } from "../../composables/useApi";
 import axios from "axios";
 
-// const result = ref(null);
+const result = ref(null);
 const loading = ref(true);
 const error = ref(null);
 
