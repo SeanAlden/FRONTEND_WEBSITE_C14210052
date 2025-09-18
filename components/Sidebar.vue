@@ -1,22 +1,22 @@
 <template>
   <div
     :class="isSidebarOpen ? 'w-64' : 'w-16'"
-    class="fixed top-0 bottom-0 left-0 z-50 flex flex-col overflow-y-auto text-white transition-all duration-300 bg-gray-800"
+    class="fixed bottom-0 left-0 top-0 z-50 flex flex-col overflow-y-auto bg-gray-800 text-white transition-all duration-300"
   >
     <div class="flex items-center justify-between p-4">
       <span v-if="isSidebarOpen" class="text-lg font-bold text-red-400">
         Asia Raya Cashier
       </span>
-      <button @click="toggleSidebar" class="p-2 rounded hover:bg-gray-700">
-        <img src="/assets/icons/menu-white.svg" alt="Toggle" class="w-6 h-6" />
+      <button @click="toggleSidebar" class="rounded p-2 hover:bg-gray-700">
+        <img src="/assets/icons/menu-white.svg" alt="Toggle" class="h-6 w-6" />
       </button>
     </div>
 
     <!-- Scrollable Nav -->
     <div class="flex-1 overflow-y-auto">
-      <nav class="flex flex-col mt-4 space-y-2">
+      <nav class="mt-4 flex flex-col space-y-2">
         <NuxtLink to="/" class="flex items-center p-3 hover:bg-gray-700">
-          <img src="/assets/icons/dashboard.png" class="w-6 h-6 mr-3" />
+          <img src="/assets/icons/dashboard.png" class="mr-3 h-6 w-6" />
           <span v-if="isSidebarOpen">Dashboard</span>
         </NuxtLink>
 
@@ -24,7 +24,7 @@
           to="/sales_report_pages/sales_reports"
           class="flex items-center p-3 hover:bg-gray-700"
         >
-          <img src="/assets/icons/report.png" class="w-6 h-6 mr-3" />
+          <img src="/assets/icons/report.png" class="mr-3 h-6 w-6" />
           <span v-if="isSidebarOpen">Sales Reports</span>
         </NuxtLink>
 
@@ -32,17 +32,17 @@
           to="/category_pages/categories"
           class="flex items-center p-3 hover:bg-gray-700"
         >
-          <img src="/assets/icons/category.png" class="w-6 h-6 mr-3" />
+          <img src="/assets/icons/category.png" class="mr-3 h-6 w-6" />
           <span v-if="isSidebarOpen">Categories</span>
         </NuxtLink>
 
         <div>
           <div
             @click="toggleProductsDropdown"
-            class="flex items-center justify-between p-3 cursor-pointer hover:bg-gray-700"
+            class="flex cursor-pointer items-center justify-between p-3 hover:bg-gray-700"
           >
             <div class="flex items-center">
-              <img src="/assets/icons/product.png" class="w-6 h-6 mr-3" />
+              <img src="/assets/icons/product.png" class="mr-3 h-6 w-6" />
               <span v-if="isSidebarOpen">Products</span>
             </div>
             <img
@@ -52,12 +52,12 @@
                   ? '/assets/icons/chevron_up.png'
                   : '/assets/icons/chevron_down.png'
               "
-              class="w-4 h-4 transition-transform duration-300"
+              class="h-4 w-4 transition-transform duration-300"
             />
           </div>
 
           <transition name="slide-fade">
-            <div v-if="isProductsOpen" class="space-y-2 text-sm ml-9">
+            <div v-if="isProductsOpen" class="ml-9 space-y-2 text-sm">
               <NuxtLink to="/product_pages/products" class="block p-2 hover:bg-gray-600"
                 >Product List</NuxtLink
               >
@@ -94,7 +94,7 @@
           to="/transaction_pages/transactions"
           class="flex items-center p-3 hover:bg-gray-700"
         >
-          <img src="/assets/icons/transactions.png" class="w-6 h-6 mr-3" />
+          <img src="/assets/icons/transactions.png" class="mr-3 h-6 w-6" />
           <span v-if="isSidebarOpen">Transactions</span>
         </NuxtLink>
 
@@ -102,25 +102,25 @@
           to="/employee_pages/employees"
           class="flex items-center p-3 hover:bg-gray-700"
         >
-          <img src="/assets/icons/employee.png" class="w-6 h-6 mr-3" />
+          <img src="/assets/icons/employee.png" class="mr-3 h-6 w-6" />
           <span v-if="isSidebarOpen">Employees</span>
         </NuxtLink>
 
-        <!-- <NuxtLink
+        <NuxtLink
           to="/analysis_pages/sales_count_page"
           class="flex items-center p-3 hover:bg-gray-700"
         >
-          <img src="/assets/icons/analysis.png" class="w-6 h-6 mr-3" />
+          <img src="/assets/icons/analysis.png" class="mr-3 h-6 w-6" />
           <span v-if="isSidebarOpen">Prediction</span>
-        </NuxtLink> -->
+        </NuxtLink>
 
-				<!-- <NuxtLink
+				<NuxtLink
           to="/analysis_pages/analysis"
           class="flex items-center p-3 hover:bg-gray-700"
         >
-          <img src="/assets/icons/analysis.png" class="w-6 h-6 mr-3" />
+          <img src="/assets/icons/analysis.png" class="mr-3 h-6 w-6" />
           <span v-if="isSidebarOpen">Prediction</span>
-        </NuxtLink> -->
+        </NuxtLink>
       </nav>
     </div>
   </div>
