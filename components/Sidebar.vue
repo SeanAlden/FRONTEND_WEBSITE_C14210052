@@ -113,14 +113,7 @@
           <img src="/assets/icons/analysis.png" class="mr-3 h-6 w-6" />
           <span v-if="isSidebarOpen">Prediction</span>
         </NuxtLink>
-
-				<NuxtLink
-          to="/analysis_pages/analysis"
-          class="flex items-center p-3 hover:bg-gray-700"
-        >
-          <img src="/assets/icons/analysis.png" class="mr-3 h-6 w-6" />
-          <span v-if="isSidebarOpen">Prediction</span>
-        </NuxtLink>
+				
       </nav>
     </div>
   </div>
