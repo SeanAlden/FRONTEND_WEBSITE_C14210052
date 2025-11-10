@@ -18,7 +18,7 @@ const fallbackImage = "/assets/images/avatar.png";
 
 const getCategoryById = async (id) => {
   try {
-    const response = await axios.get(useApi(`/api/categories/${id}`));
+    const response = await axios.get(useApi(`/api/api/categories/${id}`));
     return response.data;
   } catch (error) {
     console.error(`Error fetching category with ID ${id}:`, error);
@@ -140,9 +140,16 @@ onMounted(async () => {
               :key="product.id"
               class="p-4 border rounded shadow"
             >
-              <img
+              <!-- <img
                 :src="
                       product.photo ? useApi(`/public/storage/${product.photo}`) : fallbackImage
+                    "
+                    @error="onImageError"
+                class="w-full h-40 object-fit-contain"
+              /> -->
+              <img
+                :src="
+                      product.photo ? useApi(`/storage/${product.photo}`) : fallbackImage
                     "
                     @error="onImageError"
                 class="w-full h-40 object-fit-contain"

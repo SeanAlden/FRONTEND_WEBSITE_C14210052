@@ -130,7 +130,7 @@ export default {
       // isLoading.value = true;
       try {
         const response = await axios.get(
-          useApi("/api/analysis/countAttributes")
+          useApi("/api/api/analysis/countAttributes")
         );
         const data = response.data;
         weightedSales.value = data.weightedSales;

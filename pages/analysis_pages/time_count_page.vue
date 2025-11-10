@@ -144,7 +144,7 @@ const isLoading = ref(true);
 onMounted(async () => {
   try {
     const response = await axios.get(
-      useApi("/api/analysis/countAttributes")
+      useApi("/api/api/analysis/countAttributes")
     );
     const data = response.data;
 

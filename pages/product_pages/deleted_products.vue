@@ -18,7 +18,7 @@ const fallbackImage = "/assets/images/avatar.png";
 const fetchProducts = async () => {
   isLoading.value = true; // Set loading to true
   try {
-    const res = await axios.get(useApi(`/api/products`));
+    const res = await axios.get(useApi(`/api/api/products`));
     // const data = await res.json();
     products.value = res.data.data;
   } catch (error) {
@@ -79,7 +79,7 @@ const toggleProductStatus = async (id, status) => {
   if (!confirm(confirmMessage)) return;
 
   try {
-    const res = await axios.put(useApi(`/api/products/updateCondition/${id}`), {
+    const res = await axios.put(useApi(`/api/api/products/updateCondition/${id}`), {
       condition: status,
     });
 
@@ -327,7 +327,22 @@ onMounted(fetchProducts);
                   class="w-20 h-20 object-fit"
                 />
               </td> -->
+
               <td class="p-2 border">
+                <div class="flex min-h-[100px] min-w-[100px] items-center justify-center w-full h-full">
+                  <img
+                    :src="
+                      product.photo
+                        ? useApi(`/storage/${product.photo}`)
+                        : fallbackImage
+                    "
+                    @error="onImageError"
+                    class="object-cover w-20 h-20 rounded"
+                  />
+                </div>
+              </td>
+
+              <!-- <td class="p-2 border">
                 <div class="flex min-h-[100px] min-w-[100px] items-center justify-center w-full h-full">
                   <img
                     :src="
@@ -339,7 +354,8 @@ onMounted(fetchProducts);
                     class="object-cover w-20 h-20 rounded"
                   />
                 </div>
-              </td>
+              </td> -->
+
               <td class="p-3 border">
                 <NuxtLink
                   :to="`/product_pages/detail/${product.id}`"

@@ -5,10 +5,20 @@
       <h2 class="mb-4 text-2xl font-bold">Set Your Profile</h2>
       <div class="p-6 bg-gray-100 rounded-lg">
         <div class="flex items-center mb-4">
-          <img
+          <!-- <img
             :src="
               user.profile_image
                 ? useApi(`/public/storage/profile_images/${user.profile_image}`)
+                : fallbackImage
+            "
+            @error="onImageError"
+            class="w-20 h-20 rounded-full"
+          /> -->
+
+          <img
+            :src="
+              user.profile_image
+                ? useApi(`/storage/profile_images/${user.profile_image}`)
                 : fallbackImage
             "
             @error="onImageError"
@@ -71,12 +81,24 @@
             @error="onImageError"
             class="w-10 h-10 rounded-full"
           /> -->
-          <img
+          <!-- <img
             :src="
               selectedFile
                 ? profileImage
                 : user.profile_image
                 ? useApi(`/public/storage/profile_images/${user.profile_image}`)
+                : fallbackImage
+            "
+            @error="onImageError"
+            class="w-10 h-10 rounded-full"
+          /> -->
+
+          <img
+            :src="
+              selectedFile
+                ? profileImage
+                : user.profile_image
+                ? useApi(`/storage/profile_images/${user.profile_image}`)
                 : fallbackImage
             "
             @error="onImageError"
@@ -160,7 +182,7 @@ const fallbackImage = "/assets/images/photo_default.png";
 // Ambil data user
 const fetchUser = async () => {
   try {
-    const res = await axios.get(useApi("/api/user"), {
+    const res = await axios.get(useApi("/api/api/user"), {
       headers: {
         Authorization: `Bearer ${token.value}`,
       },
@@ -173,8 +195,12 @@ const fetchUser = async () => {
       email: res.data.email,
     };
 
+    // profileImage.value = user.value.profile_image
+    //   ? useApi(`/public/storage/profile_images/${user.value.profile_image}`)
+    //   : "/assets/images/photo_default.png";
+
     profileImage.value = user.value.profile_image
-      ? useApi(`/public/storage/profile_images/${user.value.profile_image}`)
+      ? useApi(`/storage/profile_images/${user.value.profile_image}`)
       : "/assets/images/photo_default.png";
   } catch (error) {
     console.error("Gagal mengambil data user:", error);
@@ -214,9 +240,11 @@ const uploadProfileImage = async () => {
     );
 
     user.value.profile_image = res.data.profile_image;
-    profileImage.value = useApi(
-      `/public/storage/profile_images/${res.data.profile_image}`
-    );
+    // profileImage.value = useApi(
+    //   `/public/storage/profile_images/${res.data.profile_image}`
+    // );
+
+    profileImage.value = useApi(`/storage/profile_images/${res.data.profile_image}`);
 
     // Panggil ini setelah update profil berhasil
     emitter.emit("profile-updated");

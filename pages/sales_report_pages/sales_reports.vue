@@ -58,7 +58,7 @@ const fetchTransactions = async () => {
   isLoading.value = true; 
 
   try {
-    const response = await axios.get(useApi("/api/transactions"), {
+    const response = await axios.get(useApi("/api/api/transactions"), {
       headers: {
         Authorization: `Bearer ${token.value}`,
       },
@@ -421,9 +421,16 @@ watch([selectedMonth, selectedYear], () => {
                 <td
                   class="flex min-h-[100px] min-w-[100px] items-center justify-center border p-2"
                 >
-                  <img
+                  <!-- <img
                     :src="
                       product.photo ? useApi(`/public/storage/${product.photo}`) : fallbackImage
+                    "
+                    @error="onImageError"
+                    class="w-20 h-20 object-fit"
+                  /> -->
+                   <img
+                    :src="
+                      product.photo ? useApi(`/storage/${product.photo}`) : fallbackImage
                     "
                     @error="onImageError"
                     class="w-20 h-20 object-fit"

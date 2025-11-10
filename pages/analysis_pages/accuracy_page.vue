@@ -70,8 +70,14 @@
             <td
               class="flex min-h-[100px] min-w-[100px] items-center justify-center border p-2"
             >
-              <img
+              <!-- <img
                 :src="product.photo ? useApi(`/public/storage/${product.photo}`) : fallbackImage"
+                @error="onImageError"
+                class="w-20 h-20 object-fit"
+              /> -->
+
+              <img
+                :src="product.photo ? useApi(`/storage/${product.photo}`) : fallbackImage"
                 @error="onImageError"
                 class="w-20 h-20 object-fit"
               />
@@ -161,7 +167,7 @@ export default {
 
     const fetchData = async () => {
       try {
-        const response = await axios.get(useApi("/api/analysis/results"));
+        const response = await axios.get(useApi("/api/api/analysis/results"));
         products.value = response.data.products;
         accuracy.value = response.data.accuracy;
       } catch (error) {

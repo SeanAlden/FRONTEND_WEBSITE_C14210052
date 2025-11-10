@@ -37,7 +37,7 @@ const _sfc_main = {
       var _a;
       isLoading.value = true;
       try {
-        const response = await axios.get(useApi("/api/categories"));
+        const response = await axios.get(useApi("/api/api/categories"));
         categories2.value = ((_a = response.data) == null ? void 0 : _a.length) ? response.data : [];
       } catch (error) {
         console.error("Error fetching categories:", error);

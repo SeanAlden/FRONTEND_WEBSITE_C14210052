@@ -246,7 +246,8 @@ const exportToPDF = () => {
 // Fungsi untuk mengekspor ke Excel
 const exportToExcel = () => {
   const data = products.value.map((product) => ({
-    Foto: product.product_photo ? useApi(`/public/storage/${product.product_photo}`) : "-",
+    // Foto: product.product_photo ? useApi(`/public/storage/${product.product_photo}`) : "-",
+    Foto: product.product_photo ? useApi(`/storage/${product.product_photo}`) : "-",
     "Nama Produk": product.product_name,
     "Kode Produk": product.product_code,
     Harga: formatPrice(product.product_price),
@@ -325,7 +326,7 @@ const getStatusClass = (status) => {
 
 onMounted(async () => {
   try {
-    const response = await axios.get(useApi(`/api/transactions/${transactionId}`), {
+    const response = await axios.get(useApi(`/api/api/transactions/${transactionId}`), {
       headers: {
         Authorization: `Bearer ${token.value}`,
       },
@@ -447,7 +448,7 @@ const latestStatus = () => {
                   class="hover:bg-gray-50"
                 >
                   <td class="px-4 py-3 border">
-                    <img
+                    <!-- <img
                       :src="
                         product.product_photo
                           ? useApi(`/public/storage/${product.product_photo}`)
@@ -456,7 +457,20 @@ const latestStatus = () => {
                       @error="onImageError"
                       alt="Foto Produk"
                       class="object-cover w-16 h-16 rounded"
+                    /> -->
+
+                    <img
+                      :src="
+                        product.product_photo
+                          ? useApi(`/storage/${product.product_photo}`)
+                          : fallbackImage
+                      "
+                      @error="onImageError"
+                      alt="Foto Produk"
+                      class="object-cover w-16 h-16 rounded"
                     />
+
+
                     <!-- <img
                       v-if="product.product_photo"
                       :src="useApi(`/storage/${product.product_photo}`)"

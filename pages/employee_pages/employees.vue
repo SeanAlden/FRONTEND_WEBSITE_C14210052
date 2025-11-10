@@ -78,9 +78,17 @@
               <td
                 class="flex min-h-[100px] min-w-[100px] items-center justify-center border p-2"
               >
-                <img
+                <!-- <img
                   :src="
                       employee.employee_photo ? useApi(`/public/storage/${employee.employee_photo}`) : fallbackImage
+                    "
+                    @error="onImageError"
+                  class="w-20 h-20 object-fit"
+                /> -->
+
+                <img
+                  :src="
+                      employee.employee_photo ? useApi(`/storage/${employee.employee_photo}`) : fallbackImage
                     "
                     @error="onImageError"
                   class="w-20 h-20 object-fit"
@@ -176,7 +184,7 @@ const fallbackImage = "/assets/images/photo_default.png";
 const fetchEmployees = async () => {
   isLoading.value = true; 
   try {
-    const response = await axios.get(useApi("/api/employees"));
+    const response = await axios.get(useApi("/api/api/employees"));
     employees.value = response.data.data;
   } catch (error) {
     console.error("Error fetching employees:", error);
@@ -188,7 +196,7 @@ const fetchEmployees = async () => {
 const deleteEmployee = async (id) => {
   if (confirm("Apakah Anda yakin ingin menghapus karyawan ini?")) {
     try {
-      await axios.delete(useApi(`/api/employees/${id}`));
+      await axios.delete(useApi(`/api/api/employees/${id}`));
       fetchEmployees();
     } catch (error) {
       console.error("Error deleting employee:", error);

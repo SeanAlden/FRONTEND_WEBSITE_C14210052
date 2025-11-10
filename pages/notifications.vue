@@ -79,7 +79,7 @@ const loading = ref(true);
 
 onMounted(async () => {
   try {
-    const res = await axios.get(useApi("/api/notifications"));
+    const res = await axios.get(useApi("/api/api/notifications"));
     // const data = await res.json();
     const data = res.data;
     notifications.value = data;
@@ -149,7 +149,7 @@ const deleteNotification = async (id: number) => {
   if (!confirmDelete) return;
 
   try {
-    const res = await fetch(useApi(`/api/notifications/${id}`), {
+    const res = await fetch(useApi(`/api/api/notifications/${id}`), {
       method: "PUT",
     });
 

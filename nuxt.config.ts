@@ -6,8 +6,8 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
 
   devServer: {
-    // host: "127.0.0.1",
-    host: "https://asiaraya.my.id",
+    host: "127.0.0.1",
+    // host: "https://asiaraya.my.id",
   },
 
   css: [
@@ -22,9 +22,17 @@ export default defineNuxtConfig({
     // '@sidebase/nuxt-auth',
   ],
 
+  postcss: {
+    plugins: {
+      tailwindcss: {},
+      autoprefixer: {},
+    },
+  },
+
   laravelSanctum: {
     // apiUrl: "http://127.0.0.1:8000",
-    apiUrl: "https://asiaraya.my.id",
+    // apiUrl: "https://asiaraya.my.id",
+    apiUrl: "https://backend-tugas-akhir-c14210052.vercel.app",
     authMode: "cookie",
 
     sanctumEndpoints: {
@@ -49,8 +57,9 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      apiBase: 'https://asiaraya.my.id',
-      // apiBase: 'http://127.0.0.1:8000'
+      // apiBase: 'https://asiaraya.my.id',
+      apiBase: 'https://backend-tugas-akhir-c14210052.vercel.app',
+      // apiBase: 'http://127.0.0.1:8000',
       recaptchaSiteKey: '6Ld49WUrAAAAACh3Gor5p1UIfdJicTljcR8aO3gJ',
     }
   },

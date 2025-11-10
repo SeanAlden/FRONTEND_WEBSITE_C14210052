@@ -204,15 +204,18 @@ const fallbackImage = "/assets/images/avatar.png";
 const fetchStockReport = async () => {
   isLoading.value = true;
   try {
-    const response = await axios.get(useApi("/api/product-stocks-report"));
+    const response = await axios.get(useApi("/api/api/product-stocks-report"));
     const data = response.data;
     if (data.success) {
       productStocks.value = data.data.map((item) => ({
         id: item.id,
         name: item.name,
         code: item.code,
+        // photo: item.photo
+        //   ? useApi(`/public/storage/${item.photo}`)
+        //   : "/assets/images/avatar.png",
         photo: item.photo
-          ? useApi(`/public/storage/${item.photo}`)
+          ? useApi(`/storage/${item.photo}`)
           : "/assets/images/avatar.png",
         price: item.price,
         exp_date: item.exp_date,

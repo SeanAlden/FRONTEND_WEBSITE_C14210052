@@ -55,9 +55,17 @@
                 {{ (currentPage - 1) * itemsPerPage + index + 1 }}
               </td>
               <td class="flex items-center justify-center p-2 px-0 border">
-                <img
+                <!-- <img
 									:src="
                       user.profile_image ? useApi(`/public/storage/profile_images/${user.profile_image}`) : fallbackImage
+                    "
+                    @error="onImageError"
+                  class="object-cover w-20 h-20"
+                /> -->
+                
+                <img
+									:src="
+                      user.profile_image ? useApi(`/storage/profile_images/${user.profile_image}`) : fallbackImage
                     "
                     @error="onImageError"
                   class="object-cover w-20 h-20"

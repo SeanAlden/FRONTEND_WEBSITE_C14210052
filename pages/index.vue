@@ -109,15 +109,15 @@
           <tbody>
             <tr v-for="product in topProducts" :key="product.id" class="border">
               <td class="flex items-center p-2">
-                <!-- <img
+                <img
                   :src="
                     product.photo
                       ? useApi(`/storage/${product.photo}`)
                       : '/assets/images/avatar.png'
                   "
                   class="w-10 h-10 mr-2"
-                /> -->
-                <img
+                />
+                <!-- <img
                   :src="
                     product.photo
                       ? useApi(`/public/storage/${product.photo}`)
@@ -125,7 +125,7 @@
                   "
                   @error="onImageError"
                   class="w-10 h-10 mr-2"
-                />
+                /> -->
               </td>
               <td>{{ product.name }}</td>
               <td class="p-2">{{ formatPrice(product.price) }}</td>
@@ -198,7 +198,7 @@ export default {
     // Ambil data user
     const fetchUser = async () => {
       try {
-        const res = await axios.get(useApi("/api/user"), {
+        const res = await axios.get(useApi("/api/api/user"), {
           headers: {
             Authorization: `Bearer ${token.value}`,
           },
@@ -219,7 +219,7 @@ export default {
         isLoading.value = true;
 
         const response = await axios.get(
-          useApi(`/api/dashboard?month=${currentMonth.value}&year=${currentYear.value}`),
+          useApi(`/api/api/dashboard?month=${currentMonth.value}&year=${currentYear.value}`),
           {
             headers: {
               Authorization: `Bearer ${token.value}`, // Pakai token untuk semua request

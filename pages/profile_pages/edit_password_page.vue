@@ -6,10 +6,20 @@
       <div class="p-6 bg-gray-100 rounded-lg">
         <div class="flex items-center mb-4">
           <!-- <img :src="profileImage" class="w-20 h-20 rounded-full" /> -->
-          <img
+          <!-- <img
             :src="
               user.profile_image
                 ? useApi(`/public/storage/profile_images/${user.profile_image}`)
+                : fallbackImage
+            "
+            @error="onImageError"
+            class="w-20 h-20 rounded-full"
+          /> -->
+
+          <img
+            :src="
+              user.profile_image
+                ? useApi(`/storage/profile_images/${user.profile_image}`)
                 : fallbackImage
             "
             @error="onImageError"
@@ -136,14 +146,18 @@ const fallbackImage = "/assets/images/photo_default.png";
 // Ambil data user saat mount
 const fetchUser = async () => {
   try {
-    const res = await axios.get(useApi("/api/user"), {
+    const res = await axios.get(useApi("/api/api/user"), {
       headers: {
         Authorization: `Bearer ${token.value}`,
       },
     });
     user.value = res.data;
+    // profileImage.value = user.value.profile_image
+    //   ? useApi(`/public/storage/profile_images/${user.value.profile_image}`)
+    //   : "/assets/images/photo_default.png";
+
     profileImage.value = user.value.profile_image
-      ? useApi(`/public/storage/profile_images/${user.value.profile_image}`)
+      ? useApi(`/storage/profile_images/${user.value.profile_image}`)
       : "/assets/images/photo_default.png";
   } catch (error) {
     console.error("Gagal mengambil data user:", error);

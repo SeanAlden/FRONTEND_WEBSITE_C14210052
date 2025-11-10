@@ -51,7 +51,7 @@ const adjustTextareaHeight = () => {
 // Fungsi createCategory langsung di-define di sini tanpa useApi
 const createCategory = async (data) => {
   try {
-    const response = await fetch(useApi("/api/categories"), {
+    const response = await fetch(useApi("/api/api/categories"), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),

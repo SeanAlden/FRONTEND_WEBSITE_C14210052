@@ -36,7 +36,7 @@ const fallbackImage = "/assets/images/avatar.png";
 const fetchProducts = async () => {
   isLoading.value = true; 
   try {
-    const res = await axios.get(useApi(`/api/nonactive-history`));
+    const res = await axios.get(useApi(`/api/api/nonactive-history`));
     products.value = res.data.data.map((item) => {
       // Pastikan untuk mengonversi product_stock ke integer
       item.details.forEach((detail) => {
@@ -212,7 +212,9 @@ onMounted(fetchProducts);
                   class="w-20 h-20 object-fit"
                 />
               </td> -->
-              <td class="p-2 border">
+
+
+              <!-- <td class="p-2 border">
                 <div class="flex min-h-[100px] min-w-[100px] items-center justify-center w-full h-full">
                   <img
                     :src="
@@ -224,7 +226,22 @@ onMounted(fetchProducts);
                     class="object-cover w-20 h-20 rounded"
                   />
                 </div>
+              </td> -->
+
+              <td class="p-2 border">
+                <div class="flex min-h-[100px] min-w-[100px] items-center justify-center w-full h-full">
+                  <img
+                    :src="
+                      item.product.photo
+                        ? useApi(`/storage/${item.product.photo}`)
+                        : fallbackImage
+                    "
+                    @error="onImageError"
+                    class="object-cover w-20 h-20 rounded"
+                  />
+                </div>
               </td>
+
               <td class="p-2 border">
                 <NuxtLink
                   :to="`/product_pages/detail/${item.product.id}`"

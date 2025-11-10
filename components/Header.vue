@@ -91,10 +91,20 @@
               class="w-10 h-10 overflow-hidden bg-gray-300 rounded-full focus:outline-none"
               @click="toggleDropdown"
             >
-              <img
+              <!-- <img
                 :src="
                   user.profile_image
                     ? useApi(`/public/storage/profile_images/${user.profile_image}`)
+                    : fallbackImage
+                "
+                @error="onImageError"
+                class="object-cover w-full h-full"
+              /> -->
+
+              <img
+                :src="
+                  user.profile_image
+                    ? useApi(`/storage/profile_images/${user.profile_image}`)
                     : fallbackImage
                 "
                 @error="onImageError"
@@ -112,10 +122,19 @@
             class="absolute right-0 z-50 w-56 mt-2 bg-white border rounded-lg shadow-lg"
           >
             <div class="p-4 text-center border-b bg-gray-50">
-              <img
+              <!-- <img
                 :src="
                   user.profile_image
                     ? useApi(`/public/storage/profile_images/${user.profile_image}`)
+                    : fallbackImage
+                "
+                class="w-16 h-16 mx-auto border border-gray-300 rounded-full"
+              /> -->
+
+              <img
+                :src="
+                  user.profile_image
+                    ? useApi(`/storage/profile_images/${user.profile_image}`)
                     : fallbackImage
                 "
                 class="w-16 h-16 mx-auto border border-gray-300 rounded-full"
@@ -204,11 +223,13 @@
 import { onMounted, onUnmounted, ref } from "vue";
 import axios from "axios";
 import { useCookie } from "#app";
-import emitter from "~/plugins/event-bus";
+// import emitter from "~/plugins/event-bus";
 
 const unreadCount = ref(0);
 const router = useRouter();
 const token = useCookie("my_auth_token");
+
+const { $emitter } = useNuxtApp();
 
 const user = ref({
   name: "",
@@ -230,7 +251,7 @@ const notifications = ref<any[]>([]);
 
 const fetchUser = async () => {
   try {
-    const res = await axios.get(useApi("/api/user"), {
+    const res = await axios.get(useApi("/api/api/user"), {
       headers: { Authorization: `Bearer ${token.value}` },
     });
     user.value = res.data;
@@ -255,7 +276,7 @@ const fetchUser = async () => {
 
 const fetchNotifications = async () => {
   try {
-    const res = await axios.get(useApi("/api/notifications"), {
+    const res = await axios.get(useApi("/api/api/notifications"), {
       headers: { Authorization: `Bearer ${token.value}` },
     });
     notifications.value = res.data.slice(0, 5);
@@ -302,16 +323,28 @@ const closeDropdown = (event: MouseEvent) => {
   }
 };
 
+// onMounted(() => {
+//   document.addEventListener("click", closeDropdown);
+//   fetchUser();
+//   fetchNotifications(); // ⬅️ Panggil saat mount
+//   emitter.on("profile-updated", fetchUser);
+// });
+
+// onUnmounted(() => {
+//   document.removeEventListener("click", closeDropdown);
+//   emitter.off("profile-updated", fetchUser);
+// });
+
 onMounted(() => {
   document.addEventListener("click", closeDropdown);
   fetchUser();
   fetchNotifications(); // ⬅️ Panggil saat mount
-  emitter.on("profile-updated", fetchUser);
+  $emitter.on("profile-updated", fetchUser);
 });
 
 onUnmounted(() => {
   document.removeEventListener("click", closeDropdown);
-  emitter.off("profile-updated", fetchUser);
+  $emitter.off("profile-updated", fetchUser);
 });
 
 const goToEditProfile = () => {
@@ -367,7 +400,7 @@ const onImageError = (event: Event) => {
 const markAsRead = async (id: number) => {
   try {
     await axios.put(
-      useApi(`/api/notifications/${id}`),
+      useApi(`/api/api/notifications/${id}`),
       {},
       {
         headers: { Authorization: `Bearer ${token.value}` },

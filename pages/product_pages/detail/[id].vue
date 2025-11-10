@@ -16,7 +16,7 @@ definePageMeta({
 
 const fetchProductDetail = async () => {
   try {
-    const res = await axios.get(useApi(`/api/products/${route.params.id}`));
+    const res = await axios.get(useApi(`/api/api/products/${route.params.id}`));
     product.value = res.data.data;
   } catch (err) {
     error.value = err.response?.data?.message || err.message;
@@ -54,9 +54,16 @@ onMounted(fetchProductDetail);
     <div v-if="isLoading" class="text-center">Memuat...</div>
     <div v-else-if="error" class="text-red-500">{{ error }}</div>
     <div v-else-if="product" class="p-4 border rounded shadow">
-      <img
+      <!-- <img
         :src="
           product.photo ? useApi(`/public/storage/${product.photo}`) : fallbackImage
+        "
+        @error="onImageError"
+        class="w-48 h-full mb-4l object-fit"
+      /> -->
+			<img
+        :src="
+          product.photo ? useApi(`/storage/${product.photo}`) : fallbackImage
         "
         @error="onImageError"
         class="w-48 h-full mb-4l object-fit"

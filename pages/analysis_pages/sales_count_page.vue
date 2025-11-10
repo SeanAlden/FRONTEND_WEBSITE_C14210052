@@ -113,7 +113,7 @@ definePageMeta({
 
 const fetchData = async () => {
   try {
-    const response = await axios.get(useApi("/api/analysis/getTransactions"));
+    const response = await axios.get(useApi("/api/api/analysis/getTransactions"));
     transactions.value = response.data.transactions.map((transaction) => {
       // Pastikan untuk mengonversi quantity ke integer
       transaction.details.forEach((detail) => {

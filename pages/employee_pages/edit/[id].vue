@@ -5,8 +5,14 @@
     <form @submit.prevent="updateEmployee" class="space-y-4">
       <div>
         <label class="block text-gray-600">Foto</label>
-        <img
+        <!-- <img
           :src="employee_photo ? useApi(`/public/storage/${employee_photo}`) : fallbackImage"
+          @error="onImageError"
+          class="w-20 h-20 object-fit"
+        /> -->
+
+        <img
+          :src="employee_photo ? useApi(`/storage/${employee_photo}`) : fallbackImage"
           @error="onImageError"
           class="w-20 h-20 object-fit"
         />
@@ -148,7 +154,7 @@ definePageMeta({
 
 const fetchEmployee = async () => {
   try {
-    const response = await axios.get(useApi(`/api/employees/${id}`));
+    const response = await axios.get(useApi(`/api/api/employees/${id}`));
     const employee = response.data.data;
     code.value = employee.code;
     employee_name.value = employee.employee_name;
@@ -188,7 +194,7 @@ const updateEmployee = async () => {
   formData.append("_method", "PUT"); 
 
   try {
-    await axios.post(useApi(`/api/employees/${id}`), formData, {
+    await axios.post(useApi(`/api/api/employees/${id}`), formData, {
       headers: { "Content-Type": "multipart/form-data" },
     });
     alert("Karyawan berhasil diperbarui!");

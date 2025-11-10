@@ -4,10 +4,19 @@
     <div v-if="employee" class="p-6 bg-white rounded-lg shadow-md">
       <div class="flex flex-col items-center text-center md:flex-col md:text-left">
         <!-- Foto berada di atas -->
-        <img
+        <!-- <img
           :src="
             employee.employee_photo
               ? useApi(`/public/storage/${employee.employee_photo}`)
+              : fallbackImage
+          "
+          @error="onImageError"
+          class="object-cover w-40 h-40 mb-4 rounded-lg"
+        /> -->
+				<img
+          :src="
+            employee.employee_photo
+              ? useApi(`/storage/${employee.employee_photo}`)
               : fallbackImage
           "
           @error="onImageError"
@@ -57,7 +66,7 @@ definePageMeta({
 
 const fetchEmployeeDetail = async () => {
   try {
-    const response = await axios.get(useApi(`/api/employees/${route.params.id}`));
+    const response = await axios.get(useApi(`/api/api/employees/${route.params.id}`));
     employee.value = response.data.data;
   } catch (error) {
     console.error("Error fetching employee details:", error);

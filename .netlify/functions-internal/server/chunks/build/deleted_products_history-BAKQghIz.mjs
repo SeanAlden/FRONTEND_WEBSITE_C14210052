@@ -35,7 +35,7 @@ const _sfc_main = {
     const fetchProducts = async () => {
       isLoading.value = true;
       try {
-        const res = await axios.get(useApi(`/api/nonactive-history`));
+        const res = await axios.get(useApi(`/api/api/nonactive-history`));
         products.value = res.data.data.map((item) => {
           item.details.forEach((detail) => {
             detail.product_stock = parseInt(detail.product_stock, 10);

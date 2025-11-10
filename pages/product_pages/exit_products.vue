@@ -29,7 +29,7 @@ const fallbackImage = "/assets/images/avatar.png";
 const fetchExits = async () => {
   isLoading.value = true;
   try {
-    const response = await axios.get(useApi(`/api/exit-products`));
+    const response = await axios.get(useApi(`/api/api/exit-products`));
     exitProducts.value = response.data.data;
   } catch (error) {
     alert("Terjadi kesalahan: " + error.message);
@@ -40,7 +40,7 @@ const fetchExits = async () => {
 
 // Ambil daftar produk
 const fetchProducts = async () => {
-  const response = await axios.get(useApi(`/api/products`));
+  const response = await axios.get(useApi(`/api/api/products`));
   products.value = response.data.data;
 };
 
@@ -52,14 +52,14 @@ const fetchExpDates = async () => {
     return;
   }
   const response = await axios.get(
-    useApi(`/api/products/product/${formData.value.product_id}/exp-dates`)
+    useApi(`/api/api/products/product/${formData.value.product_id}/exp-dates`)
   );
   const fetchedExpDates = response.data.data;
 
   const expDatesWithStock = [];
   for (const expDate of fetchedExpDates) {
     const stockResponse = await axios.get(
-      useApi(`/api/products/product/${formData.value.product_id}/stock/${expDate}`)
+      useApi(`/api/api/products/product/${formData.value.product_id}/stock/${expDate}`)
     );
     expDatesWithStock.push({
       date: expDate,
@@ -122,8 +122,8 @@ const saveExit = async () => {
   }
 
   const url = selectedProduct.value
-    ? useApi(`/api/exit-products/${selectedProduct.value.id}`)
-    : useApi(`/api/exit-products/store`);
+    ? useApi(`/api/api/exit-products/${selectedProduct.value.id}`)
+    : useApi(`/api/api/exit-products/store`);
 
   const method = selectedProduct.value ? "PUT" : "POST";
 
@@ -156,7 +156,7 @@ const deleteExpDate = async () => {
     )
   ) {
     try {
-      await axios.delete(useApi(`/api/products/${product_id}/exp-date/${exp_date}`));
+      await axios.delete(useApi(`/api/api/products/${product_id}/exp-date/${exp_date}`));
       alert("Tanggal expired berhasil dihapus.");
       closeModal();
       // Data tidak perlu di-fetch ulang karena sudah tidak relevan
@@ -170,7 +170,7 @@ const deleteExpDate = async () => {
 const deleteExit = async (id) => {
   if (!confirm("Apakah Anda yakin ingin menghapus data ini?")) return;
 
-  await fetch(useApi(`/api/exit-products/${id}`), { method: "DELETE" });
+  await fetch(useApi(`/api/api/exit-products/${id}`), { method: "DELETE" });
   fetchExits();
   fetchProducts();
 };
@@ -328,7 +328,8 @@ onMounted(() => {
                   class="object-contain w-20 h-20"
                 />
               </td> -->
-              <td class="p-2 border">
+
+              <!-- <td class="p-2 border">
                 <div class="flex min-h-[100px] min-w-[100px] items-center justify-center w-full h-full">
                   <img
                     :src="
@@ -340,7 +341,22 @@ onMounted(() => {
                     class="object-cover w-20 h-20 rounded"
                   />
                 </div>
+              </td> -->
+
+              <td class="p-2 border">
+                <div class="flex min-h-[100px] min-w-[100px] items-center justify-center w-full h-full">
+                  <img
+                    :src="
+                      exit.product.photo
+                        ? useApi(`/storage/${exit.product.photo}`)
+                        : fallbackImage
+                    "
+                    @error="onImageError"
+                    class="object-cover w-20 h-20 rounded"
+                  />
+                </div>
               </td>
+
               <td class="p-3 border">{{ exit.product.name }}</td>
               <td class="p-3 text-center border">
                 {{ formatPrice(exit.product.price) }}

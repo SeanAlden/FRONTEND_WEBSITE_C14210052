@@ -106,7 +106,7 @@ const formatDate = (dateString) => {
 onMounted(async () => {
   isLoading.value = true; // Set loading to true
   try {
-    const response = await axios.get(useApi("/api/transactions"), {
+    const response = await axios.get(useApi("/api/api/transactions"), {
       headers: {
         Authorization: `Bearer ${token.value}`,
       },
@@ -410,10 +410,21 @@ watch(itemsPerPage, () => {
                 class="flex items-center justify-center px-4 py-3 transition duration-200 border cursor-pointer hover:bg-gray-200"
                 @click="goToTransactionDetail(transaction.id)"
               >
-                <img
+                <!-- <img
                   :src="
                     transaction.mergedDetails[0].photo
                       ? useApi(`/public/storage/${transaction.mergedDetails[0].photo}`)
+                      : fallbackImage
+                  "
+                  @error="onImageError"
+                  alt="Foto Produk"
+                  class="w-12 h-12 rounded-md"
+                /> -->
+
+                <img
+                  :src="
+                    transaction.mergedDetails[0].photo
+                      ? useApi(`/storage/${transaction.mergedDetails[0].photo}`)
                       : fallbackImage
                   "
                   @error="onImageError"

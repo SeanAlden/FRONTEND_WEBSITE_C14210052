@@ -118,7 +118,7 @@ const _sfc_main = {
   // },
   async mounted() {
     try {
-      const response = await axios.get(useApi("/api/analysis/results"));
+      const response = await axios.get(useApi("/api/api/analysis/results"));
       this.entropyValues = response.data.entropyValues;
       this.gainValues = response.data.gainValues;
       this.accuracy = response.data.accuracy;
@@ -132,14 +132,14 @@ const _sfc_main = {
   }
 };
 function _sfc_ssrRender(_ctx, _push, _parent, _attrs, $props, $setup, $data, $options) {
-  _push(`<div${ssrRenderAttrs(_attrs)}><div><h1 class="mb-4 text-xl font-bold">Prediksi Produk Terlaris - Algoritma C4.5</h1><div class="mt-4"><button class="px-4 py-2 text-white transition-colors duration-200 bg-blue-500 rounded hover:bg-blue-700"> Hasil Prediksi </button></div><h2 class="mt-6 text-lg font-semibold">2. Decision Tree</h2>`);
+  _push(`<div${ssrRenderAttrs(_attrs)}><div><h1 class="mb-4 text-xl font-bold">Prediksi Produk Terlaris - Algoritma C4.5</h1><div class="mt-4"><button class="rounded bg-blue-500 px-4 py-2 text-white transition-colors duration-200 hover:bg-blue-700"> Hasil Prediksi </button></div><h2 class="mt-6 text-lg font-semibold">2. Decision Tree</h2>`);
   if ($data.isLoading) {
-    _push(`<div class="flex items-center justify-center py-10"><div class="w-16 h-16 ease-linear border-8 border-t-8 border-gray-200 rounded-full loader"></div></div>`);
+    _push(`<div class="flex items-center justify-center py-10"><div class="loader h-16 w-16 rounded-full border-8 border-t-8 border-gray-200 ease-linear"></div></div>`);
   } else {
     _push(`<!---->`);
   }
   if (!$data.isLoading) {
-    _push(`<div><div><pre class="p-4 mt-2 bg-white border border-gray-300">${ssrInterpolate($data.decisionTree)}</pre></div></div>`);
+    _push(`<div><div><pre class="mt-2 border border-gray-300 bg-white p-4">${ssrInterpolate($data.decisionTree)}</pre></div></div>`);
   } else {
     _push(`<!---->`);
   }

@@ -29,14 +29,14 @@ const isLoading = ref(true);
 const fallbackImage = "/assets/images/avatar.png";
 
 const fetchEntries = async () => {
-  const response = await axios.get(useApi(`/api/entry-products`));
+  const response = await axios.get(useApi(`/api/api/entry-products`));
   entryProducts.value = response.data.data;
 };
 
 const fetchProducts = async () => {
   isLoading.value = true;
   try {
-    const response = await axios.get(useApi(`/api/products`));
+    const response = await axios.get(useApi(`/api/api/products`));
     products.value = response.data.data;
   } catch (error) {
     alert("Terjadi kesalahan saat mengambil data produk: " + error.message);
@@ -53,14 +53,14 @@ const fetchExpDates = async () => {
     return;
   }
   const response = await axios.get(
-    useApi(`/api/products/product/${formData.value.product_id}/exp-dates`)
+    useApi(`/api/api/products/product/${formData.value.product_id}/exp-dates`)
   );
   const fetchedExpDates = response.data.data;
 
   const expDatesWithStock = [];
   for (const expDate of fetchedExpDates) {
     const stockResponse = await axios.get(
-      useApi(`/api/products/product/${formData.value.product_id}/stock/${expDate}`)
+      useApi(`/api/api/products/product/${formData.value.product_id}/stock/${expDate}`)
     );
     expDatesWithStock.push({
       date: expDate,
@@ -105,8 +105,8 @@ const closeModal = () => {
 
 const saveEntry = async () => {
   const url = selectedProduct.value
-    ? useApi(`/api/entry-products/${selectedProduct.value.id}`)
-    : useApi(`/api/entry-products/store`);
+    ? useApi(`/api/api/entry-products/${selectedProduct.value.id}`)
+    : useApi(`/api/api/entry-products/store`);
 
   const method = selectedProduct.value ? "PUT" : "POST";
 
@@ -143,7 +143,7 @@ const saveEntry = async () => {
 
 const deleteEntry = async (id) => {
   if (!confirm("Apakah Anda yakin ingin menghapus data ini?")) return;
-  await fetch(useApi(`/api/entry-products/${id}`), { method: "DELETE" });
+  await fetch(useApi(`/api/api/entry-products/${id}`), { method: "DELETE" });
   fetchEntries();
   fetchProducts();
 };
@@ -301,7 +301,8 @@ onMounted(() => {
                   class="object-contain w-20 h-20"
                 />
               </td> -->
-              <td class="p-2 border">
+
+              <!-- <td class="p-2 border">
                 <div class="flex min-h-[100px] min-w-[100px] items-center justify-center w-full h-full">
                   <img
                     :src="
@@ -313,7 +314,22 @@ onMounted(() => {
                     class="object-cover w-20 h-20 rounded"
                   />
                 </div>
+              </td> -->
+
+              <td class="p-2 border">
+                <div class="flex min-h-[100px] min-w-[100px] items-center justify-center w-full h-full">
+                  <img
+                    :src="
+                      entry.product.photo
+                        ? useApi(`/storage/${entry.product.photo}`)
+                        : fallbackImage
+                    "
+                    @error="onImageError"
+                    class="object-cover w-20 h-20 rounded"
+                  />
+                </div>
               </td>
+
               <td class="p-3 border">{{ entry.product.name }}</td>
               <td class="p-3 text-center border">
                 {{ formatPrice(entry.product.price) }}

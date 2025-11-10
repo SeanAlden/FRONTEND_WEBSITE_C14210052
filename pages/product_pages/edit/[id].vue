@@ -28,7 +28,7 @@ const product = reactive({
 
 const fetchCategories = async () => {
   try {
-    const res = await axios.get(useApi("/api/categories"));
+    const res = await axios.get(useApi("/api/api/categories"));
     categories.value = res.data;
   } catch (error) {
     console.error("Error fetching categories:", error);
@@ -38,7 +38,7 @@ const fetchCategories = async () => {
 // Fetch produk berdasarkan ID
 const fetchProduct = async () => {
   try {
-    const res = await axios.get(useApi(`/api/products/${route.params.id}`));
+    const res = await axios.get(useApi(`/api/api/products/${route.params.id}`));
     const data = res.data;
 
     Object.assign(product, {
@@ -51,7 +51,9 @@ const fetchProduct = async () => {
 
     expStockList.value = data.data.stocks || [];
 
-    productImage.value = data.data.photo ? useApi(`/public/storage/${data.data.photo}`) : null;
+    // productImage.value = data.data.photo ? useApi(`/public/storage/${data.data.photo}`) : null;
+
+    productImage.value = data.data.photo ? useApi(`/storage/${data.data.photo}`) : null;
 
     await nextTick();
   } catch (error) {
@@ -113,7 +115,7 @@ const updateProduct = async () => {
       formData.append(`stocks[${index}][stock]`, item.stock);
     });
 
-    const res = await axios.post(useApi(`/api/products/${route.params.id}`), formData, {
+    const res = await axios.post(useApi(`/api/api/products/${route.params.id}`), formData, {
       headers: { "Content-Type": "multipart/form-data" },
     });
 
@@ -160,7 +162,7 @@ onMounted(async () => {
       <textarea
         v-model="product.name"
         required
-        class="w-full resize-none overflow-hidden border p-2"
+        class="w-full p-2 overflow-hidden border resize-none"
         rows="1"
       ></textarea>
 
@@ -169,13 +171,13 @@ onMounted(async () => {
       <textarea
         v-model="product.code"
         required
-        class="w-full resize-none overflow-hidden border p-2"
+        class="w-full p-2 overflow-hidden border resize-none"
         rows="1"
       ></textarea>
 
       <!-- Kategori -->
       <label>Kategori:</label>
-      <select v-model="product.category_id" required class="w-full border p-2">
+      <select v-model="product.category_id" required class="w-full p-2 border">
         <option v-for="cat in categories" :key="cat.id" :value="String(cat.id)">
           {{ cat.name }}
         </option>
@@ -187,7 +189,7 @@ onMounted(async () => {
         v-model.lazy="product.price"
         type="number"
         required
-        class="w-full border p-2"
+        class="w-full p-2 border"
       />
 
       <!-- Stok berdasarkan tanggal expired -->
@@ -196,14 +198,14 @@ onMounted(async () => {
         <div
           v-for="(item, index) in expStockList"
           :key="index"
-          class="mb-2 flex items-center gap-2"
+          class="flex items-center gap-2 mb-2"
         >
-          <input v-model="item.exp_date" type="date" required class="border p-2" />
-					<span class="inline-block w-24 select-none border p-2">{{ item.stock }}</span>			
+          <input v-model="item.exp_date" type="date" required class="p-2 border" />
+					<span class="inline-block w-24 p-2 border select-none">{{ item.stock }}</span>			
           <!-- <button
             type="button"
             @click="removeExpStock(index)"
-            class="rounded bg-red-500 p-1 text-white"
+            class="p-1 text-white bg-red-500 rounded"
           >
             Hapus
           </button> -->
@@ -211,7 +213,7 @@ onMounted(async () => {
         <!-- <button
           type="button"
           @click="addExpStock"
-          class="mt-2 rounded bg-green-500 p-2 text-white"
+          class="p-2 mt-2 text-white bg-green-500 rounded"
         >
           Tambah Stok Expired
         </button> -->
@@ -222,7 +224,7 @@ onMounted(async () => {
       <textarea
         v-model="product.description"
         placeholder="Deskripsi"
-        class="w-full border p-2"
+        class="w-full p-2 border"
         rows="3"
         style="resize: none; overflow-y: hidden"
         ref="descTextarea"
@@ -236,18 +238,18 @@ onMounted(async () => {
         <img
           :src="productImage"
           alt="Foto Produk"
-          class="h-40 w-40 rounded border object-cover"
+          class="object-cover w-40 h-40 border rounded"
         />
         <!-- <img
           :src="product.photo ? useApi(`/public/storage/${product.photo}`) : fallbackImage"
           @error="onImageError"
         /> -->
       </div>
-      <input type="file" @change="handleFileUpload" class="w-full border p-2" />
+      <input type="file" @change="handleFileUpload" class="w-full p-2 border" />
 
       <p
         v-if="errorMessage"
-        class="mt-2 rounded border border-red-400 bg-red-100 p-2 text-red-500"
+        class="p-2 mt-2 text-red-500 bg-red-100 border border-red-400 rounded"
       >
         {{ errorMessage }}
       </p>
@@ -256,14 +258,14 @@ onMounted(async () => {
         <button
           @click="goBack"
           type="button"
-          class="mr-2 rounded bg-gray-500 px-4 py-2 text-white hover:bg-gray-600"
+          class="px-4 py-2 mr-2 text-white bg-gray-500 rounded hover:bg-gray-600"
         >
           Kembali
         </button>
 
         <button
           type="submit"
-          class="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
+          class="px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600"
         >
           Simpan Perubahan
         </button>

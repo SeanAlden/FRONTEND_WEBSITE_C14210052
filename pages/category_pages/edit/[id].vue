@@ -23,7 +23,7 @@ const descTextarea = ref(null);
 
 const getCategoryById = async (id) => {
   try {
-    const response = await axios.get(useApi(`/api/categories/${id}`));
+    const response = await axios.get(useApi(`/api/api/categories/${id}`));
     return response.data;
   } catch (error) {
     console.error(`Error fetching category with ID ${id}:`, error);
@@ -33,7 +33,7 @@ const getCategoryById = async (id) => {
 
 const updateCategory = async (id, data) => {
   try {
-    const response = await axios.put(useApi(`/api/categories/${id}`), data);
+    const response = await axios.put(useApi(`/api/api/categories/${id}`), data);
     return response.data;
   } catch (error) {
     console.error("Error updating category:", error);
