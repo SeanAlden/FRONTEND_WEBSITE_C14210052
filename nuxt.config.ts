@@ -6,8 +6,9 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
 
   devServer: {
-    host: "127.0.0.1",
+    // host: "127.0.0.1",
     // host: "https://asiaraya.my.id",
+    host: "https://backend-tugas-akhir-c14210052.vercel.app",
   },
 
   css: [
