@@ -235,10 +235,15 @@ onMounted(fetchProducts);
                 <div
                   class="flex min-h-[100px] min-w-[100px] items-center justify-center w-full h-full"
                 >
-                  <img
+                  <!-- <img
                     :src="
                       product.photo ? useApi(`/storage/${product.photo}`) : fallbackImage
                     "
+                    @error="onImageError"
+                    class="object-cover w-20 h-20 rounded"
+                  /> -->
+                  <img
+                    :src="product.photo ?? fallbackImage"
                     @error="onImageError"
                     class="object-cover w-20 h-20 rounded"
                   />

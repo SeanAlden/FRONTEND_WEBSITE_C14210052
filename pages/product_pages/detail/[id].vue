@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
-import axios from "axios"; 
+import axios from "axios";
 
 const route = useRoute();
 const product = ref(null);
@@ -61,13 +61,19 @@ onMounted(fetchProductDetail);
         @error="onImageError"
         class="w-48 h-full mb-4l object-fit"
       /> -->
-			<img
+      <!-- <img
         :src="
           product.photo ? useApi(`/storage/${product.photo}`) : fallbackImage
         "
         @error="onImageError"
         class="w-48 h-full mb-4l object-fit"
+      /> -->
+      <img
+        :src="product.photo ?? fallbackImage"
+        @error="onImageError"
+        class="w-48 h-full mb-4 object-fit"
       />
+
       <br />
       <h2 class="text-xl font-semibold">{{ product.name }}</h2>
       <p><strong>Kode:</strong> {{ product.code }}</p>

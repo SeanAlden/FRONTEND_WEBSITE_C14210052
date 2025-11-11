@@ -11,9 +11,9 @@ const route = useRoute();
 const router = useRouter();
 const categories = ref([]);
 const productImage = ref(null);
-const expStockList = ref([]); 
+const expStockList = ref([]);
 const errorMessage = ref("");
-const descTextarea = ref(null); 
+const descTextarea = ref(null);
 
 const fallbackImage = "/assets/images/avatar.png";
 
@@ -53,7 +53,8 @@ const fetchProduct = async () => {
 
     // productImage.value = data.data.photo ? useApi(`/public/storage/${data.data.photo}`) : null;
 
-    productImage.value = data.data.photo ? useApi(`/storage/${data.data.photo}`) : null;
+    // productImage.value = data.data.photo ? useApi(`/storage/${data.data.photo}`) : null;
+    productImage.value = data.data.photo ? data.data.photo : null;
 
     await nextTick();
   } catch (error) {
@@ -62,7 +63,7 @@ const fetchProduct = async () => {
 };
 
 const goBack = () => {
-  router.back(); 
+  router.back();
 };
 
 // Menangani unggahan file gambar
@@ -115,9 +116,13 @@ const updateProduct = async () => {
       formData.append(`stocks[${index}][stock]`, item.stock);
     });
 
-    const res = await axios.post(useApi(`/api/api/products/${route.params.id}`), formData, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
+    const res = await axios.post(
+      useApi(`/api/api/products/${route.params.id}`),
+      formData,
+      {
+        headers: { "Content-Type": "multipart/form-data" },
+      }
+    );
 
     if (!res.data || res.data.success === false) {
       throw new Error(res.data?.message || "Gagal memperbarui produk");
@@ -201,7 +206,7 @@ onMounted(async () => {
           class="flex items-center gap-2 mb-2"
         >
           <input v-model="item.exp_date" type="date" required class="p-2 border" />
-					<span class="inline-block w-24 p-2 border select-none">{{ item.stock }}</span>			
+          <span class="inline-block w-24 p-2 border select-none">{{ item.stock }}</span>
           <!-- <button
             type="button"
             @click="removeExpStock(index)"
