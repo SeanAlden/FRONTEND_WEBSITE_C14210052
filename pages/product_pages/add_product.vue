@@ -183,9 +183,11 @@ const addProduct = async () => {
   }
 
   try {
-    const response = await axios.post(useApi(`/api/api/products`), formData, {
-      headers: { 'Content-Type': 'multipart/form-data' }
-    });
+    // const response = await axios.post(useApi(`/api/api/products`), formData, {
+    //   headers: { 'Content-Type': 'multipart/form-data' }
+    // });
+
+    const response = await axios.post(useApi(`/api/api/products`), formData);
 
     console.log("Response Data:", response.data);
 
@@ -204,7 +206,7 @@ const addProduct = async () => {
 };
 
 const goBack = () => {
-  router.back(); 
+  router.back();
 };
 
 // Sesuaikan tinggi textarea secara otomatis
@@ -219,7 +221,7 @@ const adjustHeight = (element) => {
 
 onMounted(() => {
   fetchCategories();
-  fetchExistingProducts(); 
+  fetchExistingProducts();
 });
 </script>
 
@@ -318,11 +320,18 @@ onMounted(() => {
       </p>
 
       <div class="flex justify-start mb-4">
-        <button @click="goBack" type="button" class="px-4 py-2 mr-2 text-white bg-gray-500 rounded hover:bg-gray-600">
+        <button
+          @click="goBack"
+          type="button"
+          class="px-4 py-2 mr-2 text-white bg-gray-500 rounded hover:bg-gray-600"
+        >
           Kembali
         </button>
-        
-        <button type="submit" class="px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600">
+
+        <button
+          type="submit"
+          class="px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600"
+        >
           Tambah Produk
         </button>
       </div>

@@ -116,12 +116,17 @@ const updateProduct = async () => {
       formData.append(`stocks[${index}][stock]`, item.stock);
     });
 
+    // const res = await axios.post(
+    //   useApi(`/api/api/products/${route.params.id}`),
+    //   formData,
+    //   {
+    //     headers: { "Content-Type": "multipart/form-data" },
+    //   }
+    // );
+
     const res = await axios.post(
       useApi(`/api/api/products/${route.params.id}`),
-      formData,
-      {
-        headers: { "Content-Type": "multipart/form-data" },
-      }
+      formData
     );
 
     if (!res.data || res.data.success === false) {
