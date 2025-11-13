@@ -142,7 +142,7 @@ const fallbackImage = "/assets/images/photo_default.png";
 const fetchUsers = async () => {
   isLoading.value = true; 
   try {
-    const response = await axios.get(useApi("/api/auth/users"));
+    const response = await axios.get(useApi("/api/api/auth/users"));
     // Sesuaikan dengan struktur response API Anda
     cashiers.value = response.data.data.filter((user) => user.usertype === "employee");
   } catch (error) {
