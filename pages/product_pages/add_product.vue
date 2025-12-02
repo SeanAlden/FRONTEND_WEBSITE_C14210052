@@ -187,11 +187,7 @@ const addProduct = async () => {
     //   headers: { 'Content-Type': 'multipart/form-data' }
     // });
 
-    const response = await axios.post(useApi(`/api/api/products`), formData, {
-      headers: {
-        "Content-Type": "multipart/form-data", // Paksa multipart agar file terkirim
-      },
-    });
+    const response = await axios.post(useApi(`/api/api/products`), formData);
 
     console.log("Response Data:", response.data);
 
