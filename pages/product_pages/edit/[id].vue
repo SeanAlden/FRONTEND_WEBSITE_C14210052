@@ -163,11 +163,6 @@ const updateProduct = async () => {
       formData.append("photo", product.photo);
     }
 
-    const cleanedStocks = expStockList.value.map((item) => ({
-      exp_date: item.exp_date,
-      stock: item.stock,
-    }));
-
     // Kirim stocks sebagai JSON string
     formData.append("stocks", JSON.stringify(expStockList.value));
 
