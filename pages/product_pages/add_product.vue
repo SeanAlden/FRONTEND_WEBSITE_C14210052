@@ -187,7 +187,9 @@ const addProduct = async () => {
     //   headers: { 'Content-Type': 'multipart/form-data' }
     // });
 
-    const response = await axios.post(useApi(`/api/api/products`), formData);
+    const response = await axios.post(useApi(`/api/api/products`), formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
 
     console.log("Response Data:", response.data);
 

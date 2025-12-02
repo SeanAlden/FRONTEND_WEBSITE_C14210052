@@ -126,7 +126,8 @@ const updateProduct = async () => {
 
     const res = await axios.post(
       useApi(`/api/api/products/${route.params.id}`),
-      formData
+      formData,
+      { headers: { "Content-Type": "multipart/form-data" } }
     );
 
     if (!res.data || res.data.success === false) {
