@@ -27,13 +27,13 @@ const errorMessage = ref("");
 
 // Ambil kategori & produk yang ada saat halaman dimuat
 // const fetchCategories = async () => {
-//   const res = await fetch(useApi(`/api/categories`));
+//   const res = await fetch(useApi(`/api/api/categories`));
 //   const data = await res.json();
 //   categories.value = data;
 // };
 
 // const fetchExistingProducts = async () => {
-//   const res = await fetch(useApi(`/api/products`));
+//   const res = await fetch(useApi(`/api/api/products`));
 //   const data = await res.json();
 //   existingProductCodes.value = data.map((product) => product.code); // Simpan kode produk yang sudah ada
 // };
@@ -41,7 +41,7 @@ const errorMessage = ref("");
 // Ambil kategori & produk yang ada saat halaman dimuat
 const fetchCategories = async () => {
   try {
-    const res = await axios.get(useApi(`/api/categories`));
+    const res = await axios.get(useApi(`/api/api/categories`));
     categories.value = res.data;
   } catch (error) {
     console.error("Gagal mengambil data kategori:", error);
@@ -50,7 +50,7 @@ const fetchCategories = async () => {
 
 const fetchExistingProducts = async () => {
   try {
-    const res = await axios.get(useApi(`/api/products`));
+    const res = await axios.get(useApi(`/api/api/products`));
     existingProductCodes.value = res.data.map((product) => product.code);
   } catch (error) {
     console.error("Gagal mengambil data produk:", error);
@@ -183,11 +183,11 @@ const addProduct = async () => {
   }
 
   try {
-    // const response = await axios.post(useApi(`/api/products`), formData, {
+    // const response = await axios.post(useApi(`/api/api/products`), formData, {
     //   headers: { 'Content-Type': 'multipart/form-data' }
     // });
 
-    const response = await axios.post(useApi(`/api/products`), formData, {
+    const response = await axios.post(useApi(`/api/api/products`), formData, {
       headers: { "Content-Type": "multipart/form-data" },
     });
 

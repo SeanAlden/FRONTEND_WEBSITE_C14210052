@@ -219,7 +219,7 @@ export default {
         isLoading.value = true;
 
         const response = await axios.get(
-          useApi(`/api/dashboard?month=${currentMonth.value}&year=${currentYear.value}`),
+          useApi(`/api/api/dashboard?month=${currentMonth.value}&year=${currentYear.value}`),
           {
             headers: {
               Authorization: `Bearer ${token.value}`, // Pakai token untuk semua request

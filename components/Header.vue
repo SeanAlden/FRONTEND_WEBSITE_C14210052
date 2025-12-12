@@ -385,7 +385,7 @@ const onImageError = (event: Event) => {
 // const markAsRead = async (id: number) => {
 //   try {
 //     await axios.put(
-//       useApi(`/api/notifications/${id}`),
+//       useApi(`/api/api/notifications/${id}`),
 //       {},
 //       {
 //         headers: { Authorization: `Bearer ${token.value}` },
@@ -400,7 +400,7 @@ const onImageError = (event: Event) => {
 const markAsRead = async (id: number) => {
   try {
     await axios.put(
-      useApi(`/api/notifications/${id}`),
+      useApi(`/api/api/notifications/${id}`),
       {},
       {
         headers: { Authorization: `Bearer ${token.value}` },

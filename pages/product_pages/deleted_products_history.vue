@@ -18,7 +18,7 @@ const fallbackImage = "/assets/images/avatar.png";
 // const fetchProducts = async () => {
 //   isLoading.value = true; // Set loading to true
 //   try {
-//     const res = await axios.get(useApi(`/api/nonactive-history`));
+//     const res = await axios.get(useApi(`/api/api/nonactive-history`));
 //     // const data = await res.json();
 //     products.value = res.data.data;
 //   } catch (error) {
@@ -36,7 +36,7 @@ const fallbackImage = "/assets/images/avatar.png";
 const fetchProducts = async () => {
   isLoading.value = true; 
   try {
-    const res = await axios.get(useApi(`/api/nonactive-history`));
+    const res = await axios.get(useApi(`/api/api/nonactive-history`));
     products.value = res.data.data.map((item) => {
       // Pastikan untuk mengonversi product_stock ke integer
       item.details.forEach((detail) => {

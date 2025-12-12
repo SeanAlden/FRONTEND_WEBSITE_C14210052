@@ -161,7 +161,7 @@ definePageMeta({
 
 const deleteCategory = async (id) => {
   try {
-    const response = await fetch(useApi(`/api/categories/${id}`), {
+    const response = await fetch(useApi(`/api/api/categories/${id}`), {
       method: "DELETE",
     });
     return response.ok;

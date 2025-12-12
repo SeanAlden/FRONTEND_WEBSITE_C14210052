@@ -66,7 +66,7 @@ definePageMeta({
 
 const fetchEmployeeDetail = async () => {
   try {
-    const response = await axios.get(useApi(`/api/employees/${route.params.id}`));
+    const response = await axios.get(useApi(`/api/api/employees/${route.params.id}`));
     employee.value = response.data.data;
   } catch (error) {
     console.error("Error fetching employee details:", error);

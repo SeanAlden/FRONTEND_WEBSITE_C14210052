@@ -1958,7 +1958,7 @@ const _routes = [
     name: "index",
     path: "/",
     meta: { "middleware": ["auth"] },
-    component: () => import('./index-CumFknSI.mjs')
+    component: () => import('./index-C2Re43uk.mjs')
   },
   {
     name: "login",
@@ -1970,13 +1970,13 @@ const _routes = [
     name: "notifications",
     path: "/notifications",
     meta: { "middleware": ["auth"] },
-    component: () => import('./notifications-TuCgs77Q.mjs')
+    component: () => import('./notifications-CSfhvhHt.mjs')
   },
   {
     name: "product_pages-products",
     path: "/product_pages/products",
     meta: { "middleware": ["auth"] },
-    component: () => import('./products-DGmeW7iR.mjs')
+    component: () => import('./products-eb4Ktlb1.mjs')
   },
   {
     name: "product_pages-edit-id",
@@ -2000,13 +2000,13 @@ const _routes = [
     name: "employee_pages-employees",
     path: "/employee_pages/employees",
     meta: { "middleware": ["auth"] },
-    component: () => import('./employees-DQuGhx0-.mjs')
+    component: () => import('./employees-DH7Yxv85.mjs')
   },
   {
     name: "category_pages-categories",
     path: "/category_pages/categories",
     meta: { "middleware": ["auth"] },
-    component: () => import('./categories-DsjWEW6F.mjs')
+    component: () => import('./categories-DgO889VO.mjs')
   },
   {
     name: "product_pages-add_product",
@@ -2048,7 +2048,7 @@ const _routes = [
     name: "product_pages-exit_products",
     path: "/product_pages/exit_products",
     meta: { "middleware": ["auth"] },
-    component: () => import('./exit_products-BuJKMDCY.mjs')
+    component: () => import('./exit_products-d9gSjrf0.mjs')
   },
   {
     name: "analysis_pages-accuracy_page",
@@ -2060,7 +2060,7 @@ const _routes = [
     name: "product_pages-entry_products",
     path: "/product_pages/entry_products",
     meta: { "middleware": ["auth"] },
-    component: () => import('./entry_products-B_U0DTbl.mjs')
+    component: () => import('./entry_products-CPPF4LLe.mjs')
   },
   {
     name: "transaction_pages-detail-id",
@@ -2078,7 +2078,7 @@ const _routes = [
     name: "product_pages-deleted_products",
     path: "/product_pages/deleted_products",
     meta: { "middleware": ["auth"] },
-    component: () => import('./deleted_products-DaYAOcoR.mjs')
+    component: () => import('./deleted_products-CzlPYudG.mjs')
   },
   {
     name: "transaction_pages-transactions",
@@ -2144,7 +2144,7 @@ const _routes = [
     name: "product_pages-deleted_products_history",
     path: "/product_pages/deleted_products_history",
     meta: { "middleware": ["auth"] },
-    component: () => import('./deleted_products_history-DQRkzFOz.mjs')
+    component: () => import('./deleted_products_history-D1s9aV96.mjs')
   }
 ];
 const _wrapInTransition = (props, children) => {
