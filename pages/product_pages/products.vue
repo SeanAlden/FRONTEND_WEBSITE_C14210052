@@ -18,7 +18,7 @@ const fallbackImage = "/assets/images/avatar.png";
 const fetchProducts = async () => {
   isLoading.value = true;
   try {
-    const res = await axios.get(useApi(`/api/api/products`));
+    const res = await axios.get(useApi(`/api/products`));
 
     products.value = res.data.data;
   } catch (error) {
@@ -34,7 +34,7 @@ const toggleProductStatus = async (id, status) => {
   if (!confirm(confirmMessage)) return;
 
   try {
-    const res = await fetch(useApi(`/api/api/products/updateCondition/${id}`), {
+    const res = await fetch(useApi(`/api/products/updateCondition/${id}`), {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ condition: status }),
@@ -235,18 +235,18 @@ onMounted(fetchProducts);
                 <div
                   class="flex min-h-[100px] min-w-[100px] items-center justify-center w-full h-full"
                 >
-                  <!-- <img
+                  <img
                     :src="
                       product.photo ? useApi(`/storage/${product.photo}`) : fallbackImage
                     "
                     @error="onImageError"
                     class="object-cover w-20 h-20 rounded"
-                  /> -->
-                  <img
+                  />
+                  <!-- <img
                     :src="product.photo ?? fallbackImage"
                     @error="onImageError"
                     class="object-cover w-20 h-20 rounded"
-                  />
+                  /> -->
                 </div>
               </td>
 

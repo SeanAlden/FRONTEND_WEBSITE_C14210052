@@ -265,7 +265,7 @@ const fetchUser = async () => {
 
 // const fetchNotifications = async () => {
 //   try {
-//     const res = await axios.get(useApi("/api/notifications"), {
+//     const res = await axios.get(useApi("/api/api/notifications"), {
 //       headers: { Authorization: `Bearer ${token.value}` },
 //     });
 //     notifications.value = res.data.slice(0, 5);
@@ -362,7 +362,7 @@ const goToNotifications = () => {
 
 const logout = async () => {
   try {
-    await axios.delete(useApi("/api/auth/signout"), {
+    await axios.delete(useApi("/api/api/auth/signout"), {
       headers: { Authorization: `Bearer ${token.value}` },
     });
     token.value = null;
@@ -400,7 +400,7 @@ const onImageError = (event: Event) => {
 const markAsRead = async (id: number) => {
   try {
     await axios.put(
-      useApi(`/api/api/notifications/${id}`),
+      useApi(`/api/notifications/${id}`),
       {},
       {
         headers: { Authorization: `Bearer ${token.value}` },

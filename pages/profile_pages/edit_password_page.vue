@@ -191,7 +191,7 @@ const updatePassword = async () => {
 
   try {
     const response = await axios.put(
-      useApi("/api/auth/user/password"),
+      useApi("/api/api/auth/user/password"),
       {
         current_password: password.value.oldPassword,
         new_password: password.value.newPassword,

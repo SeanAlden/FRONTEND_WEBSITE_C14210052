@@ -1958,7 +1958,7 @@ const _routes = [
     name: "index",
     path: "/",
     meta: { "middleware": ["auth"] },
-    component: () => import('./index-C2Re43uk.mjs')
+    component: () => import('./index-CumFknSI.mjs')
   },
   {
     name: "login",
@@ -1970,13 +1970,13 @@ const _routes = [
     name: "notifications",
     path: "/notifications",
     meta: { "middleware": ["auth"] },
-    component: () => import('./notifications-BA_hsflW.mjs')
+    component: () => import('./notifications-TuCgs77Q.mjs')
   },
   {
     name: "product_pages-products",
     path: "/product_pages/products",
     meta: { "middleware": ["auth"] },
-    component: () => import('./products-C21xPP0W.mjs')
+    component: () => import('./products-DGmeW7iR.mjs')
   },
   {
     name: "product_pages-edit-id",
@@ -2000,13 +2000,13 @@ const _routes = [
     name: "employee_pages-employees",
     path: "/employee_pages/employees",
     meta: { "middleware": ["auth"] },
-    component: () => import('./employees-DH7Yxv85.mjs')
+    component: () => import('./employees-DQuGhx0-.mjs')
   },
   {
     name: "category_pages-categories",
     path: "/category_pages/categories",
     meta: { "middleware": ["auth"] },
-    component: () => import('./categories-DgO889VO.mjs')
+    component: () => import('./categories-DsjWEW6F.mjs')
   },
   {
     name: "product_pages-add_product",
@@ -2018,7 +2018,7 @@ const _routes = [
     name: "product_pages-detail-id",
     path: "/product_pages/detail/:id()",
     meta: { "middleware": ["auth"] },
-    component: () => import('./_id_--IJy--Rs.mjs')
+    component: () => import('./_id_-CsYsUora.mjs')
   },
   {
     name: "category_pages-detail-id",
@@ -2048,19 +2048,19 @@ const _routes = [
     name: "product_pages-exit_products",
     path: "/product_pages/exit_products",
     meta: { "middleware": ["auth"] },
-    component: () => import('./exit_products-d9gSjrf0.mjs')
+    component: () => import('./exit_products-BuJKMDCY.mjs')
   },
   {
     name: "analysis_pages-accuracy_page",
     path: "/analysis_pages/accuracy_page",
     meta: { "middleware": ["auth"] },
-    component: () => import('./accuracy_page-CjtOlXOo.mjs')
+    component: () => import('./accuracy_page-jay7B0Ut.mjs')
   },
   {
     name: "product_pages-entry_products",
     path: "/product_pages/entry_products",
     meta: { "middleware": ["auth"] },
-    component: () => import('./entry_products-CPPF4LLe.mjs')
+    component: () => import('./entry_products-B_U0DTbl.mjs')
   },
   {
     name: "transaction_pages-detail-id",
@@ -2078,7 +2078,7 @@ const _routes = [
     name: "product_pages-deleted_products",
     path: "/product_pages/deleted_products",
     meta: { "middleware": ["auth"] },
-    component: () => import('./deleted_products-CzlPYudG.mjs')
+    component: () => import('./deleted_products-DaYAOcoR.mjs')
   },
   {
     name: "transaction_pages-transactions",
@@ -2090,7 +2090,7 @@ const _routes = [
     name: "analysis_pages-sales_count_page",
     path: "/analysis_pages/sales_count_page",
     meta: { "middleware": ["auth"] },
-    component: () => import('./sales_count_page-BBJ-ZOet.mjs')
+    component: () => import('./sales_count_page-BCbimLO-.mjs')
   },
   {
     name: "profile_pages-edit_profile_page",
@@ -2132,7 +2132,7 @@ const _routes = [
     name: "employee_pages-registered_employees",
     path: "/employee_pages/registered_employees",
     meta: { "middleware": ["auth"] },
-    component: () => import('./registered_employees-sWwiqfNO.mjs')
+    component: () => import('./registered_employees-DGFECDHk.mjs')
   },
   {
     name: "product_pages-product_stocks_report",
@@ -2144,7 +2144,7 @@ const _routes = [
     name: "product_pages-deleted_products_history",
     path: "/product_pages/deleted_products_history",
     meta: { "middleware": ["auth"] },
-    component: () => import('./deleted_products_history-DWVxZ16i.mjs')
+    component: () => import('./deleted_products_history-DQRkzFOz.mjs')
   }
 ];
 const _wrapInTransition = (props, children) => {
@@ -2886,7 +2886,7 @@ const plugins = [
   emitter
 ];
 const layouts = {
-  default: defineAsyncComponent(() => import('./default-Cz9jEQ0p.mjs').then((m) => m.default || m))
+  default: defineAsyncComponent(() => import('./default-BFe37_cU.mjs').then((m) => m.default || m))
 };
 const LayoutLoader = defineComponent({
   name: "LayoutLoader",

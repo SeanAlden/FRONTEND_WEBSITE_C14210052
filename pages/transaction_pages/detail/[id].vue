@@ -326,7 +326,7 @@ const getStatusClass = (status) => {
 
 onMounted(async () => {
   try {
-    const response = await axios.get(useApi(`/api/api/transactions/${transactionId}`), {
+    const response = await axios.get(useApi(`/api/transactions/${transactionId}`), {
       headers: {
         Authorization: `Bearer ${token.value}`,
       },

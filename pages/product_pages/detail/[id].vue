@@ -16,7 +16,7 @@ definePageMeta({
 
 const fetchProductDetail = async () => {
   try {
-    const res = await axios.get(useApi(`/api/api/products/${route.params.id}`));
+    const res = await axios.get(useApi(`/api/products/${route.params.id}`));
     product.value = res.data.data;
   } catch (err) {
     error.value = err.response?.data?.message || err.message;

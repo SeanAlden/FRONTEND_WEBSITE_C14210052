@@ -23,7 +23,7 @@ export const apiFetch = async (endpoint, method = 'GET', data = null) => {
         options.body = JSON.stringify(data);
     }
 
-    const res = await fetch(`${BASE_URL}/api/api/${endpoint}`, options);
+    const res = await fetch(`${BASE_URL}/api/${endpoint}`, options);
 
     // Optional: cek jika respons bukan JSON
     const contentType = res.headers.get('content-type');

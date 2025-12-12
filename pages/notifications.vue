@@ -149,7 +149,7 @@ const deleteNotification = async (id: number) => {
   if (!confirmDelete) return;
 
   try {
-    const res = await fetch(useApi(`/api/api/notifications/${id}`), {
+    const res = await fetch(useApi(`/api/notifications/${id}`), {
       method: "PUT",
     });
 

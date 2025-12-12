@@ -18,7 +18,7 @@ const fallbackImage = "/assets/images/avatar.png";
 
 const getCategoryById = async (id) => {
   try {
-    const response = await axios.get(useApi(`/api/api/categories/${id}`));
+    const response = await axios.get(useApi(`/api/categories/${id}`));
     return response.data;
   } catch (error) {
     console.error(`Error fetching category with ID ${id}:`, error);

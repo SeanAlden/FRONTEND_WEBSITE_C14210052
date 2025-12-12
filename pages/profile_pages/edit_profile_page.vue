@@ -229,7 +229,7 @@ const uploadProfileImage = async () => {
 
   try {
     const res = await axios.post(
-      useApi("/api/auth/user/update-profile-image"),
+      useApi("/api/api/auth/user/update-profile-image"),
       formData,
       {
         headers: {
@@ -258,7 +258,7 @@ const uploadProfileImage = async () => {
 const updateProfile = async () => {
   try {
     await axios.put(
-      useApi("/api/auth/user/update"),
+      useApi("/api/api/auth/user/update"),
       {
         name: editUser.value.name,
         email: editUser.value.email,

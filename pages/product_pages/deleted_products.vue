@@ -18,7 +18,7 @@ const fallbackImage = "/assets/images/avatar.png";
 const fetchProducts = async () => {
   isLoading.value = true; // Set loading to true
   try {
-    const res = await axios.get(useApi(`/api/api/products`));
+    const res = await axios.get(useApi(`/api/products`));
     // const data = await res.json();
     products.value = res.data.data;
   } catch (error) {
@@ -79,7 +79,7 @@ const toggleProductStatus = async (id, status) => {
   if (!confirm(confirmMessage)) return;
 
   try {
-    const res = await axios.put(useApi(`/api/api/products/updateCondition/${id}`), {
+    const res = await axios.put(useApi(`/api/products/updateCondition/${id}`), {
       condition: status,
     });
 

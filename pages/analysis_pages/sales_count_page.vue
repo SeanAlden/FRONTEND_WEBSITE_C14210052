@@ -101,7 +101,7 @@ definePageMeta({
 // const fetchData = async () => {
 //   try {
 //     const response = await axios.get(
-//       useApi("/api/analysis/getTransactions")
+//       useApi("/api/api/analysis/getTransactions")
 //     );
 //     transactions.value = response.data.transactions;
 //   } catch (err) {

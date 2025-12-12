@@ -38,7 +38,7 @@ const fetchCategories = async () => {
 // Fetch produk berdasarkan ID
 const fetchProduct = async () => {
   try {
-    const res = await axios.get(useApi(`/api/api/products/${route.params.id}`));
+    const res = await axios.get(useApi(`/api/products/${route.params.id}`));
     const data = res.data;
 
     Object.assign(product, {
@@ -117,7 +117,7 @@ const handleFileUpload = (event) => {
 //     });
 
 //     // const res = await axios.post(
-//     //   useApi(`/api/api/products/${route.params.id}`),
+//     //   useApi(`/api/products/${route.params.id}`),
 //     //   formData,
 //     //   {
 //     //     headers: { "Content-Type": "multipart/form-data" },
@@ -125,7 +125,7 @@ const handleFileUpload = (event) => {
 //     // );
 
 //     const res = await axios.post(
-//       useApi(`/api/api/products/${route.params.id}`),
+//       useApi(`/api/products/${route.params.id}`),
 //       formData,
 //       { headers: { "Content-Type": "multipart/form-data" } }
 //     );
@@ -167,7 +167,7 @@ const updateProduct = async () => {
     formData.append("stocks", JSON.stringify(expStockList.value));
 
     const res = await axios.post(
-      useApi(`/api/api/products/${route.params.id}`),
+      useApi(`/api/products/${route.params.id}`),
       formData
     );
 

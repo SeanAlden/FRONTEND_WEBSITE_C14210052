@@ -196,7 +196,7 @@ const fetchEmployees = async () => {
 const deleteEmployee = async (id) => {
   if (confirm("Apakah Anda yakin ingin menghapus karyawan ini?")) {
     try {
-      await axios.delete(useApi(`/api/api/employees/${id}`));
+      await axios.delete(useApi(`/api/employees/${id}`));
       fetchEmployees();
     } catch (error) {
       console.error("Error deleting employee:", error);

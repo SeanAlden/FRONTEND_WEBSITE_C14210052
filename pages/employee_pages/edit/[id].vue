@@ -154,7 +154,7 @@ definePageMeta({
 
 const fetchEmployee = async () => {
   try {
-    const response = await axios.get(useApi(`/api/api/employees/${id}`));
+    const response = await axios.get(useApi(`/api/employees/${id}`));
     const employee = response.data.data;
     code.value = employee.code;
     employee_name.value = employee.employee_name;
@@ -194,7 +194,7 @@ const updateEmployee = async () => {
   formData.append("_method", "PUT"); 
 
   try {
-    await axios.post(useApi(`/api/api/employees/${id}`), formData, {
+    await axios.post(useApi(`/api/employees/${id}`), formData, {
       headers: { "Content-Type": "multipart/form-data" },
     });
     alert("Karyawan berhasil diperbarui!");
