@@ -86,9 +86,17 @@
                   class="w-20 h-20 object-fit"
                 /> -->
 
-                <img
+                <!-- <img
                   :src="
                       employee.employee_photo ? useApi(`/storage/${employee.employee_photo}`) : fallbackImage
+                    "
+                    @error="onImageError"
+                  class="w-20 h-20 object-fit"
+                /> -->
+
+								<img
+                  :src="
+                      employee.employee_photo ? useApi(`${employee.employee_photo}`) : fallbackImage
                     "
                     @error="onImageError"
                   class="w-20 h-20 object-fit"
