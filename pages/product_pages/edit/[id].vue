@@ -96,79 +96,38 @@ const handleFileUpload = (event) => {
 // };
 
 // Fungsi untuk memperbarui produk
-// const updateProduct = async () => {
-//   errorMessage.value = "";
-
-//   try {
-//     const formData = new FormData();
-//     formData.append("name", product.name);
-//     formData.append("code", product.code);
-//     formData.append("category_id", String(product.category_id));
-//     formData.append("price", product.price);
-//     formData.append("description", product.description);
-
-//     if (product.photo instanceof File) {
-//       formData.append("photo", product.photo);
-//     }
-
-//     expStockList.value.forEach((item, index) => {
-//       formData.append(`stocks[${index}][exp_date]`, item.exp_date);
-//       formData.append(`stocks[${index}][stock]`, item.stock);
-//     });
-
-//     // const res = await axios.post(
-//     //   useApi(`/api/api/products/${route.params.id}`),
-//     //   formData,
-//     //   {
-//     //     headers: { "Content-Type": "multipart/form-data" },
-//     //   }
-//     // );
-
-//     const res = await axios.post(
-//       useApi(`/api/api/products/${route.params.id}`),
-//       formData,
-//       { headers: { "Content-Type": "multipart/form-data" } }
-//     );
-
-//     if (!res.data || res.data.success === false) {
-//       throw new Error(res.data?.message || "Gagal memperbarui produk");
-//     }
-
-//     router.push("/product_pages/products");
-//   } catch (error) {
-//     errorMessage.value = error.message;
-//     setTimeout(() => {
-//       errorMessage.value = "";
-//     }, 3000);
-//   }
-// };
-
 const updateProduct = async () => {
   errorMessage.value = "";
 
   try {
     const formData = new FormData();
-
-    // Penting agar request dianggap PUT
-    formData.append("_method", "PUT");
-
     formData.append("name", product.name);
     formData.append("code", product.code);
     formData.append("category_id", String(product.category_id));
     formData.append("price", product.price);
     formData.append("description", product.description);
 
-    // Jika user upload foto baru
     if (product.photo instanceof File) {
       formData.append("photo", product.photo);
     }
 
-    // Kirim stocks sebagai JSON string
-    formData.append("stocks", JSON.stringify(expStockList.value));
+    expStockList.value.forEach((item, index) => {
+      formData.append(`stocks[${index}][exp_date]`, item.exp_date);
+      formData.append(`stocks[${index}][stock]`, item.stock);
+    });
+
+    // const res = await axios.post(
+    //   useApi(`/api/api/products/${route.params.id}`),
+    //   formData,
+    //   {
+    //     headers: { "Content-Type": "multipart/form-data" },
+    //   }
+    // );
 
     const res = await axios.post(
       useApi(`/api/api/products/${route.params.id}`),
-      formData
+      formData,
+      { headers: { "Content-Type": "multipart/form-data" } }
     );
 
     if (!res.data || res.data.success === false) {
@@ -177,13 +136,54 @@ const updateProduct = async () => {
 
     router.push("/product_pages/products");
   } catch (error) {
-    errorMessage.value = error.response?.data?.message || error.message;
-
+    errorMessage.value = error.message;
     setTimeout(() => {
       errorMessage.value = "";
     }, 3000);
   }
 };
+
+// const updateProduct = async () => {
+//   errorMessage.value = "";
+
+//   try {
+//     const formData = new FormData();
+
+//     // Penting agar request dianggap PUT
+//     formData.append("_method", "PUT");
+
+//     formData.append("name", product.name);
+//     formData.append("code", product.code);
+//     formData.append("category_id", String(product.category_id));
+//     formData.append("price", product.price);
+//     formData.append("description", product.description);
+
+//     // Jika user upload foto baru
+//     if (product.photo instanceof File) {
+//       formData.append("photo", product.photo);
+//     }
+
+//     // Kirim stocks sebagai JSON string
+//     formData.append("stocks", JSON.stringify(expStockList.value));
+
+//     const res = await axios.post(
+//       useApi(`/api/api/products/${route.params.id}`),
+//       formData
+//     );
+
+//     if (!res.data || res.data.success === false) {
+//       throw new Error(res.data?.message || "Gagal memperbarui produk");
+//     }
+
+//     router.push("/product_pages/products");
+//   } catch (error) {
+//     errorMessage.value = error.response?.data?.message || error.message;
+
+//     setTimeout(() => {
+//       errorMessage.value = "";
+//     }, 3000);
+//   }
+// };
 
 // Fungsi untuk auto resize desctextarea
 const descAutoResize = () => {
