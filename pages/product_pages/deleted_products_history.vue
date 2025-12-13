@@ -230,10 +230,20 @@ onMounted(fetchProducts);
 
               <td class="p-2 border">
                 <div class="flex min-h-[100px] min-w-[100px] items-center justify-center w-full h-full">
-                  <img
+                  <!-- <img
                     :src="
                       item.product.photo
                         ? useApi(`/storage/${item.product.photo}`)
+                        : fallbackImage
+                    "
+                    @error="onImageError"
+                    class="object-cover w-20 h-20 rounded"
+                  /> -->
+
+									 <img
+                    :src="
+                      item.product.photo
+                        ? item.product.photo
                         : fallbackImage
                     "
                     @error="onImageError"

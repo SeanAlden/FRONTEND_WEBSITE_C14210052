@@ -417,7 +417,7 @@ watch([selectedMonth, selectedYear], () => {
               <tr v-else v-for="product in paginatedTransactions" :key="product.no">
                 <td class="px-4 py-2 border text-lg-center">
                   {{ product.no }}
-                  </td>
+                  </td>s
                 <td
                   class="flex min-h-[100px] min-w-[100px] items-center justify-center border p-2"
                 >
@@ -428,9 +428,16 @@ watch([selectedMonth, selectedYear], () => {
                     @error="onImageError"
                     class="w-20 h-20 object-fit"
                   /> -->
-                   <img
+                   <!-- <img
                     :src="
                       product.photo ? useApi(`/storage/${product.photo}`) : fallbackImage
+                    "
+                    @error="onImageError"
+                    class="w-20 h-20 object-fit"
+                  /> -->
+									<img
+                    :src="
+                      product.photo ? product.photo : fallbackImage
                     "
                     @error="onImageError"
                     class="w-20 h-20 object-fit"

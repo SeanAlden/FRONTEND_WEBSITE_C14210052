@@ -421,10 +421,21 @@ watch(itemsPerPage, () => {
                   class="w-12 h-12 rounded-md"
                 /> -->
 
-                <img
+                <!-- <img
                   :src="
                     transaction.mergedDetails[0].photo
                       ? useApi(`/storage/${transaction.mergedDetails[0].photo}`)
+                      : fallbackImage
+                  "
+                  @error="onImageError"
+                  alt="Foto Produk"
+                  class="w-12 h-12 rounded-md"
+                /> -->
+
+								<img
+                  :src="
+                    transaction.mergedDetails[0].photo
+                      ? transaction.mergedDetails[0].photo
                       : fallbackImage
                   "
                   @error="onImageError"

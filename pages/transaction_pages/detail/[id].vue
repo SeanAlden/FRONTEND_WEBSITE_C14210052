@@ -459,7 +459,7 @@ const latestStatus = () => {
                       class="object-cover w-16 h-16 rounded"
                     /> -->
 
-                    <img
+                    <!-- <img
                       :src="
                         product.product_photo
                           ? useApi(`/storage/${product.product_photo}`)
@@ -468,8 +468,14 @@ const latestStatus = () => {
                       @error="onImageError"
                       alt="Foto Produk"
                       class="object-cover w-16 h-16 rounded"
-                    />
+                    /> -->
 
+                    <img
+                      :src="product.product_photo ? product.product_photo : fallbackImage"
+                      @error="onImageError"
+                      alt="Foto Produk"
+                      class="object-cover w-16 h-16 rounded"
+                    />
 
                     <!-- <img
                       v-if="product.product_photo"
@@ -604,6 +610,4 @@ const latestStatus = () => {
   </div>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

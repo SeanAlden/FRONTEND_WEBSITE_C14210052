@@ -147,9 +147,16 @@ onMounted(async () => {
                     @error="onImageError"
                 class="w-full h-40 object-fit-contain"
               /> -->
-              <img
+              <!-- <img
                 :src="
                       product.photo ? useApi(`/storage/${product.photo}`) : fallbackImage
+                    "
+                    @error="onImageError"
+                class="w-full h-40 object-fit-contain"
+              /> -->
+							<img
+                :src="
+                      product.photo ? product.photo : fallbackImage
                     "
                     @error="onImageError"
                 class="w-full h-40 object-fit-contain"

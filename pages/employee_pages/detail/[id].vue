@@ -13,10 +13,19 @@
           @error="onImageError"
           class="object-cover w-40 h-40 mb-4 rounded-lg"
         /> -->
-				<img
+				<!-- <img
           :src="
             employee.employee_photo
               ? useApi(`/storage/${employee.employee_photo}`)
+              : fallbackImage
+          "
+          @error="onImageError"
+          class="object-cover w-40 h-40 mb-4 rounded-lg"
+        /> -->
+				<img
+          :src="
+            employee.employee_photo
+              ? employee.employee_photo
               : fallbackImage
           "
           @error="onImageError"

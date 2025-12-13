@@ -318,10 +318,19 @@ onMounted(() => {
 
               <td class="p-2 border">
                 <div class="flex min-h-[100px] min-w-[100px] items-center justify-center w-full h-full">
-                  <img
+                  <!-- <img
                     :src="
                       entry.product.photo
                         ? useApi(`/storage/${entry.product.photo}`)
+                        : fallbackImage
+                    "
+                    @error="onImageError"
+                    class="object-cover w-20 h-20 rounded"
+                  /> -->
+									<img
+                    :src="
+                      entry.product.photo
+                        ? entry.product.photo
                         : fallbackImage
                     "
                     @error="onImageError"

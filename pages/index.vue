@@ -117,6 +117,7 @@
                   "
                   class="w-10 h-10 mr-2"
                 />
+								
                 <!-- <img
                   :src="
                     product.photo
@@ -126,6 +127,14 @@
                   @error="onImageError"
                   class="w-10 h-10 mr-2"
                 /> -->
+								<img
+                  :src="
+                    product.photo
+                      ? product.photo
+                      : '/assets/images/avatar.png'
+                  "
+                  class="w-10 h-10 mr-2"
+                />
               </td>
               <td>{{ product.name }}</td>
               <td class="p-2">{{ formatPrice(product.price) }}</td>
