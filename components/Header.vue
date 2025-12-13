@@ -141,14 +141,24 @@
                 class="w-16 h-16 mx-auto border border-gray-300 rounded-full"
               /> -->
 
-              <img
+              <!-- <img
                 :src="
                   user.profile_image
                     ? useApi(`/storage/profile_images/${user.profile_image}`)
                     : fallbackImage
                 "
                 class="w-16 h-16 mx-auto border border-gray-300 rounded-full"
+              /> -->
+
+							<img
+                :src="
+                  user.profile_image
+                    ? user.profile_image
+                    : fallbackImage
+                "
+                class="w-16 h-16 mx-auto border border-gray-300 rounded-full"
               />
+							
               <h3 class="mt-2 text-lg font-semibold text-gray-900">
                 {{ user?.name || "Guest" }}
               </h3>
