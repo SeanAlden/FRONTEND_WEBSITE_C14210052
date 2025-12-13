@@ -101,10 +101,20 @@
                 class="object-cover w-full h-full"
               /> -->
 
-              <img
+              <!-- <img
                 :src="
                   user.profile_image
                     ? useApi(`/storage/profile_images/${user.profile_image}`)
+                    : fallbackImage
+                "
+                @error="onImageError"
+                class="object-cover w-full h-full"
+              /> -->
+
+							<img
+                :src="
+                  user.profile_image
+                    ? user.profile_image
                     : fallbackImage
                 "
                 @error="onImageError"

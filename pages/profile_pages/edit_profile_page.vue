@@ -199,9 +199,14 @@ const fetchUser = async () => {
     //   ? useApi(`/public/storage/profile_images/${user.value.profile_image}`)
     //   : "/assets/images/photo_default.png";
 
+    // profileImage.value = user.value.profile_image
+    //   ? useApi(`/storage/profile_images/${user.value.profile_image}`)
+    //   : "/assets/images/photo_default.png";
+
     profileImage.value = user.value.profile_image
-      ? useApi(`/storage/profile_images/${user.value.profile_image}`)
+      ? user.value.profile_image
       : "/assets/images/photo_default.png";
+			
   } catch (error) {
     console.error("Gagal mengambil data user:", error);
     if (error.response?.status === 401) {
