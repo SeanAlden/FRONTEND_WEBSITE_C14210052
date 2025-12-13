@@ -116,19 +116,19 @@ const updateProduct = async () => {
       formData.append(`stocks[${index}][stock]`, item.stock);
     });
 
-    const res = await axios.put(
-      useApi(`/api/api/products/${route.params.id}`),
-      formData,
-      {
-        headers: { "Content-Type": "multipart/form-data" },
-      }
-    );
-
-    // const res = await axios.post(
+    // const res = await axios.put(
     //   useApi(`/api/api/products/${route.params.id}`),
     //   formData,
-    //   { headers: { "Content-Type": "multipart/form-data" } }
+    //   {
+    //     headers: { "Content-Type": "multipart/form-data" },
+    //   }
     // );
+
+    const res = await axios.post(
+      useApi(`/api/api/products/${route.params.id}`),
+      formData,
+      { headers: { "Content-Type": "multipart/form-data" } }
+    );
 
     if (!res.data || res.data.success === false) {
       throw new Error(res.data?.message || "Gagal memperbarui produk");
