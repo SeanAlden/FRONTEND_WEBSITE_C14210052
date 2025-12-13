@@ -417,7 +417,7 @@ watch([selectedMonth, selectedYear], () => {
               <tr v-else v-for="product in paginatedTransactions" :key="product.no">
                 <td class="px-4 py-2 border text-lg-center">
                   {{ product.no }}
-                  </td>s
+                  </td>
                 <td
                   class="flex min-h-[100px] min-w-[100px] items-center justify-center border p-2"
                 >

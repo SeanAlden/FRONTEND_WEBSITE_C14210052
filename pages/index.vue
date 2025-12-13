@@ -109,14 +109,14 @@
           <tbody>
             <tr v-for="product in topProducts" :key="product.id" class="border">
               <td class="flex items-center p-2">
-                <img
+                <!-- <img
                   :src="
                     product.photo
                       ? useApi(`/storage/${product.photo}`)
                       : '/assets/images/avatar.png'
                   "
                   class="w-10 h-10 mr-2"
-                />
+                /> -->
 								
                 <!-- <img
                   :src="
