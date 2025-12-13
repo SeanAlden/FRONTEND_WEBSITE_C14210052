@@ -18,7 +18,7 @@
         /> -->
 
 				<img
-          :src="employee_photo ? useApi(`${employee_photo}`) : fallbackImage"
+          :src="employee_photo ? employee_photo : fallbackImage"
           @error="onImageError"
           class="w-20 h-20 object-fit"
         />
