@@ -15,10 +15,20 @@
             class="w-20 h-20 rounded-full"
           /> -->
 
-          <img
+          <!-- <img
             :src="
               user.profile_image
                 ? useApi(`/storage/profile_images/${user.profile_image}`)
+                : fallbackImage
+            "
+            @error="onImageError"
+            class="w-20 h-20 rounded-full"
+          /> -->
+
+					<img
+            :src="
+              user.profile_image
+                ? user.profile_image
                 : fallbackImage
             "
             @error="onImageError"
@@ -93,7 +103,7 @@
             class="w-10 h-10 rounded-full"
           /> -->
 
-          <img
+          <!-- <img
             :src="
               selectedFile
                 ? profileImage
@@ -103,7 +113,20 @@
             "
             @error="onImageError"
             class="w-10 h-10 rounded-full"
+          /> -->
+
+					<img
+            :src="
+              selectedFile
+                ? profileImage
+                : user.profile_image
+                ? user.profile_image
+                : fallbackImage
+            "
+            @error="onImageError"
+            class="w-10 h-10 rounded-full"
           />
+					
           <!-- <input
             type="file"
             class="w-full p-2 border rounded"
@@ -249,7 +272,8 @@ const uploadProfileImage = async () => {
     //   `/public/storage/profile_images/${res.data.profile_image}`
     // );
 
-    profileImage.value = useApi(`/storage/profile_images/${res.data.profile_image}`);
+    // profileImage.value = useApi(`/storage/profile_images/${res.data.profile_image}`);
+    profileImage.value = res.data.profile_image;
 
     // Panggil ini setelah update profil berhasil
     emitter.emit("profile-updated");
