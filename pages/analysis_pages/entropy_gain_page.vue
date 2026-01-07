@@ -100,7 +100,7 @@
               :class="{
                 'bg-blue-500 text-white': currentPage === page,
                 'bg-white text-blue-500 hover:bg-blue-100':
-                  currentPage !== page && page !== '...'
+                  currentPage !== page && page !== '...',
               }"
             >
               {{ page }}
@@ -163,7 +163,8 @@ export default {
         const code = products.value[id]?.code || "";
         const price = products.value[id]?.price?.toString() || "";
         const condition = products.value[id]?.condition || "";
-        const entropy = entropyValues.value[id] !== undefined ? entropyValues.value[id].toFixed(4) : "";
+        const entropy =
+          entropyValues.value[id] !== undefined ? entropyValues.value[id].toFixed(4) : "";
         const gainValue = gain !== undefined ? gain.toFixed(4) : "";
         const query = searchQuery.value.toLowerCase();
 
@@ -185,15 +186,23 @@ export default {
       Math.ceil(filteredProducts.value.length / itemsPerPage.value)
     );
 
+    // const formatPrice = (price) => {
+    //   if (typeof price !== "number") return "-";
+    //   return new Intl.NumberFormat("id-ID", {
+    //     style: "currency",
+    //     currency: "IDR",
+    //     minimumFractionDigits: 0,
+    //   }).format(price);
+    // };
+
     const formatPrice = (price) => {
-      if (typeof price !== "number") return "-";
       return new Intl.NumberFormat("id-ID", {
         style: "currency",
         currency: "IDR",
         minimumFractionDigits: 0,
       }).format(price);
     };
-
+		
     const generatePagination = computed(() => {
       const total = totalPages.value;
       const current = currentPage.value;
