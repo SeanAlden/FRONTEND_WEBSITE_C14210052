@@ -46,7 +46,7 @@
             <th class="p-2 border">Foto</th>
             <th class="p-2 border">Kategori</th>
             <th class="p-2 border">Harga</th>
-            <th class="p-2 border">Stok</th>
+            <!-- <th class="p-2 border">Stok</th> -->
             <th class="p-2 border">Akurasi</th>
           </tr>
         </thead>
@@ -89,7 +89,7 @@
             </td>
             <td class="p-2 border">{{ product.category_name || "Unknown" }}</td>
             <td class="p-2 border">{{ formatPrice(product.price) }}</td>
-            <td class="p-2 border">{{ product.stocks }}</td>
+            <!-- <td class="p-2 border">{{ product.stocks }}</td> -->
             <!-- <td class="p-2 border">{{ product.accuracy.toFixed(2) }}%</td> -->
             <td class="p-2 border">
               <span
