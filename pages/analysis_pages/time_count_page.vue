@@ -11,7 +11,7 @@
       Weight Count
     </button>
 
-    <h2 class="mt-4 text-lg font-semibold">1. Perhitungan Bobot Waktu</h2>
+    <h2 class="mt-4 text-lg font-semibold">Perhitungan Bobot Waktu</h2>
 
     <!-- Filter and Pagination Controls -->
     <div class="flex justify-between my-4">

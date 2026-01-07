@@ -9,7 +9,7 @@
     >
       Entropy & Gain
     </button>
-    <h2 class="mt-6 text-lg font-semibold">2. Perhitungan Total Penjualan Berbobot</h2>
+    <h2 class="mt-6 text-lg font-semibold">Perhitungan Total Penjualan Berbobot</h2>
 
     <div class="flex justify-between my-4">
       <div>

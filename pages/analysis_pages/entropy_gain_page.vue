@@ -31,6 +31,7 @@
       />
     </div>
 
+    <!-- Loading Spinner -->
     <div class="flex items-center justify-center py-10" v-if="isLoading">
       <div
         class="w-16 h-16 ease-linear border-8 border-t-8 border-gray-200 rounded-full loader"
@@ -44,30 +45,39 @@
         >
           <thead>
             <tr class="bg-gray-200">
-              <th class="p-2 border">Atribut (Produk)</th>
-              <th class="p-2 border">Kode Produk</th>
-              <th class="p-2 border">Harga Produk</th>
+              <th class="p-2 border">Produk</th>
+              <th class="p-2 border">Kode</th>
+              <th class="p-2 border">Harga</th>
+              <th class="p-2 border">Status</th>
               <th class="p-2 border">Entropy</th>
               <th class="p-2 border">Gain</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="(gain, id) in paginatedProducts" :key="id">
-              <td class="p-2 border">{{ products[id]?.name || "Unknown" }}</td>
-              <td class="p-2 border">{{ products[id]?.code || "Unknown" }}</td>
               <td class="p-2 border">
-                {{ formatPrice(products[id]?.price) }}
+                <div class="flex items-center space-x-2">
+                  <img
+                    v-if="products[id]?.photo"
+                    :src="products[id].photo"
+                    alt="Foto Produk"
+                    class="object-cover w-10 h-10 rounded"
+                  />
+                  <span>{{ products[id]?.name || "Unknown" }}</span>
+                </div>
               </td>
+              <td class="p-2 border">{{ products[id]?.code || "Unknown" }}</td>
+              <td class="p-2 border">{{ formatPrice(products[id]?.price) }}</td>
+              <td class="p-2 border">{{ products[id]?.condition || "-" }}</td>
               <td class="p-2 border">
                 {{ entropyValues[id] !== undefined ? entropyValues[id].toFixed(4) : "-" }}
               </td>
-              <td class="p-2 border">
-                {{ gain !== undefined ? gain.toFixed(4) : "-" }}
-              </td>
+              <td class="p-2 border">{{ gain !== undefined ? gain.toFixed(4) : "-" }}</td>
             </tr>
           </tbody>
         </table>
 
+        <!-- Pagination -->
         <div class="flex justify-between mt-4">
           <div>
             Showing {{ (currentPage - 1) * itemsPerPage + 1 }} to
@@ -90,7 +100,7 @@
               :class="{
                 'bg-blue-500 text-white': currentPage === page,
                 'bg-white text-blue-500 hover:bg-blue-100':
-                  currentPage !== page && page !== '...',
+                  currentPage !== page && page !== '...'
               }"
             >
               {{ page }}
@@ -132,7 +142,7 @@ export default {
       try {
         const response = await axios.get(useApi("/api/api/analysis/results"));
 
-        // Pastikan products keyed by ID
+        // key products by ID
         products.value = Object.fromEntries(
           (response.data.products || []).map((p) => [p.id, p])
         );
@@ -146,20 +156,24 @@ export default {
       }
     };
 
+    // Filter products by search query
     const filteredProducts = computed(() => {
       return Object.entries(gainValues.value).filter(([id, gain]) => {
         const name = products.value[id]?.name || "";
         const code = products.value[id]?.code || "";
         const price = products.value[id]?.price?.toString() || "";
+        const condition = products.value[id]?.condition || "";
         const entropy = entropyValues.value[id] !== undefined ? entropyValues.value[id].toFixed(4) : "";
         const gainValue = gain !== undefined ? gain.toFixed(4) : "";
         const query = searchQuery.value.toLowerCase();
-        return [name, code, price, entropy, gainValue].some((field) =>
+
+        return [name, code, price, condition, entropy, gainValue].some((field) =>
           field.toLowerCase().includes(query)
         );
       });
     });
 
+    // Pagination
     const paginatedProducts = computed(() => {
       const start = (currentPage.value - 1) * itemsPerPage.value;
       return Object.fromEntries(
