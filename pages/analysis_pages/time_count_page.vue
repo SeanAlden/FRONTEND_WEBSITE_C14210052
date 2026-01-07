@@ -4,11 +4,17 @@
       Proses Analisis - Menghitung Bobot Waktu & Total Penjualan Berbobot
     </h1>
 
-    <button
+    <!-- <button
       @click="$router.push('/analysis_pages/entropy_gain_page')"
       class="px-4 py-2 mt-4 text-white bg-blue-500 rounded"
     >
       Weight Count
+    </button> -->
+		<button
+      @click="$router.push('/analysis_pages/entropy_gain_page')"
+      class="px-4 py-2 mt-4 text-white bg-blue-500 rounded"
+    >
+      Entropy & Gain
     </button>
 
     <h2 class="mt-4 text-lg font-semibold">Perhitungan Bobot Waktu</h2>

@@ -3,11 +3,17 @@
     <h1 class="mb-4 text-xl font-bold">Prediksi Produk Terlaris</h1>
 
     <div class="mt-4">
-      <button
+      <!-- <button
         class="px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-700"
         @click="$router.push('/analysis_pages/accuracy_page')"
       >
         Decision Tree
+      </button> -->
+			<button
+        class="px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-700"
+        @click="$router.push('/analysis_pages/accuracy_page')"
+      >
+        Hasil Prediksi
       </button>
     </div>
 
