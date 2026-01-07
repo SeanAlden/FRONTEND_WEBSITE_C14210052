@@ -98,7 +98,7 @@ const goToTransactionDetail = (id) => {
 
 const formatDate = (dateString) => {
   const date = new Date(dateString);
-  date.setHours(date.getHours() + 7);
+  date.setHours(date.getHours() - 14);
   return date.toLocaleString("id-ID", { dateStyle: "medium", timeStyle: "short" });
 };
 
