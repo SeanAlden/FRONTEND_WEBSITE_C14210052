@@ -1,8 +1,8 @@
 <template>
   <div>
-    <h1 class="mb-4 text-xl font-bold">Prediksi Produk Terlaris - Algoritma C4.5</h1>
-    <h2 class="mt-6 text-lg font-semibold">3. Perhitungan Akurasi</h2>
-
+    <h1 class="mb-4 text-xl font-bold">Prediksi Produk Terlaris</h1>
+    <h2 class="mt-6 text-lg font-semibold">Perhitungan Akurasi</h2>
+		
     <div class="flex justify-between my-4">
       <div>
         <label class="mr-2">Show</label>

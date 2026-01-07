@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1 class="mb-4 text-xl font-bold">Prediksi Produk Terlaris - Algoritma C4.5</h1>
+    <h1 class="mb-4 text-xl font-bold">Prediksi Produk Terlaris</h1>
 
     <div class="mt-4">
       <button
@@ -11,16 +11,11 @@
       </button>
     </div>
 
-    <h2 class="mt-6 text-lg font-semibold">1. Perhitungan Entropy & Gain</h2>
+    <h2 class="mt-6 text-lg font-semibold">Perhitungan Entropy & Gain</h2>
 
     <div class="flex justify-between my-4">
       <div class="overflow-x-auto whitespace-nowrap">
         <label class="mr-2">Show</label>
-        <!-- <select v-model="itemsPerPage" class="p-1 border rounded">
-          <option value="10">10</option>
-          <option value="20">20</option>
-          <option value="50">50</option>
-        </select> -->
         <select v-model="itemsPerPage" id="itemsPerPage">
           <option v-for="option in itemsPerPageOptions" :key="option" :value="option">
             {{ option }}
@@ -37,8 +32,6 @@
     </div>
 
     <div class="flex items-center justify-center py-10" v-if="isLoading">
-      <!-- <p>Loading...</p> -->
-      <!-- Ganti dengan spinner jika perlu -->
       <div
         class="w-16 h-16 ease-linear border-8 border-t-8 border-gray-200 rounded-full loader"
       ></div>
@@ -63,10 +56,14 @@
               <td class="p-2 border">{{ products[id]?.name || "Unknown" }}</td>
               <td class="p-2 border">{{ products[id]?.code || "Unknown" }}</td>
               <td class="p-2 border">
-                {{ formatPrice(products[id]?.price || "Unknown") }}
+                {{ formatPrice(products[id]?.price) }}
               </td>
-              <td class="p-2 border">{{ entropyValues[id].toFixed(4) }}</td>
-              <td class="p-2 border">{{ gain.toFixed(4) }}</td>
+              <td class="p-2 border">
+                {{ entropyValues[id] !== undefined ? entropyValues[id].toFixed(4) : "-" }}
+              </td>
+              <td class="p-2 border">
+                {{ gain !== undefined ? gain.toFixed(4) : "-" }}
+              </td>
             </tr>
           </tbody>
         </table>
@@ -114,7 +111,7 @@
 
 <script>
 import axios from "axios";
-import { computed, ref, onMounted } from "vue";
+import { ref, computed, onMounted, watch } from "vue";
 
 definePageMeta({
   middleware: ["auth"],
@@ -130,12 +127,18 @@ export default {
     const itemsPerPage = ref(5);
     const currentPage = ref(1);
     const isLoading = ref(true);
+
     const fetchData = async () => {
       try {
         const response = await axios.get(useApi("/api/api/analysis/results"));
-        entropyValues.value = response.data.entropyValues;
-        gainValues.value = response.data.gainValues;
-        products.value = response.data.products;
+
+        // Pastikan products keyed by ID
+        products.value = Object.fromEntries(
+          (response.data.products || []).map((p) => [p.id, p])
+        );
+
+        entropyValues.value = response.data.entropyValues || {};
+        gainValues.value = response.data.gainValues || {};
       } catch (error) {
         console.error("Error fetching analysis data:", error);
       } finally {
@@ -148,8 +151,8 @@ export default {
         const name = products.value[id]?.name || "";
         const code = products.value[id]?.code || "";
         const price = products.value[id]?.price?.toString() || "";
-        const entropy = entropyValues.value[id]?.toFixed(4) || "";
-        const gainValue = gain?.toFixed(4) || "";
+        const entropy = entropyValues.value[id] !== undefined ? entropyValues.value[id].toFixed(4) : "";
+        const gainValue = gain !== undefined ? gain.toFixed(4) : "";
         const query = searchQuery.value.toLowerCase();
         return [name, code, price, entropy, gainValue].some((field) =>
           field.toLowerCase().includes(query)
@@ -169,6 +172,7 @@ export default {
     );
 
     const formatPrice = (price) => {
+      if (typeof price !== "number") return "-";
       return new Intl.NumberFormat("id-ID", {
         style: "currency",
         currency: "IDR",
@@ -180,9 +184,7 @@ export default {
       const total = totalPages.value;
       const current = currentPage.value;
       const pages = [];
-      if (total <= 7) {
-        return Array.from({ length: total }, (_, i) => i + 1);
-      }
+      if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
       if (current <= 4) {
         pages.push(1, 2, 3, 4, 5, "...", total);
       } else if (current >= total - 3) {
@@ -206,7 +208,6 @@ export default {
     onMounted(fetchData);
 
     return {
-      formatPrice,
       entropyValues,
       gainValues,
       products,
@@ -219,11 +220,13 @@ export default {
       totalPages,
       generatePagination,
       changePage,
+      formatPrice,
       isLoading,
     };
   },
 };
 </script>
+
 <style scoped>
 .loader {
   border-top-color: #3498db;

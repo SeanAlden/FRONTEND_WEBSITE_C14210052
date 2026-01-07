@@ -23,7 +23,7 @@
       enter-to-class="opacity-100"
     >
       <div>
-        <h1 class="mb-4 text-xl font-bold">Prediksi Produk Terlaris - Algoritma C4.5</h1>
+        <h1 class="mb-4 text-xl font-bold">Prediksi Produk Terlaris</h1>
 
         <div class="mt-4">
           <button
@@ -33,7 +33,7 @@
             Hasil Prediksi
           </button>
         </div>
-        <h2 class="mt-6 text-lg font-semibold">2. Decision Tree</h2>
+        <h2 class="mt-6 text-lg font-semibold">Decision Tree</h2>
 
         <!-- Loading Animation -->
         <!-- <div
