@@ -127,25 +127,43 @@ const itemsPerPage = ref(10);
 const isLoading = ref(true);
 
 // Fetch data
+// onMounted(async () => {
+//   try {
+//     isLoading.value = true;
+
+//     // 1️⃣ Ambil weightedSales
+//     const response = await axios.get(useApi("/api/api/analysis/countAttributes"));
+//     weightedSales.value = response.data.weightedSales || {};
+
+//     // 2️⃣ Ambil daftar nama & kode produk dari endpoint ringkas (mock sementara)
+//     // Bisa diganti endpoint nyata /api/products/list
+//     const productIds = Object.keys(weightedSales.value);
+//     const productsResponse = await axios.get(useApi("/api/api/products"), {
+//       params: { ids: productIds.join(",") }
+//     });
+
+//     productsResponse.data.forEach((p) => {
+//       productNames.value[p.id] = p.name;
+//       productCodes.value[p.id] = p.code;
+//     });
+
+//   } catch (error) {
+//     console.error("Error fetching data:", error);
+//   } finally {
+//     isLoading.value = false;
+//   }
+// });
+
 onMounted(async () => {
   try {
     isLoading.value = true;
 
-    // 1️⃣ Ambil weightedSales
     const response = await axios.get(useApi("/api/api/analysis/countAttributes"));
-    weightedSales.value = response.data.weightedSales || {};
+    const data = response.data;
 
-    // 2️⃣ Ambil daftar nama & kode produk dari endpoint ringkas (mock sementara)
-    // Bisa diganti endpoint nyata /api/products/list
-    const productIds = Object.keys(weightedSales.value);
-    const productsResponse = await axios.get(useApi("/api/api/products"), {
-      params: { ids: productIds.join(",") }
-    });
-
-    productsResponse.data.forEach((p) => {
-      productNames.value[p.id] = p.name;
-      productCodes.value[p.id] = p.code;
-    });
+    weightedSales.value = data.weightedSales || {};
+    productNames.value = data.productNames || {};
+    productCodes.value = data.productCodes || {};
 
   } catch (error) {
     console.error("Error fetching data:", error);
