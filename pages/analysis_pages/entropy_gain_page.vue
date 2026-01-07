@@ -5,7 +5,7 @@
     <div class="mt-4">
       <button
         class="px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-700"
-        @click="$router.push('/analysis_pages/decision_tree_page')"
+        @click="$router.push('/analysis_pages/accuracy_page')"
       >
         Decision Tree
       </button>
