@@ -206,7 +206,7 @@ export default {
               /> -->
 
 							<img
-                :src="product.photo ? useApi(`${product.photo}`) : fallbackImage"
+                :src="product.photo ?? fallbackImage"
                 @error="onImageError"
                 class="w-20 h-20 object-fit"
               />
