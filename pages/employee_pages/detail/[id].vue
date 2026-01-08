@@ -1,37 +1,30 @@
 <template>
-  <div class="container p-6 mx-auto">
+  <div class="container relative p-6 mx-auto">
     <h1 class="mb-4 text-2xl font-bold text-center">Detail Karyawan</h1>
-    <div v-if="employee" class="p-6 bg-white rounded-lg shadow-md">
-      <div class="flex items-center justify-center py-10" v-if="isLoading">
-        <div
-          class="w-16 h-16 ease-linear border-8 border-t-8 border-gray-200 rounded-full loader"
-        ></div>
-      </div>
-      <div class="flex flex-col items-center text-center md:flex-col md:text-left">
-        <!-- Foto berada di atas -->
-        <!-- <img
-          :src="
-            employee.employee_photo
-              ? useApi(`/public/storage/${employee.employee_photo}`)
-              : fallbackImage
-          "
-          @error="onImageError"
-          class="object-cover w-40 h-40 mb-4 rounded-lg"
-        /> -->
-        <!-- <img
-          :src="
-            employee.employee_photo
-              ? useApi(`/storage/${employee.employee_photo}`)
-              : fallbackImage
-          "
-          @error="onImageError"
-          class="object-cover w-40 h-40 mb-4 rounded-lg"
-        /> -->
+
+    <!-- LOADING SPINNER -->
+    <div
+      v-if="isLoading"
+      class="absolute inset-0 z-10 flex items-center justify-center bg-white bg-opacity-70"
+    >
+      <div
+        class="w-16 h-16 border-8 border-t-8 border-gray-200 rounded-full loader"
+      ></div>
+    </div>
+
+    <!-- DATA KARYAWAN -->
+    <div
+      v-if="employee && !isLoading"
+      class="p-6 bg-white rounded-lg shadow-md"
+    >
+      <div class="flex flex-col items-center text-center md:text-left">
+        <!-- Foto -->
         <img
           :src="employee.employee_photo ? employee.employee_photo : fallbackImage"
           @error="onImageError"
           class="object-cover w-40 h-40 mb-4 rounded-lg"
         />
+
         <!-- Detail informasi -->
         <div class="w-full">
           <p><strong>Kode:</strong> {{ employee.code }}</p>
@@ -39,14 +32,13 @@
           <p><strong>Posisi:</strong> {{ employee.employee_position }}</p>
           <p><strong>Kontak:</strong> {{ employee.employee_contact }}</p>
           <p><strong>Tanggal Lahir:</strong> {{ employee.employee_birth }}</p>
-          <p>
-            <strong>Deskripsi:</strong>
-          </p>
+          <p><strong>Deskripsi:</strong></p>
           <p class="whitespace-pre-line">
             {{ employee.employee_description }}
           </p>
         </div>
       </div>
+
       <div class="flex justify-center mt-4">
         <router-link
           to="/employee_pages/employees"
@@ -56,7 +48,6 @@
         </router-link>
       </div>
     </div>
-    <!-- <p v-else class="text-center text-red-500">Data karyawan tidak ditemukan.</p> -->
   </div>
 </template>
 
@@ -78,12 +69,14 @@ definePageMeta({
 const fetchEmployeeDetail = async () => {
   isLoading.value = true;
   try {
-    const response = await axios.get(useApi(`/api/api/employees/${route.params.id}`));
+    const response = await axios.get(
+      useApi(`/api/api/employees/${route.params.id}`)
+    );
     employee.value = response.data.data;
   } catch (error) {
     console.error("Error fetching employee details:", error);
   } finally {
-	isLoading.value = false;
+    isLoading.value = false;
   }
 };
 
@@ -93,6 +86,7 @@ const onImageError = (event) => {
 
 onMounted(fetchEmployeeDetail);
 </script>
+
 <style scoped>
 .loader {
   border-top-color: #3498db;
@@ -103,16 +97,5 @@ onMounted(fetchEmployeeDetail);
   to {
     transform: rotate(360deg);
   }
-}
-
-/* Fade Animation */
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.5s ease;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
 }
 </style>
