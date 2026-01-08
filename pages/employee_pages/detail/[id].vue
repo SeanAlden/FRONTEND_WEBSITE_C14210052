@@ -56,7 +56,7 @@
         </router-link>
       </div>
     </div>
-    <p v-else class="text-center text-red-500">Data karyawan tidak ditemukan.</p>
+    <!-- <p v-else class="text-center text-red-500">Data karyawan tidak ditemukan.</p> -->
   </div>
 </template>
 
