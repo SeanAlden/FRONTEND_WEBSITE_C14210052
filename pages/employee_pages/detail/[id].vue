@@ -5,7 +5,7 @@
     <!-- LOADING SPINNER -->
     <div
       v-if="isLoading"
-      class="p-6 bg-white rounded-lg shadow-md"
+      class="items-center p-6 bg-white rounded-lg shadow-md"
     >
       <div
         class="w-16 h-16 border-8 border-t-8 border-gray-200 rounded-full loader"
