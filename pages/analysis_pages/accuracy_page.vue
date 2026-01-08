@@ -1,8 +1,113 @@
+<script>
+import axios from "axios";
+import { computed, ref, onMounted, watch } from "vue";
+
+definePageMeta({
+  middleware: ["auth"],
+});
+
+export default {
+  setup() {
+    const products = ref({});
+    const accuracy = ref({});
+    const searchQuery = ref("");
+    const itemsPerPageOptions = [5, 10, 20, 50];
+    const itemsPerPage = ref(5);
+    const currentPage = ref(1);
+    const isLoading = ref(true);
+
+    const fallbackImage = "/assets/images/avatar.png";
+
+    const fetchData = async () => {
+      try {
+        const res = await axios.get(useApi("/api/api/analysis/results"));
+
+        // 🔑 UBAH ARRAY → OBJECT (KEYED BY ID)
+        products.value = Object.fromEntries(
+          (res.data.products || []).map((p) => [p.id, p])
+        );
+
+        accuracy.value = res.data.accuracy || {};
+      } catch (e) {
+        console.error("Fetch error:", e);
+      } finally {
+        isLoading.value = false;
+      }
+    };
+
+    // 🔥 DATA UTAMA YANG SUDAH DIGABUNG
+    const mergedProducts = computed(() => {
+      return Object.entries(accuracy.value)
+        .map(([id, acc]) => ({
+          id: Number(id),
+          accuracy: Number(acc) || 0,
+          ...(products.value[id] || {}),
+        }))
+        .sort((a, b) => b.accuracy - a.accuracy);
+    });
+
+    const filteredProducts = computed(() => {
+      const q = searchQuery.value.toLowerCase();
+
+      return mergedProducts.value.filter((p) =>
+        [p.name, p.code, p.condition, p.price?.toString(), p.accuracy?.toFixed(2)]
+          .filter(Boolean)
+          .some((v) => v.toLowerCase().includes(q))
+      );
+    });
+
+    const paginatedProducts = computed(() => {
+      const start = (currentPage.value - 1) * itemsPerPage.value;
+      return filteredProducts.value.slice(start, start + itemsPerPage.value);
+    });
+
+    const totalPages = computed(() =>
+      Math.ceil(filteredProducts.value.length / itemsPerPage.value)
+    );
+
+    const changePage = (page) => {
+      if (page >= 1 && page <= totalPages.value) {
+        currentPage.value = page;
+      }
+    };
+
+    const formatPrice = (price) =>
+      new Intl.NumberFormat("id-ID", {
+        style: "currency",
+        currency: "IDR",
+        minimumFractionDigits: 0,
+      }).format(price || 0);
+
+    const onImageError = (e) => {
+      e.target.src = fallbackImage;
+    };
+
+    watch(itemsPerPage, () => (currentPage.value = 1));
+
+    onMounted(fetchData);
+
+    return {
+      searchQuery,
+      itemsPerPageOptions,
+      itemsPerPage,
+      currentPage,
+      paginatedProducts,
+      filteredProducts,
+      totalPages,
+      changePage,
+      formatPrice,
+      isLoading,
+      fallbackImage,
+      onImageError,
+    };
+  },
+};
+</script>
 <template>
   <div>
     <h1 class="mb-4 text-xl font-bold">Prediksi Produk Terlaris</h1>
     <h2 class="mt-6 text-lg font-semibold">Perhitungan Akurasi</h2>
-		
+
     <div class="flex justify-between my-4">
       <div>
         <label class="mr-2">Show</label>
@@ -149,153 +254,3 @@
     </div>
   </div>
 </template>
-
-<script>
-import axios from "axios";
-import { computed, ref, onMounted } from "vue";
-
-definePageMeta({
-  middleware: ["auth"],
-});
-
-export default {
-  setup() {
-    const products = ref({});
-    const accuracy = ref({});
-    const searchQuery = ref("");
-    const itemsPerPageOptions = [5, 10, 20, 50];
-    const itemsPerPage = ref(5);
-    const currentPage = ref(1);
-    const isLoading = ref(true);
-
-    const fallbackImage = "/assets/images/avatar.png";
-
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(useApi("/api/api/analysis/results"));
-        products.value = response.data.products;
-        accuracy.value = response.data.accuracy;
-      } catch (error) {
-        console.error("Error fetching analysis data:", error);
-      } finally {
-        isLoading.value = false;
-      }
-    };
-
-    const sortedAccuracy = computed(() => {
-      return Object.entries(accuracy.value)
-        .sort((a, b) => b[1] - a[1])
-        .map(([id, accValue]) => ({
-          id,
-          accuracy: accValue,
-          ...products.value[id],
-        }));
-    });
-
-    const filteredProducts = computed(() => {
-      return sortedAccuracy.value.filter((product) => {
-        const query = searchQuery.value.toLowerCase();
-        return [
-          product.name || "",
-          product.code || "",
-          product.category_name || "",
-          product.price?.toString() || "",
-          product.stocks?.toString() || "",
-          product.accuracy.toFixed(2),
-        ].some((field) => field.toLowerCase().includes(query));
-      });
-    });
-
-    const paginatedProducts = computed(() => {
-      const start = (currentPage.value - 1) * itemsPerPage.value;
-      return filteredProducts.value.slice(start, start + itemsPerPage.value);
-    });
-
-    const totalPages = computed(() =>
-      Math.ceil(filteredProducts.value.length / itemsPerPage.value)
-    );
-
-    const generatePagination = computed(() => {
-      const total = totalPages.value;
-      const current = currentPage.value;
-      const pages = [];
-      if (total <= 7) {
-        return Array.from({ length: total }, (_, i) => i + 1);
-      }
-      if (current <= 4) {
-        pages.push(1, 2, 3, 4, 5, "...", total);
-      } else if (current >= total - 3) {
-        pages.push(1, "...", total - 4, total - 3, total - 2, total - 1, total);
-      } else {
-        pages.push(1, "...", current - 1, current, current + 1, "...", total);
-      }
-      return pages;
-    });
-
-    const changePage = (page) => {
-      if (page >= 1 && page <= totalPages.value && page !== "...") {
-        currentPage.value = page;
-      }
-    };
-
-    const formatPrice = (price) => {
-      return new Intl.NumberFormat("id-ID", {
-        style: "currency",
-        currency: "IDR",
-        minimumFractionDigits: 0,
-      }).format(price);
-    };
-
-    const onImageError = (event) => {
-      event.target.src = fallbackImage;
-    };
-
-    watch(itemsPerPage, () => {
-      currentPage.value = 1;
-    });
-
-    onMounted(fetchData);
-
-    return {
-      products,
-      accuracy,
-      searchQuery,
-      itemsPerPageOptions,
-      itemsPerPage,
-      currentPage,
-      fallbackImage,
-      filteredProducts,
-      paginatedProducts,
-      totalPages,
-      generatePagination,
-      changePage,
-      formatPrice,
-      isLoading,
-      onImageError,
-    };
-  },
-};
-</script>
-<style scoped>
-.loader {
-  border-top-color: #3498db;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-/* Fade Animation */
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.5s ease;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-}
-</style>
