@@ -219,7 +219,7 @@ export default {
             </td>
             <td class="p-2 border">{{ product.category_name || "Unknown" }}</td>
             <td class="p-2 border">{{ formatPrice(product.price) }}</td>
-            <td class="p-2 border">{{ product.total_stocks }}</td>
+            <td class="p-2 border">{{ product.total_stock }}</td>
             <!-- <td class="p-2 border">{{ product.accuracy.toFixed(2) }}%</td> -->
             <td class="p-2 border">
               <span
@@ -301,4 +301,4 @@ export default {
 .fade-leave-to {
   opacity: 0;
 }
-</style>
+</style>e
