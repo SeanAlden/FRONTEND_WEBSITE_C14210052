@@ -65,6 +65,23 @@ export default {
       Math.ceil(filteredProducts.value.length / itemsPerPage.value)
     );
 
+    const generatePagination = computed(() => {
+      const total = totalPages.value;
+      const current = currentPage.value;
+      const pages = [];
+      if (total <= 7) {
+        return Array.from({ length: total }, (_, i) => i + 1);
+      }
+      if (current <= 4) {
+        pages.push(1, 2, 3, 4, 5, "...", total);
+      } else if (current >= total - 3) {
+        pages.push(1, "...", total - 4, total - 3, total - 2, total - 1, total);
+      } else {
+        pages.push(1, "...", current - 1, current, current + 1, "...", total);
+      }
+      return pages;
+    });
+
     const changePage = (page) => {
       if (page >= 1 && page <= totalPages.value) {
         currentPage.value = page;
@@ -94,6 +111,7 @@ export default {
       paginatedProducts,
       filteredProducts,
       totalPages,
+      generatePagination,
       changePage,
       formatPrice,
       isLoading,
@@ -151,7 +169,7 @@ export default {
             <th class="p-2 border">Foto</th>
             <th class="p-2 border">Kategori</th>
             <th class="p-2 border">Harga</th>
-            <!-- <th class="p-2 border">Stok</th> -->
+            <th class="p-2 border">Stok</th>
             <th class="p-2 border">Akurasi</th>
           </tr>
         </thead>
@@ -181,11 +199,18 @@ export default {
                 class="w-20 h-20 object-fit"
               /> -->
 
-              <img
+              <!-- <img
                 :src="product.photo ? useApi(`/storage/${product.photo}`) : fallbackImage"
                 @error="onImageError"
                 class="w-20 h-20 object-fit"
+              /> -->
+
+							<img
+                :src="product.photo ? useApi(`${product.photo}`) : fallbackImage"
+                @error="onImageError"
+                class="w-20 h-20 object-fit"
               />
+							
               <!-- <img
                 :src="product.photo ?? fallbackImage"
                 @error="onImageError"
@@ -194,7 +219,7 @@ export default {
             </td>
             <td class="p-2 border">{{ product.category_name || "Unknown" }}</td>
             <td class="p-2 border">{{ formatPrice(product.price) }}</td>
-            <!-- <td class="p-2 border">{{ product.stocks }}</td> -->
+            <td class="p-2 border">{{ product.stocks }}</td>
             <!-- <td class="p-2 border">{{ product.accuracy.toFixed(2) }}%</td> -->
             <td class="p-2 border">
               <span
