@@ -2,6 +2,11 @@
   <div class="container p-6 mx-auto">
     <h1 class="mb-4 text-2xl font-bold text-center">Detail Karyawan</h1>
     <div v-if="employee" class="p-6 bg-white rounded-lg shadow-md">
+      <div class="flex items-center justify-center py-10" v-if="isLoading">
+        <div
+          class="w-16 h-16 ease-linear border-8 border-t-8 border-gray-200 rounded-full loader"
+        ></div>
+      </div>
       <div class="flex flex-col items-center text-center md:flex-col md:text-left">
         <!-- Foto berada di atas -->
         <!-- <img
@@ -13,7 +18,7 @@
           @error="onImageError"
           class="object-cover w-40 h-40 mb-4 rounded-lg"
         /> -->
-				<!-- <img
+        <!-- <img
           :src="
             employee.employee_photo
               ? useApi(`/storage/${employee.employee_photo}`)
@@ -22,12 +27,8 @@
           @error="onImageError"
           class="object-cover w-40 h-40 mb-4 rounded-lg"
         /> -->
-				<img
-          :src="
-            employee.employee_photo
-              ? employee.employee_photo
-              : fallbackImage
-          "
+        <img
+          :src="employee.employee_photo ? employee.employee_photo : fallbackImage"
           @error="onImageError"
           class="object-cover w-40 h-40 mb-4 rounded-lg"
         />
@@ -66,6 +67,7 @@ import axios from "axios";
 
 const route = useRoute();
 const employee = ref(null);
+const isLoading = ref(true);
 
 const fallbackImage = "/assets/images/photo_default.png";
 
@@ -74,11 +76,14 @@ definePageMeta({
 });
 
 const fetchEmployeeDetail = async () => {
+  isLoading.value = true;
   try {
     const response = await axios.get(useApi(`/api/api/employees/${route.params.id}`));
     employee.value = response.data.data;
   } catch (error) {
     console.error("Error fetching employee details:", error);
+  } finally {
+	isLoading.value = false;
   }
 };
 
@@ -88,3 +93,26 @@ const onImageError = (event) => {
 
 onMounted(fetchEmployeeDetail);
 </script>
+<style scoped>
+.loader {
+  border-top-color: #3498db;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Fade Animation */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+</style>

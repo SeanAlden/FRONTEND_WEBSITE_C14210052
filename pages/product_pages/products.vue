@@ -177,9 +177,9 @@ onMounted(fetchProducts);
     <div class="flex items-center justify-center py-10" v-if="isLoading">
       <!-- <p>Loading...</p> -->
       <!-- Ganti dengan spinner jika perlu -->
-      <div
-        class="w-16 h-16 ease-linear border-8 border-t-8 border-gray-200 rounded-full loader"
-      ></div>
+				<div
+					class="w-16 h-16 ease-linear border-8 border-t-8 border-gray-200 rounded-full loader"
+				></div>
     </div>
 
     <transition name="fade">
