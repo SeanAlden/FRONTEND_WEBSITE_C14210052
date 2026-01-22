@@ -81,9 +81,9 @@ const handleFileUpload = (event) => {
 // };
 
 // // Fungsi untuk menghapus entri stok tertentu
-// const removeExpStock = (index) => {
-//   expStockList.value.splice(index, 1);
-// };
+const removeExpStock = (index) => {
+  expStockList.value.splice(index, 1);
+};
 
 // // Sesuaikan tinggi textarea secara otomatis
 // const adjustHeight = (element) => {
@@ -255,13 +255,13 @@ onMounted(async () => {
         >
           <input v-model="item.exp_date" type="date" required class="p-2 border" />
           <span class="inline-block w-24 p-2 border select-none">{{ item.stock }}</span>
-          <!-- <button
+          <button
             type="button"
             @click="removeExpStock(index)"
             class="p-1 text-white bg-red-500 rounded"
           >
             Hapus
-          </button> -->
+          </button>
         </div>
         <!-- <button
           type="button"
